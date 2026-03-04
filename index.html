@@ -2,205 +2,258 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#6366f1">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="theme-color" content="#000000">
+<meta name="apple-mobile-web-app-title" content="InsightMaster">
+<link rel="apple-touch-icon" href="https://files.catbox.moe/up3cd1.webp">
+<link rel="icon" type="image/webp" href="https://files.catbox.moe/up3cd1.webp">
 <title>Insight Master Demo</title>
-<link rel="icon" href="https://files.catbox.moe/up3cd1.webp" type="image/webp">
 <style>
 :root {
-  --bg-primary: #000000;
-  --bg-secondary: #0a0a0a;
-  --bg-card: #111111;
-  --bg-card-hover: #1a1a1a;
-  --border-color: #222222;
-  --border-light: #333333;
-  --text-primary: #ffffff;
-  --text-secondary: #aaaaaa;
-  --text-muted: #666666;
-  --accent-primary: #c8a2ff;
-  --accent-secondary: #a855f7;
-  --accent-gradient: linear-gradient(135deg, #c8a2ff, #a855f7);
-  --accent-glow: rgba(200,162,255,0.15);
-  --success: #4ade80;
-  --warning: #fbbf24;
-  --danger: #f87171;
-  --info: #60a5fa;
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
-  --radius-xl: 20px;
-  --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
-  --shadow-md: 0 4px 12px rgba(0,0,0,0.4);
-  --shadow-lg: 0 8px 24px rgba(0,0,0,0.5);
-  --transition: 0.2s ease;
-  --font-main: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --primary: #6366f1;
+  --primary-light: #818cf8;
+  --primary-dark: #4f46e5;
+  --accent: #f59e0b;
+  --background: #f8fafc;
+  --surface: #ffffff;
+  --text-primary: #0f172a;
+  --text-secondary: #64748b;
+  --text-tertiary: #94a3b8;
+  --border: #e2e8f0;
+  --success: #10b981;
+  --error: #ef4444;
+  --warning: #f59e0b;
+  --warning-bg: #fff3cd;
+  --warning-text: #856404;
+  --info-bg: #e8f4fd;
+  --info-border: #d0d8ff;
+  --info: #2980b9;
+  --like-color: #e74c8b;
+  --bg-secondary: #f1f5f9;
+  --bg-tertiary: #e2e8f0;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+  --shadow-md: 0 8px 32px rgba(0,0,0,0.12);
+  --accent-purple: #8B5CF6;
 }
-
-* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-html,body { font-family:var(--font-main); background:var(--bg-primary); color:var(--text-primary); height:100%; overflow:hidden; }
-
-/* Splash */
-.splash { position:fixed; inset:0; background:var(--bg-primary); display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:9999; transition:opacity 0.5s; }
-.splash.hide { opacity:0; pointer-events:none; }
-.splash-logo { width:80px; height:80px; border-radius:20px; margin-bottom:16px; animation:pulse 1.5s infinite; }
-.splash-title { font-size:20px; font-weight:700; margin-bottom:8px; }
-.splash-sub { font-size:13px; color:var(--text-secondary); }
-@keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.05)} }
-
-/* App Shell */
-#app { height:100%; display:flex; flex-direction:column; }
-.app-header { display:flex; align-items:center; justify-content:space-between; padding:12px 16px; background:var(--bg-secondary); border-bottom:1px solid var(--border-color); position:sticky; top:0; z-index:100; min-height:52px; }
-.app-header-title { font-size:16px; font-weight:700; display:flex; align-items:center; gap:8px; }
-.app-header-actions { display:flex; gap:8px; }
-.header-btn { background:none; border:none; color:var(--text-secondary); font-size:18px; padding:6px; cursor:pointer; border-radius:var(--radius-sm); transition:var(--transition); }
-.header-btn:hover { color:var(--text-primary); background:var(--bg-card); }
-
-/* Main Content */
-.app-content { flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; padding:16px; padding-bottom:80px; }
-
-/* Bottom Nav */
-.app-nav { display:flex; background:var(--bg-secondary); border-top:1px solid var(--border-color); position:sticky; bottom:0; z-index:100; padding:4px 0; padding-bottom:max(4px, env(safe-area-inset-bottom)); }
-.nav-item { flex:1; display:flex; flex-direction:column; align-items:center; padding:6px 0; cursor:pointer; transition:var(--transition); border:none; background:none; color:var(--text-muted); font-size:10px; gap:2px; }
-.nav-item.active { color:var(--accent-primary); }
-.nav-item-icon { font-size:20px; }
-
-/* Cards */
-.card { background:var(--bg-card); border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:16px; margin-bottom:12px; transition:var(--transition); }
-.card:hover { border-color:var(--border-light); }
-.card-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
-.card-title { font-size:14px; font-weight:600; display:flex; align-items:center; gap:6px; }
-.card-subtitle { font-size:12px; color:var(--text-secondary); }
-
-/* Buttons */
-.btn { display:inline-flex; align-items:center; justify-content:center; gap:6px; padding:10px 16px; border-radius:var(--radius-md); font-size:13px; font-weight:600; cursor:pointer; transition:var(--transition); border:none; outline:none; }
-.btn-primary { background:var(--accent-gradient); color:white; }
-.btn-primary:hover { opacity:0.9; transform:translateY(-1px); }
-.btn-secondary { background:var(--bg-card); color:var(--text-primary); border:1px solid var(--border-color); }
-.btn-secondary:hover { border-color:var(--border-light); background:var(--bg-card-hover); }
-.btn-sm { padding:6px 12px; font-size:12px; }
-.btn-danger { background:var(--danger); color:white; }
-.btn-block { width:100%; }
-.btn:disabled { opacity:0.5; cursor:not-allowed; }
-
-/* Inputs */
-.input { width:100%; padding:10px 14px; background:var(--bg-card); border:1px solid var(--border-color); border-radius:var(--radius-md); color:var(--text-primary); font-size:14px; outline:none; transition:var(--transition); }
-.input:focus { border-color:var(--accent-primary); box-shadow:0 0 0 3px var(--accent-glow); }
-.input::placeholder { color:var(--text-muted); }
-textarea.input { resize:vertical; min-height:80px; font-family:var(--font-main); }
-
-/* Badges */
-.badge { display:inline-flex; align-items:center; gap:4px; padding:3px 8px; border-radius:20px; font-size:11px; font-weight:600; }
-.badge-demo { background:rgba(200,162,255,0.15); color:var(--accent-primary); }
-.badge-ai { background:rgba(74,222,128,0.15); color:var(--success); }
-.badge-success { background:rgba(74,222,128,0.15); color:var(--success); }
-.badge-warning { background:rgba(251,191,36,0.15); color:var(--warning); }
-.badge-danger { background:rgba(248,113,113,0.15); color:var(--danger); }
-
-/* Stats */
-.stats-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:8px; }
-.stat-item { background:var(--bg-card); border:1px solid var(--border-color); border-radius:var(--radius-md); padding:12px; text-align:center; }
-.stat-value { font-size:20px; font-weight:700; background:var(--accent-gradient); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
-.stat-label { font-size:11px; color:var(--text-secondary); margin-top:2px; }
-
-/* Tabs */
-.tabs { display:flex; gap:4px; margin-bottom:16px; background:var(--bg-card); border-radius:var(--radius-md); padding:4px; }
-.tab-btn { flex:1; padding:8px; border:none; background:none; color:var(--text-secondary); font-size:12px; font-weight:600; border-radius:var(--radius-sm); cursor:pointer; transition:var(--transition); }
-.tab-btn.active { background:var(--accent-gradient); color:white; }
-
-/* Toast */
-.toast-container { position:fixed; top:60px; left:50%; transform:translateX(-50%); z-index:10000; display:flex; flex-direction:column; gap:8px; pointer-events:none; }
-.toast { padding:10px 20px; border-radius:var(--radius-md); font-size:13px; font-weight:500; animation:toastIn 0.3s ease; pointer-events:auto; box-shadow:var(--shadow-lg); }
-.toast-success { background:var(--success); color:#000; }
-.toast-error { background:var(--danger); color:#fff; }
-.toast-info { background:var(--info); color:#000; }
-@keyframes toastIn { from{opacity:0;transform:translateY(-10px)} to{opacity:1;transform:translateY(0)} }
-
-/* Modal */
-.modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:5000; display:flex; align-items:flex-end; justify-content:center; animation:fadeIn 0.2s; }
-.modal { background:var(--bg-card); border-radius:var(--radius-xl) var(--radius-xl) 0 0; width:100%; max-width:500px; max-height:85vh; overflow-y:auto; padding:20px; animation:slideUp 0.3s ease; }
-.modal-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; }
-.modal-title { font-size:16px; font-weight:700; }
-.modal-close { background:none; border:none; color:var(--text-secondary); font-size:20px; cursor:pointer; padding:4px; }
-@keyframes fadeIn { from{opacity:0} to{opacity:1} }
-@keyframes slideUp { from{transform:translateY(100%)} to{transform:translateY(0)} }
-
-/* Skeleton */
-.skeleton { background:linear-gradient(90deg, var(--bg-card) 25%, var(--bg-card-hover) 50%, var(--bg-card) 75%); background-size:200% 100%; animation:shimmer 1.5s infinite; border-radius:var(--radius-sm); }
-.skeleton-text { height:14px; margin-bottom:8px; width:80%; }
-.skeleton-title { height:20px; margin-bottom:12px; width:60%; }
-.skeleton-box { height:100px; margin-bottom:12px; }
-@keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
-
-/* Chart */
-.chart-container { position:relative; width:100%; height:200px; margin:12px 0; }
-.chart-canvas { width:100%; height:100%; }
-
-/* Heatmap */
-.heatmap-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:3px; }
-.heatmap-cell { aspect-ratio:1; border-radius:4px; display:flex; align-items:center; justify-content:center; font-size:9px; color:var(--text-muted); cursor:pointer; transition:var(--transition); }
-
-/* Post Card */
-.post-card { background:var(--bg-card); border:1px solid var(--border-color); border-radius:var(--radius-md); padding:14px; margin-bottom:10px; }
-.post-card-text { font-size:13px; line-height:1.6; margin-bottom:10px; white-space:pre-wrap; word-break:break-word; }
-.post-card-meta { display:flex; gap:12px; flex-wrap:wrap; font-size:11px; color:var(--text-secondary); }
-
-/* Misc */
-.divider { border:none; border-top:1px solid var(--border-color); margin:16px 0; }
-.empty-state { text-align:center; padding:40px 20px; color:var(--text-secondary); }
-.empty-state-icon { font-size:40px; margin-bottom:12px; }
-.empty-state-text { font-size:14px; }
-.tip-card { background:rgba(200,162,255,0.08); border:1px solid rgba(200,162,255,0.2); border-radius:var(--radius-md); padding:12px; margin-bottom:12px; font-size:12px; color:var(--text-secondary); line-height:1.5; }
-.tip-card strong { color:var(--accent-primary); }
-.demo-banner { background:linear-gradient(135deg, rgba(200,162,255,0.1), rgba(168,85,247,0.1)); border:1px solid rgba(200,162,255,0.2); border-radius:var(--radius-md); padding:12px; margin-bottom:16px; font-size:12px; text-align:center; color:var(--text-secondary); }
-.demo-banner a { color:var(--accent-primary); text-decoration:none; }
-.gemini-banner { background:linear-gradient(135deg, rgba(74,222,128,0.1), rgba(96,165,250,0.1)); border:1px solid rgba(74,222,128,0.2); border-radius:var(--radius-md); padding:12px; margin-bottom:16px; font-size:12px; }
-.accordion { border:1px solid var(--border-color); border-radius:var(--radius-md); overflow:hidden; margin-bottom:8px; }
-.accordion-header { display:flex; justify-content:space-between; align-items:center; padding:12px; cursor:pointer; background:var(--bg-card); font-size:13px; font-weight:600; }
-.accordion-body { padding:0 12px; max-height:0; overflow:hidden; transition:max-height 0.3s ease, padding 0.3s ease; }
-.accordion-body.open { max-height:500px; padding:12px; }
-.progress-bar { height:6px; background:var(--bg-card); border-radius:3px; overflow:hidden; }
-.progress-fill { height:100%; background:var(--accent-gradient); border-radius:3px; transition:width 0.5s ease; }
-.fab { position:fixed; bottom:76px; right:16px; width:52px; height:52px; border-radius:50%; background:var(--accent-gradient); color:white; border:none; font-size:22px; cursor:pointer; box-shadow:var(--shadow-lg); z-index:90; display:flex; align-items:center; justify-content:center; transition:var(--transition); }
-.fab:hover { transform:scale(1.1); }
-
-/* Scrollbar */
-::-webkit-scrollbar { width:4px; }
-::-webkit-scrollbar-track { background:transparent; }
-::-webkit-scrollbar-thumb { background:var(--border-color); border-radius:2px; }
-
-/* Responsive */
-@media(min-width:500px) {
-  .app-content { max-width:500px; margin:0 auto; }
-  .modal { border-radius:var(--radius-xl); margin-bottom:20px; }
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0f172a;
+    --surface: #1e293b;
+    --border: #334155;
+    --text-primary: #f1f5f9;
+    --text-secondary: #cbd5f5;
+    --text-tertiary: #94a3b8;
+    --bg-secondary: #111827;
+    --bg-tertiary: #0b1220;
+    --warning-bg: #3d2e0a;
+    --warning-text: #fbbf24;
+  }
+  .card { box-shadow: 0 1px 3px rgba(0,0,0,0.2), 0 4px 12px rgba(0,0,0,0.15); }
+  .skeleton { background: linear-gradient(90deg, #1e293b 25%, #334155 50%, #1e293b 75%); background-size: 200% 100%; }
 }
-
-/* Markdown Content */
-.md-content h1,.md-content h2,.md-content h3 { margin:16px 0 8px; }
-.md-content h1 { font-size:18px; }
-.md-content h2 { font-size:16px; }
-.md-content h3 { font-size:14px; }
-.md-content p { margin:8px 0; line-height:1.7; font-size:13px; }
-.md-content ul,.md-content ol { margin:8px 0 8px 20px; font-size:13px; }
-.md-content li { margin:4px 0; line-height:1.6; }
-.md-content strong { color:var(--accent-primary); }
-.md-content code { background:var(--bg-card-hover); padding:2px 6px; border-radius:4px; font-size:12px; }
-.md-content blockquote { border-left:3px solid var(--accent-primary); padding-left:12px; color:var(--text-secondary); margin:8px 0; }
+* { box-sizing: border-box; }
+html, body { margin:0; padding:0; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Hiragino Sans','Noto Sans JP',sans-serif; color:var(--text-primary); background:var(--background); line-height:1.6; overflow-x:hidden; }
+a { color:inherit; text-decoration:none; }
+#app { min-height:100vh; padding-bottom:80px; }
+.header { position:sticky; top:0; z-index:10; display:flex; align-items:center; justify-content:space-between; gap:12px; background:var(--surface); border-bottom:1px solid var(--border); padding:12px 16px; backdrop-filter:blur(20px); }
+.brand-logo { display:flex; align-items:center; gap:10px; }
+.brand-logo img { width:32px; height:32px; border-radius:8px; }
+.brand-text { display:flex; flex-direction:column; line-height:1.1; }
+.brand-en { font-weight:700; font-size:14px; }
+.brand-ja { font-size:11px; color:var(--text-secondary); }
+.content { padding:16px; }
+.screen-content { padding:16px; }
+.card { background:var(--surface); border-radius:16px; box-shadow:0 1px 3px rgba(0,0,0,0.04),0 4px 12px rgba(0,0,0,0.04); padding:20px; border:1px solid var(--border); margin-bottom:12px; transition:transform 0.2s,box-shadow 0.2s; }
+.card:hover { transform:translateY(-2px); box-shadow:0 4px 20px rgba(0,0,0,0.1); }
+.card-title { font-weight:700; margin-bottom:12px; font-size:15px; }
+.card-no-border { border:none; }
+.metric-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:12px; }
+.metric-card { text-align:center; padding:14px; background:var(--bg-tertiary); border-radius:12px; transition:transform 0.2s; }
+.metric-card:active { transform:scale(0.96); }
+.metric-value { font-size:20px; font-weight:700; color:var(--text-primary); }
+.metric-label { font-size:11px; color:var(--text-tertiary); margin-top:4px; }
+.metric-icon { font-size:20px; margin-bottom:6px; }
+.metric-trend { font-size:11px; font-weight:600; margin-top:4px; display:inline-block; }
+.metric-trend.up { color:var(--success); }
+.metric-trend.down { color:var(--error); }
+.text-heading { font-weight:700; font-size:16px; }
+.text-subheading { font-weight:600; font-size:14px; }
+.text-body { font-size:14px; line-height:1.6; }
+.text-caption { font-size:13px; color:var(--text-secondary); }
+.text-small { font-size:12px; color:var(--text-tertiary); }
+.mb-4{margin-bottom:4px}.mb-8{margin-bottom:8px}.mb-12{margin-bottom:12px}.mb-16{margin-bottom:16px}.mb-20{margin-bottom:20px}.mb-24{margin-bottom:24px}.mt-8{margin-top:8px}.mt-12{margin-top:12px}.mt-16{margin-top:16px}
+.gap-8{gap:8px}.gap-12{gap:12px}
+.flex-center{display:flex;align-items:center;justify-content:center}
+.flex-between{display:flex;align-items:center;justify-content:space-between}
+.flex-row{display:flex;align-items:center}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.avatar{width:50px;height:50px;border-radius:50%;object-fit:cover}
+.avatar-placeholder{width:50px;height:50px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;font-size:22px}
+.btn{background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;border-radius:12px;padding:14px 24px;font-weight:600;border:none;cursor:pointer;transition:transform 0.2s,box-shadow 0.2s,opacity 0.2s;min-height:44px;position:relative;overflow:hidden}
+.btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(99,102,241,0.25)}
+.btn:active{transform:translateY(0);opacity:0.9}
+.btn-secondary{background:var(--surface);color:var(--primary);border:1.5px solid var(--border)}
+.btn-danger{background:linear-gradient(135deg,#f87171,var(--error));color:#fff}
+.btn-small{padding:8px 12px;border-radius:10px;font-size:12px;min-height:44px}
+.btn-full{width:100%}
+.btn-group{display:flex;gap:8px;flex-wrap:wrap}
+.input{width:100%;border:1.5px solid var(--border);border-radius:12px;padding:14px 16px;font-size:15px;background:var(--surface);color:var(--text-primary);transition:border-color 0.2s}
+.input:focus{outline:none;border-color:var(--primary)}
+textarea.input{resize:vertical;min-height:80px;font-family:inherit}
+.nav{position:fixed;left:0;right:0;bottom:0;background:var(--surface);border-top:1px solid var(--border);padding:8px 0 env(safe-area-inset-bottom,8px);backdrop-filter:blur(20px);z-index:20}
+.nav-inner{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:0 8px}
+.nav-item{display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 4px;border:none;background:none;color:var(--text-tertiary);font-size:11px;cursor:pointer;min-height:44px;transition:transform 0.15s}
+.nav-item:active{transform:scale(0.92)}
+.nav-item.active{color:var(--primary);font-weight:700}
+.nav-icon{font-size:18px}
+.subtabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:8px;margin-bottom:12px}
+.subtab{border:1px solid var(--border);background:var(--surface);color:var(--text-secondary);padding:8px 14px;border-radius:999px;font-size:12px;font-weight:600;white-space:nowrap;cursor:pointer;min-height:44px;transition:all 0.2s}
+.subtab:active{transform:scale(0.95)}
+.subtab.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+.post-card{padding:14px;background:var(--bg-secondary);border-radius:10px;margin-bottom:10px;position:relative}
+.post-text{font-size:14px;margin-bottom:10px;line-height:1.6}
+.post-metrics{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center}
+.post-meta{font-size:12px;color:var(--text-tertiary);margin-bottom:8px}
+.post-metric{font-size:14px;color:var(--text-secondary);display:inline-flex;align-items:center;gap:3px}
+.er-badge{font-size:14px;font-weight:700;color:var(--success);display:inline-flex;align-items:center;gap:3px;margin-left:auto}
+.warning-banner{border-radius:8px;padding:12px;margin-bottom:16px;font-size:13px;background:var(--warning-bg);color:var(--warning-text)}
+.ai-result-container{font-size:13px;line-height:1.8;padding:12px;background:var(--bg-secondary);border-radius:8px;max-height:500px;overflow-y:auto}
+.demo-bar-track{background:var(--bg-tertiary);border-radius:4px;height:8px;overflow:hidden}
+.demo-bar-fill{background:linear-gradient(90deg,var(--primary),var(--primary-dark));height:100%;border-radius:4px}
+.form-label{font-size:13px;font-weight:600;display:block;margin-bottom:6px}
+.empty-state{text-align:center;padding:40px 20px}
+.empty-state-icon{font-size:56px;margin-bottom:16px;opacity:0.6;animation:emptyBounce 2s ease-in-out infinite}
+.empty-state-title{font-size:16px;font-weight:600;margin-bottom:8px}
+.empty-state-desc{font-size:13px;color:var(--text-secondary);margin-bottom:20px}
+@keyframes emptyBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.progress{height:6px;background:var(--border);border-radius:999px;overflow:hidden;margin-top:8px}
+.progress-bar{height:100%;background:linear-gradient(135deg,var(--primary),var(--primary-dark));border-radius:999px}
+.toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:var(--surface);color:var(--text-primary);border-radius:12px;padding:14px 20px;box-shadow:var(--shadow-md);border:1px solid var(--border);z-index:50;display:flex;align-items:center;gap:10px;min-width:200px;max-width:90vw;animation:toastSlide 0.3s ease-out}
+.toast-exit{animation:toastFadeOut 0.3s forwards}
+.toast.success{border-color:var(--success)}.toast.error{border-color:var(--error)}.toast.warning{border-color:var(--warning)}
+@keyframes toastSlide{from{transform:translate(-50%,20px);opacity:0}to{transform:translate(-50%,0);opacity:1}}
+@keyframes toastFadeOut{to{opacity:0;transform:translate(-50%,20px)}}
+.loading{display:flex;align-items:center;gap:8px;color:var(--text-secondary);justify-content:center;padding:16px}
+.loading-spinner{width:18px;height:18px;border:2px solid var(--border);border-top-color:var(--primary);border-radius:50%;animation:spin 0.8s linear infinite}
+@keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+.skeleton{background:linear-gradient(90deg,#e5e7eb 25%,#f3f4f6 50%,#e5e7eb 75%);background-size:200% 100%;animation:shimmer 1.2s infinite}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.skeleton-line{height:12px;border-radius:6px;margin-bottom:8px}
+.skeleton-line-short{width:40%}.skeleton-line-medium{width:70%}.skeleton-line-full{width:100%}
+.screen-animate{animation:fadeSlide 0.4s ease}
+@keyframes fadeSlide{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.segment{display:flex;background:var(--bg-secondary);border-radius:12px;padding:4px;gap:4px}
+.segment-btn{flex:1;border:none;background:transparent;padding:10px 8px;border-radius:10px;font-size:12px;cursor:pointer}
+.segment-btn.active{background:var(--surface);box-shadow:var(--shadow-sm);font-weight:600}
+.accordion{border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:12px}
+.accordion-header{display:flex;align-items:center;justify-content:space-between;padding:16px;cursor:pointer;font-weight:600;font-size:14px;background:var(--bg-secondary);transition:background 0.2s}
+.accordion-header:hover{background:var(--bg-tertiary)}
+.accordion-body{max-height:0;overflow:hidden;transition:max-height 0.3s ease-out}
+.accordion-body.open{max-height:800px}
+.accordion-body-inner{padding:16px}
+.status-badge{display:inline-flex;align-items:center;gap:4px;font-size:12px;padding:4px 10px;border-radius:20px;font-weight:600}
+.status-badge.success{background:#d1fae5;color:#065f46}
+.status-badge.warning{background:#fef3c7;color:#92400e}
+.status-badge.info{background:#dbeafe;color:#1e40af}
+.link-list{list-style:none;padding:0;margin:0}
+.link-list-item{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--border);transition:background 0.2s}
+.link-list-item:last-child{border-bottom:none}
+.link-list-item:hover{background:var(--bg-secondary)}
+.growth-score-ring{position:relative;width:120px;height:120px;margin:0 auto 12px}
+.growth-score-ring svg{width:120px;height:120px;transform:rotate(-90deg)}
+.ring-bg{fill:none;stroke:var(--bg-tertiary);stroke-width:10}
+.ring-fill{fill:none;stroke:var(--primary);stroke-width:10;stroke-linecap:round;transition:stroke-dashoffset 1.2s ease-out}
+.ring-fill.high{stroke:var(--success)}.ring-fill.medium{stroke:var(--primary)}.ring-fill.low{stroke:var(--warning)}.ring-fill.critical{stroke:var(--error)}
+.growth-score-number{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
+.score-value{font-size:32px;font-weight:800;line-height:1}
+.score-label{font-size:11px;color:var(--text-secondary);margin-top:2px}
+.growth-breakdown{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;text-align:center}
+.growth-breakdown-item{padding:8px 4px;background:var(--bg-secondary);border-radius:10px}
+.growth-breakdown-item .bd-icon{font-size:16px;margin-bottom:2px}
+.growth-breakdown-item .bd-score{font-size:18px;font-weight:700}
+.growth-breakdown-item .bd-label{font-size:10px;color:var(--text-secondary)}
+.checkin-card{background:linear-gradient(135deg,var(--surface),var(--bg-secondary));border-left:4px solid var(--primary)}
+.checkin-message{font-size:15px;font-weight:500;line-height:1.6;margin-bottom:12px}
+.streak-badge{display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,#ff6b35,#f7931e);color:#fff;padding:6px 14px;border-radius:20px;font-weight:700;font-size:13px}
+.streak-fire{animation:fireFlicker 1.5s ease-in-out infinite alternate}
+@keyframes fireFlicker{0%{transform:scale(1) rotate(-3deg)}100%{transform:scale(1.15) rotate(3deg)}}
+.checkin-recommend{display:flex;gap:12px;margin-top:10px}
+.checkin-recommend-item{flex:1;padding:10px;background:var(--bg-secondary);border-radius:10px;text-align:center}
+.checkin-recommend-item .cr-icon{font-size:18px}
+.checkin-recommend-item .cr-value{font-size:14px;font-weight:700;margin-top:2px}
+.checkin-recommend-item .cr-label{font-size:10px;color:var(--text-secondary)}
+.goal-card{position:relative;overflow:hidden}
+.goal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.goal-label{font-size:14px;font-weight:600}
+.goal-pct{font-size:20px;font-weight:800;color:var(--primary)}
+.goal-progress{height:10px;background:var(--bg-tertiary);border-radius:999px;overflow:hidden;margin-bottom:8px}
+.goal-progress-bar{height:100%;background:linear-gradient(90deg,var(--primary),var(--success));border-radius:999px;transition:width 1s ease-out}
+.goal-detail{display:flex;justify-content:space-between;font-size:12px;color:var(--text-secondary)}
+.heatmap-table{width:100%;border-collapse:collapse;font-size:10px}
+.heatmap-cell{padding:2px;text-align:center;border-radius:2px;font-size:9px}
+.tips-wrap{margin:12px 0}
+.tips-btn{width:100%;padding:10px 16px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:12px;cursor:pointer;font-size:13px;font-weight:600;color:var(--primary);text-align:left}
+.tips-panel{margin-top:8px;padding:16px;background:var(--bg-secondary);border-radius:12px;border:1px solid var(--border)}
+.tips-item{margin-bottom:14px}.tips-item:last-child{margin-bottom:0}
+.tips-title{font-weight:600;font-size:13px;margin-bottom:4px}
+.tips-body{font-size:12px;color:var(--text-secondary);line-height:1.7}
+.fab{position:fixed;bottom:80px;right:20px;width:56px;height:56px;border-radius:28px;background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;font-size:24px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(99,102,241,0.4);z-index:100;border:none;cursor:pointer}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);backdrop-filter:blur(4px);z-index:120;display:none}
+.modal-overlay.show{display:block}
+.modal-sheet{position:fixed;left:0;right:0;bottom:0;max-height:85vh;background:var(--surface);border-radius:20px 20px 0 0;padding:24px;overflow-y:auto;transform:translateY(100%);transition:transform 0.3s ease-out}
+.modal-overlay.show .modal-sheet{transform:translateY(0)}
+.modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.modal-close{border:none;background:none;font-size:20px;cursor:pointer;color:var(--text-primary)}
+/* Tooltip for settings */
+.tooltip-wrap{position:relative;display:inline-flex;align-items:center}
+.tooltip-icon{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;background:var(--bg-tertiary);color:var(--text-secondary);font-size:11px;cursor:pointer;margin-left:6px}
+.tooltip-bubble{display:none;position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-size:11px;color:var(--text-secondary);line-height:1.6;width:260px;z-index:200;box-shadow:var(--shadow-md)}
+.tooltip-bubble::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:6px solid transparent;border-top-color:var(--border)}
+.tooltip-wrap.active .tooltip-bubble{display:block}
+.preview-field{background:var(--bg-secondary);border:1px solid var(--border);border-radius:12px;padding:10px 14px;font-size:13px;color:var(--text-tertiary);position:relative}
+.preview-field .lock-badge{position:absolute;top:8px;right:8px}
+@media(max-width:600px){
+  .content{padding:12px}.card{padding:14px;border-radius:12px}.card:hover{transform:none;box-shadow:0 1px 3px rgba(0,0,0,0.04),0 4px 12px rgba(0,0,0,0.04)}
+  .btn{padding:12px 18px}.metric-grid{grid-template-columns:repeat(2,1fr);gap:8px}.metric-card{padding:10px}.metric-value{font-size:16px}.metric-icon{font-size:16px;margin-bottom:4px}
+  .header{padding:10px 12px}.brand-logo img{width:28px;height:28px}.brand-en{font-size:13px}.brand-ja{font-size:10px}
+  .nav-inner{gap:0;padding:0 4px}.nav-item{padding:6px 2px;font-size:10px;min-height:40px}.nav-icon{font-size:16px}
+  .growth-score-ring{width:100px;height:100px}.growth-score-ring svg{width:100px;height:100px}.score-value{font-size:26px}
+  .growth-breakdown{gap:6px}.growth-breakdown-item .bd-score{font-size:15px}
+  .checkin-recommend{flex-direction:column;gap:8px}
+  .toast{bottom:70px;font-size:13px;padding:10px 14px}
+  .subtab{padding:6px 10px;font-size:11px;min-height:36px}
+  .grid-2{grid-template-columns:1fr}
+}
 </style>
 </head>
 <body>
-<div class="splash" id="splash">
-  <img src="https://files.catbox.moe/up3cd1.webp" alt="Insight Master" class="splash-logo">
-  <div class="splash-title">Insight Master</div>
-  <div class="splash-sub">Demo Version Loading...</div>
+<div id="splash" style="position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg,#0a0a1a 0%,#1a1a3e 30%,#2d1b69 60%,#1a1a3e 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;opacity:1;transition:opacity 0.6s ease-out;">
+<style>
+@keyframes logoFloat{0%{opacity:0;transform:scale(0.3) translateY(40px);filter:blur(20px)}50%{opacity:1;transform:scale(1.05) translateY(-5px);filter:blur(0)}70%{transform:scale(0.98) translateY(2px)}100%{opacity:1;transform:scale(1) translateY(0);filter:blur(0)}}
+@keyframes titleReveal{0%{opacity:0;letter-spacing:20px;filter:blur(10px)}60%{opacity:1;letter-spacing:4px;filter:blur(0)}100%{opacity:1;letter-spacing:2px}}
+@keyframes subtitleFade{0%{opacity:0;transform:translateY(15px)}100%{opacity:1;transform:translateY(0)}}
+@keyframes lineExpand{0%{width:0;opacity:0}100%{width:120px;opacity:1}}
+@keyframes dotPulse{0%,100%{opacity:0.3;transform:scale(0.8)}50%{opacity:1;transform:scale(1.2)}}
+@keyframes glowPulse{0%,100%{box-shadow:0 0 20px rgba(102,126,234,0.3),0 0 60px rgba(118,75,162,0.1)}50%{box-shadow:0 0 40px rgba(102,126,234,0.6),0 0 80px rgba(118,75,162,0.3)}}
+.splash-logo{width:100px;height:100px;border-radius:24px;animation:logoFloat 1.2s cubic-bezier(0.34,1.56,0.64,1) forwards,glowPulse 2s ease-in-out 1.2s infinite;opacity:0}
+.splash-title{color:#fff;font-size:24px;font-weight:700;margin-top:28px;animation:titleReveal 1s ease-out 0.6s forwards;opacity:0}
+.splash-line{height:2px;margin-top:16px;border:none;background:linear-gradient(90deg,transparent,#667eea,#764ba2,transparent);animation:lineExpand 0.8s ease-out 1.2s forwards;width:0;opacity:0}
+.splash-subtitle{color:rgba(255,255,255,0.6);font-size:13px;margin-top:14px;animation:subtitleFade 0.6s ease-out 1.6s forwards;opacity:0}
+.splash-dots{display:flex;gap:8px;margin-top:32px}
+.splash-dot{width:6px;height:6px;border-radius:50%;background:#667eea;animation:dotPulse 1.2s ease-in-out infinite}
+.splash-dot:nth-child(2){animation-delay:0.2s}
+.splash-dot:nth-child(3){animation-delay:0.4s}
+</style>
+<img src="https://files.catbox.moe/up3cd1.webp" class="splash-logo">
+<div class="splash-title">Insight Master</div>
+<hr class="splash-line">
+<div class="splash-subtitle">Threads Analytics & AI Assistant — Demo</div>
+<div class="splash-dots"><div class="splash-dot"></div><div class="splash-dot"></div><div class="splash-dot"></div></div>
 </div>
-<div class="toast-container" id="toastContainer"></div>
-<div id="app"></div>
+<div id="app" style="display:none;opacity:0;transition:opacity 0.3s ease;"></div>
 <script>
-// ============================================================
-// Insight Master Demo - Core Application
-// ============================================================
 const App = {
   state: {
     demoMode: true,
@@ -210,13 +263,14 @@ const App = {
     activeAccount: null,
     settings: {},
     analyticsData: null,
-    insightsData: null,
-    followerHistory: [],
-    navLocked: false,
-    geminiKey: null
+    userInsights: null,
+    followerData_: null,
+    analyticsTab: 'posts',
+    createTab: 'generate',
+    geminiKey: null,
+    navLocked: false
   },
 
-  // ---------- Initialize ----------
   init() {
     this.state.geminiKey = localStorage.getItem('insight_master_gemini_key') || null;
     this.startDemoMode();
@@ -225,215 +279,37 @@ const App = {
   startDemoMode() {
     this.state.demoMode = true;
     this.state.user = {
-      userId: 'demo_user',
-      username: 'demo_threads_user',
-      name: 'Demo User',
+      userId: 'demo_user', username: 'demo_threads_user', name: 'Demo User',
       profilePicUrl: 'https://files.catbox.moe/up3cd1.webp',
-      biography: 'Insight Master デモアカウント',
-      followersCount: 1823
+      biography: 'Insight Master デモアカウント', followersCount: 1823
     };
-    this.state.accounts = [{
-      id: 'demo_account',
-      label: 'Demo Account',
-      userId: 'demo_user',
-      username: 'demo_threads_user',
-      isActive: true
-    }];
+    this.state.accounts = [{ accountId: 'demo_account', label: 'Demo Account', userId: 'demo_user', username: 'demo_threads_user', profilePicUrl: 'https://files.catbox.moe/up3cd1.webp', isActive: true }];
     this.state.activeAccount = this.state.accounts[0];
-    this.state.settings = { appId: 'demo', geminiKey: this.state.geminiKey || '' };
-
-    setTimeout(() => {
-      document.getElementById('splash').classList.add('hide');
-      setTimeout(() => { document.getElementById('splash').style.display = 'none'; }, 500);
-    }, 1200);
-
-    this.renderShell();
-    this.showScreen('dashboard');
+    this.state.settings = { app_id: 'demo', hasAppSecret: false, hasAccessToken: false, hasGeminiKey: !!this.state.geminiKey, geminiKey: this.state.geminiKey || '' };
+    this.endSplash_();
+    this.renderApp_('dashboard');
   },
 
-  // ---------- API Router ----------
-  api(action, params) {
-    const geminiActions = [
-      'generateAnalysisReport', 'generateImprovementSuggestions',
-      'generatePostWithAI', 'generatePostWithAnalysis',
-      'refinePostWithAI', 'generateBuzzReport',
-      'searchKeywordWithAI', 'analyzeCompetitor'
-    ];
-    const draftActions = ['getDrafts', 'saveDraft', 'toggleDraftStatus', 'deleteDraft', 'updateDraft'];
+  endSplash_() {
+    setTimeout(() => {
+      var splash = document.getElementById('splash');
+      var app = document.getElementById('app');
+      splash.style.opacity = '0';
+      setTimeout(() => { splash.style.display = 'none'; app.style.display = 'block'; requestAnimationFrame(() => { requestAnimationFrame(() => { app.style.opacity = '1'; }); }); }, 600);
+    }, 2000);
+  },
 
-    if (draftActions.includes(action)) {
-      return this.localDraftApi_(action, params);
-    }
-    if (geminiActions.includes(action) && this.state.geminiKey) {
-      return this.geminiApi_(action, params);
-    }
+  // === API Router ===
+  api(action, params) {
+    var geminiActions = ['generateAnalysisReport','generateImprovementSuggestions','generatePostWithAI','generatePostWithAnalysis','refinePostWithAI','generateBuzzReport','searchKeywordWithAI','analyzeCompetitor'];
+    var draftActions = ['getDrafts','saveDraft','toggleDraftStatus','deleteDraft','updateDraft'];
+    if (draftActions.includes(action)) return this.localDraftApi_(action, params);
+    if (geminiActions.includes(action) && this.state.geminiKey) return this.geminiApi_(action, params);
     return this.demoApi_(action, params);
   },
 
-  // ---------- Demo API (mock data) ----------
   demoApi_(action, params) {
-    return new Promise(resolve => {
-      const delay = 200 + Math.random() * 400;
-      setTimeout(() => resolve(this.demoData_(action, params)), delay);
-    });
-  },
-
-  demoData_(action, params) {
-    const now = new Date();
-    switch(action) {
-      case 'fetchUserInsights': return {
-        followers_count: 1823, views: 12450, likes: 3210, replies: 456, reposts: 189, quotes: 67,
-        demographics: {
-          countries: [{code:'JP',name:'Japan',value:78},{code:'US',name:'United States',value:12},{code:'GB',name:'UK',value:5}],
-          cities: [{name:'Tokyo',value:42},{name:'Osaka',value:18},{name:'Yokohama',value:12}],
-          age: [{'13-17':2},{'18-24':28},{'25-34':42},{'35-44':18},{'45-54':7},{'55-64':2},{'65+':1}],
-          gender: [{male:38},{female:52},{other:10}]
-        }
-      };
-
-      case 'getAnalyticsData': {
-        const posts = [];
-        for (let i = 0; i < 25; i++) {
-          const d = new Date(now - (i * 86400000 * 1.2));
-          const views = Math.floor(Math.random() * 2000) + 100;
-          const likes = Math.floor(views * (Math.random() * 0.08 + 0.02));
-          const replies = Math.floor(likes * (Math.random() * 0.3 + 0.05));
-          const reposts = Math.floor(likes * (Math.random() * 0.2 + 0.02));
-          posts.push({
-            id: 'post_' + i,
-            text: this.samplePostTexts_()[i % this.samplePostTexts_().length],
-            timestamp: d.toISOString(),
-            views, likes, replies, reposts, quotes: Math.floor(reposts * 0.3),
-            engagement_rate: ((likes + replies + reposts) / views * 100).toFixed(2)
-          });
-        }
-        const totalViews = posts.reduce((s, p) => s + p.views, 0);
-        const totalLikes = posts.reduce((s, p) => s + p.likes, 0);
-        const totalReplies = posts.reduce((s, p) => s + p.replies, 0);
-        const avgER = (posts.reduce((s, p) => s + parseFloat(p.engagement_rate), 0) / posts.length).toFixed(2);
-        return {
-          posts, summary: { totalPosts: 25, totalViews, totalLikes, totalReplies, averageER: avgER,
-            period: '過去30日間', lastUpdated: now.toISOString() }
-        };
-      }
-
-      case 'getFollowerHistory': {
-        const days = (params && params.days) || 30;
-        const history = [];
-        let count = 1823;
-        for (let i = days; i >= 0; i--) {
-          const d = new Date(now - i * 86400000);
-          const change = Math.floor(Math.random() * 15) - 3;
-          count += change;
-          history.push({ date: d.toISOString().split('T')[0], count, change });
-        }
-        return { history };
-      }
-
-      case 'getTimeAnalysisData': {
-        const heatmap = [];
-        for (let h = 0; h < 24; h++) {
-          for (let d = 0; d < 7; d++) {
-            const val = Math.random();
-            const score = h >= 7 && h <= 22 ? val * 0.8 + 0.2 : val * 0.3;
-            heatmap.push({ hour: h, day: d, value: score, posts: Math.floor(score * 10), avgER: (score * 8).toFixed(1) });
-          }
-        }
-        return { heatmap, bestTimes: [{ hour: 21, day: 3, avgER: '6.8' }, { hour: 12, day: 1, avgER: '5.2' }] };
-      }
-
-      case 'generateBuzzReport': return {
-        stats: { avgER_top: '6.8%', bestHour: 21, bestDay: '水曜日', topMediaType: 'テキスト' },
-        topPosts: [
-          { text: 'AIの進化が止まらない...', views: 4500, er: '8.2%' },
-          { text: '朝活始めて1ヶ月の変化', views: 3800, er: '7.1%' }
-        ],
-        bottomPosts: [
-          { text: 'ランチなう', views: 120, er: '0.8%' },
-          { text: '眠い...', views: 95, er: '0.5%' }
-        ],
-        report: '## 📊 バズパターン分析レポート\n\n### 🔥 高エンゲージメント傾向\n- **AI・テクノロジー系**の投稿がER平均6.8%と最も高い\n- **朝活・自己成長系**が続いてER5.2%\n- 水曜21時台の投稿が最もリーチが広い\n\n### 📈 改善ポイント\n1. 具体的な数字を含む投稿はERが2倍\n2. 問いかけ形式の投稿は返信率が3倍\n3. 140文字前後が最適な長さ\n\n### 💡 推奨アクション\n- 水曜・金曜の21時に投稿を集中\n- AI×日常のクロスジャンル投稿を増やす\n- スレッド形式で深い考察を展開'
-      };
-
-      case 'generateAnalysisReport': return {
-        report: '## 📋 総合分析レポート\n\n### アカウント概要\n- フォロワー: 1,823人（前月比 +5.2%）\n- 平均エンゲージメント率: 4.2%\n- 総ビュー数: 12,450\n\n### 強み\n- AI・テクノロジー分野での高い専門性\n- 一貫した投稿頻度（週5-6回）\n- 返信率が業界平均の2倍\n\n### 改善機会\n- 週末の投稿が少ない\n- 画像・動画コンテンツの活用余地\n- フォロワーとの対話をさらに増やす\n\n### 推奨戦略\n1. 週末にもライトな投稿を追加\n2. インフォグラフィックの導入\n3. 週1回のQ&Aスレッド開催',
-        summary: 'フォロワー1,823人、ER4.2%。AI系コンテンツが強み。週末投稿の強化が課題。'
-      };
-
-      case 'generateImprovementSuggestions': return {
-        suggestions: [
-          { title: '投稿時間の最適化', description: '水曜21時の投稿がER6.8%と最高。この時間帯を軸にスケジュールを組みましょう。', impact: 'high', category: 'timing' },
-          { title: 'スレッド投稿の活用', description: '深い考察をスレッド形式で展開すると、平均滞在時間が3倍に。', impact: 'high', category: 'content' },
-          { title: '数字を使った見出し', description: '「3つのポイント」「7日間の変化」など具体的数字入りの投稿はCTRが2倍。', impact: 'medium', category: 'writing' },
-          { title: 'ハッシュタグ戦略', description: '関連性の高いタグを3-5個に絞ることでリーチが15%向上。', impact: 'medium', category: 'reach' },
-          { title: 'フォロワー参加型コンテンツ', description: '「あなたはどう思う？」形式の投稿で返信率が180%アップ。', impact: 'high', category: 'engagement' }
-        ]
-      };
-
-      case 'generatePostWithAI': {
-        const theme = (params && params.theme) || '日常';
-        return {
-          items: [
-            { text: `${theme}について考えてみた。\n\n結局のところ、大事なのは「継続」なんだよね。\n\n1日1%の改善を365日続けると、37倍になる。\n\n小さな一歩を、今日も。`, reason: 'パーソナルな気づき × 具体的数字で共感を呼ぶ構成', meta: { expectedER: '5.2%', bestTime: '21:00', mediaAdvice: 'テキストのみで十分' } },
-            { text: `最近の${theme}で感じたこと。\n\nみんな「正解」を探しすぎてる気がする。\n\n正解なんてない。あるのは「自分の選択」だけ。\n\n選んだ道を正解にする力の方が大事。`, reason: '問題提起 → 持論展開で議論を誘発', meta: { expectedER: '4.8%', bestTime: '12:00', mediaAdvice: 'テキストのみ推奨' } },
-            { text: `${theme}の本質って何だろう？\n\n色々調べて辿り着いた答えは意外とシンプルだった。\n\n「やるか、やらないか」\n\nそれだけ。`, reason: '短文インパクト型。スクロール停止率が高い', meta: { expectedER: '4.5%', bestTime: '21:00', mediaAdvice: 'テキストのみ' } }
-          ]
-        };
-      }
-
-      case 'generatePostWithAnalysis': {
-        return {
-          items: [
-            { text: 'データで見えてきた真実。\n\nフォロワーが最も反応するのは「失敗談」だった。\n\n成功より失敗。完璧より等身大。\n\nこの1ヶ月のER上位5投稿、全部「うまくいかなかった話」。\n\n弱さを見せる強さ、大事にしたい。', reason: '分析データに基づく洞察。自己開示×データで信頼性UP', meta: { expectedER: '6.1%', bestTime: '21:00' } },
-            { text: '1ヶ月のデータを振り返って気づいたこと。\n\n📊 一番読まれた投稿 → 朝7時の「今日の目標」\n📊 一番反応があった投稿 → 夜9時の「今日の学び」\n\n結論：朝はリーチ、夜はエンゲージメント。\n\n使い分けが大事。', reason: '具体的データ提示で説得力のある分析投稿', meta: { expectedER: '5.5%', bestTime: '21:00' } }
-          ],
-          analysisUsed: { totalPosts: 25, avgER: '4.2%', topTheme: 'AI・テクノロジー' }
-        };
-      }
-
-      case 'refinePostWithAI': return {
-        variants: [
-          { text: (params && params.text ? params.text.substring(0, 50) : '') + '...\n\n（リファイン版：より簡潔に、インパクトを強化）', style: params && params.style || 'improve' },
-          { text: (params && params.text ? params.text.substring(0, 50) : '') + '...\n\n✨ 新しい視点を加えてみました。', style: params && params.style || 'improve' }
-        ]
-      };
-
-      case 'getGrowthScore': return {
-        score: 72, breakdown: { consistency: 85, engagement: 68, growth: 75, content: 62 },
-        tips: ['投稿頻度が安定しています！', 'エンゲージメント率の向上余地があります', '動画コンテンツの追加を検討してみましょう']
-      };
-
-      case 'getDailyCheckIn': return {
-        todayPosted: false, streak: 5, weeklyCount: 4, weeklyGoal: 6,
-        message: '5日連続投稿中！今日も頑張りましょう 🔥'
-      };
-
-      case 'getGoals': return {
-        goals: [
-          { id: 'g1', title: 'フォロワー2,000人達成', target: 2000, current: 1823, unit: '人', deadline: '2026-04-30' },
-          { id: 'g2', title: '月間投稿30回', target: 30, current: 22, unit: '回', deadline: '2026-03-31' }
-        ]
-      };
-
-      case 'getUserInfo': return this.state.user;
-      case 'getSettings': return this.state.settings;
-
-      case 'searchKeyword': return {
-        posts: Array.from({length:8}, (_, i) => ({
-          id: 'kw_' + i,
-          text: `キーワード「${(params && params.keyword) || 'AI'}」に関連する投稿 #${i+1}\n\nこれはデモデータです。実際のThreads APIでは本物の検索結果が表示されます。`,
-          username: ['tech_lover', 'ai_researcher', 'daily_coder', 'startup_jp'][i % 4],
-          timestamp: new Date(now - i * 3600000 * 6).toISOString(),
-          views: Math.floor(Math.random() * 5000) + 200,
-          likes: Math.floor(Math.random() * 200) + 10,
-          replies: Math.floor(Math.random() * 30),
-          mediaType: ['TEXT', 'TEXT', 'IMAGE', 'TEXT'][i % 4]
-        })),
-        summary: { total: 8, avgViews: 2600, topAuthor: 'tech_lover' }
-      };
-
-      default: return { success: true, message: 'Demo action completed' };
-    }
+    return new Promise(resolve => { setTimeout(() => resolve(this.demoData_(action, params)), 200 + Math.random() * 400); });
   },
 
   samplePostTexts_() {
@@ -443,8 +319,8 @@ const App = {
       'プログラミングで一番大事なスキルは「検索力」だと本気で思ってる。',
       '今日のランチは近所のカレー屋。やっぱりスパイスカレーは正義。',
       'リモートワーク3年目。最大の敵は「冷蔵庫」です。',
-      '読書メモ：「思考の整理学」を再読。10年前と全く違う箇所が刺さる。成長なのか、変化なのか。',
-      'ChatGPTに「面白いジョーク言って」って聞いたら、真面目に分析し始めた。AIらしい。',
+      '読書メモ：「思考の整理学」を再読。10年前と全く違う箇所が刺さる。',
+      'ChatGPTに「面白いジョーク言って」って聞いたら、真面目に分析し始めた。',
       'スレッドで深い話をすると、フォロワーの質が変わる気がする。量より質。',
       'コーヒーは豆から挽く派。この5分の儀式が1日のスイッチになってる。',
       '「完璧を目指すな、完了を目指せ」という言葉に何度救われたか。',
@@ -457,7 +333,7 @@ const App = {
       'サイドプロジェクトが本業より楽しくなってきた問題。',
       '「なぜ？」を5回繰り返すと、本質にたどり着ける。トヨタ式、侮れない。',
       'フォロワー数より大事なのは、何人が自分の投稿を楽しみにしてくれてるか。',
-      ' 来年の自分が読み返して「あの時頑張ってたな」と思える投稿を残したい。',
+      '来年の自分が読み返して「あの時頑張ってたな」と思える投稿を残したい。',
       'テクノロジーは手段。目的を見失わないようにしたい。',
       'ミニマリズムを意識し始めてから、思考もクリアになった気がする。',
       '今日のTIL：CSSのcontainer queryが想像以上に便利だった。',
@@ -466,1731 +342,866 @@ const App = {
     ];
   },
 
-  // ---------- Local Draft API ----------
+  demoData_(action, params) {
+    var now = new Date();
+    switch(action) {
+      case 'fetchUserInsights': return {
+        accountUsername: 'demo_threads_user', followersCount: 1823, views: 12450, likes: 3210, replies: 456, reposts: 189, quotes: 67, clicks: 234,
+        demographics: {
+          country: { JP: 156, US: 24, GB: 10, TW: 5, KR: 3 },
+          city: { Tokyo: 84, Osaka: 36, Yokohama: 24, Nagoya: 12 },
+          age: { '13-17': 4, '18-24': 56, '25-34': 84, '35-44': 36, '45-54': 14, '55-64': 4, '65+': 2 },
+          gender: { M: 76, F: 104, U: 20 }
+        }
+      };
+      case 'getAnalyticsData': {
+        var posts = [], texts = this.samplePostTexts_();
+        for (var i = 0; i < 25; i++) {
+          var d = new Date(now - (i * 86400000 * 1.2));
+          var views = Math.floor(Math.random() * 2000) + 100;
+          var likes = Math.floor(views * (Math.random() * 0.08 + 0.02));
+          var replies = Math.floor(likes * (Math.random() * 0.3 + 0.05));
+          var reposts = Math.floor(likes * (Math.random() * 0.2 + 0.02));
+          var quotes = Math.floor(reposts * 0.3);
+          var shares = Math.floor(Math.random() * 20);
+          posts.push({ id:'post_'+i, text:texts[i%texts.length], timestamp:d.toISOString(), views:views, likes:likes, replies:replies, reposts:reposts, quotes:quotes, shares:shares, engagement_rate:((likes+replies+reposts)/views*100).toFixed(2) });
+        }
+        var tv=0,tl=0,tr=0,trp=0,ts=0; posts.forEach(function(p){tv+=p.views;tl+=p.likes;tr+=p.replies;trp+=p.reposts;ts+=p.shares;});
+        var avgER = (posts.reduce(function(s,p){return s+parseFloat(p.engagement_rate);},0)/posts.length).toFixed(2);
+        return { posts:posts, summary:{ totalPosts:25, totalViews:tv, totalLikes:tl, totalReplies:tr, totalReposts:trp, totalShares:ts, avgEngagementRate:avgER, period:'過去30日間' } };
+      }
+      case 'getFollowerHistory': {
+        var days = (params && params.days) || 7, history = [], dates = [], counts = [], changes = [];
+        var count = 1823;
+        for (var i = days; i >= 0; i--) {
+          var d = new Date(now - i * 86400000);
+          var change = Math.floor(Math.random() * 15) - 3;
+          count += change;
+          var dateStr = (d.getMonth()+1) + '/' + d.getDate();
+          dates.push(dateStr); counts.push(count); changes.push(change);
+        }
+        return { dates:dates, counts:counts, changes:changes };
+      }
+      case 'getTimeAnalysisData': {
+        var heatmap = {};
+        var dayNames = ['月','火','水','木','金','土','日'];
+        for (var h = 0; h < 24; h++) {
+          for (var d = 0; d < 7; d++) {
+            var val = Math.random();
+            var score = h >= 7 && h <= 22 ? val * 0.8 + 0.2 : val * 0.3;
+            heatmap[h + '_' + d] = { hour:h, day:d, dayName:dayNames[d], value:score, posts:Math.floor(score*10), avgER:(score*8).toFixed(1) };
+          }
+        }
+        return { heatmap:heatmap, bestTimes:[{hour:21,day:3,avgER:'6.8'},{hour:12,day:1,avgER:'5.2'}] };
+      }
+      case 'generateBuzzReport': return {
+        stats:{avgER_top:'6.8%',bestHour:21,bestDay:'水曜日',topMediaType:'テキスト'},
+        topPosts:[{text:'AIの進化が止まらない...',views:4500,er:'8.2%'},{text:'朝活始めて1ヶ月の変化',views:3800,er:'7.1%'}],
+        bottomPosts:[{text:'ランチなう',views:120,er:'0.8%'},{text:'眠い...',views:95,er:'0.5%'}],
+        report:'## 📊 バズパターン分析レポート\n\n### 🔥 高エンゲージメント傾向\n- **AI・テクノロジー系**の投稿がER平均6.8%と最も高い\n- **朝活・自己成長系**が続いてER5.2%\n- 水曜21時台の投稿が最もリーチが広い\n\n### 📈 改善ポイント\n1. 具体的な数字を含む投稿はERが2倍\n2. 問いかけ形式の投稿は返信率が3倍\n3. 140文字前後が最適な長さ\n\n### 💡 推奨アクション\n- 水曜・金曜の21時に投稿を集中\n- AI×日常のクロスジャンル投稿を増やす\n- スレッド形式で深い考察を展開'
+      };
+      case 'generateAnalysisReport': return {
+        report:'## 📋 総合分析レポート\n\n### アカウント概要\n- フォロワー: 1,823人（前月比 +5.2%）\n- 平均エンゲージメント率: 4.2%\n- 総ビュー数: 12,450\n\n### 強み\n- AI・テクノロジー分野での高い専門性\n- 一貫した投稿頻度（週5-6回）\n- 返信率が業界平均の2倍\n\n### 改善機会\n- 週末の投稿が少ない\n- 画像・動画コンテンツの活用余地\n- フォロワーとの対話をさらに増やす\n\n### 推奨戦略\n1. 週末にもライトな投稿を追加\n2. インフォグラフィックの導入\n3. 週1回のQ&Aスレッド開催'
+      };
+      case 'generateImprovementSuggestions': return {
+        suggestions:'## 💡 改善提案\n\n### 1. 投稿時間の最適化（インパクト：高）\n水曜21時の投稿がER6.8%と最高。この時間帯を軸にスケジュールを組みましょう。\n\n### 2. スレッド投稿の活用（インパクト：高）\n深い考察をスレッド形式で展開すると、平均滞在時間が3倍に。\n\n### 3. 数字を使った見出し（インパクト：中）\n「3つのポイント」「7日間の変化」など具体的数字入りの投稿はCTRが2倍。\n\n### 4. フォロワー参加型コンテンツ（インパクト：高）\n「あなたはどう思う？」形式の投稿で返信率が180%アップ。\n\n### 5. ハッシュタグ戦略（インパクト：中）\n関連性の高いタグを3-5個に絞ることでリーチが15%向上。'
+      };
+      case 'generatePostWithAI': {
+        var theme = (params && params.theme) || '日常';
+        return { results:[
+          { text: theme + 'について考えてみた。\n\n結局のところ、大事なのは「継続」なんだよね。\n\n1日1%の改善を365日続けると、37倍になる。\n\n小さな一歩を、今日も。', reason:'パーソナルな気づき×具体的数字' },
+          { text: '最近の' + theme + 'で感じたこと。\n\nみんな「正解」を探しすぎてる気がする。\n\n正解なんてない。あるのは「自分の選択」だけ。\n\n選んだ道を正解にする力の方が大事。', reason:'問題提起→持論展開' },
+          { text: theme + 'の本質って何だろう？\n\n色々調べて辿り着いた答えは意外とシンプルだった。\n\n「やるか、やらないか」\n\nそれだけ。', reason:'短文インパクト型' }
+        ]};
+      }
+      case 'generatePostWithAnalysis': return {
+        results:[
+          { text:'データで見えてきた真実。\n\nフォロワーが最も反応するのは「失敗談」だった。\n\n成功より失敗。完璧より等身大。\n\nこの1ヶ月のER上位5投稿、全部「うまくいかなかった話」。', reason:'分析データに基づく洞察' },
+          { text:'1ヶ月のデータを振り返って気づいたこと。\n\n📊 一番読まれた投稿 → 朝7時の「今日の目標」\n📊 一番反応があった投稿 → 夜9時の「今日の学び」\n\n結論：朝はリーチ、夜はエンゲージメント。', reason:'具体的データ提示' }
+        ]
+      };
+      case 'refinePostWithAI': return {
+        results:[
+          { text: (params && params.text ? params.text.substring(0,50) : '') + '...\n\n（リファイン版：より簡潔に、インパクトを強化）' },
+          { text: (params && params.text ? params.text.substring(0,50) : '') + '...\n\n✨ 新しい視点を加えてみました。' }
+        ]
+      };
+      case 'getGrowthScore': return { score:72, change:3, breakdown:{ follower:78, er:65, freq:85, ai:60 }, tips:['投稿頻度が安定しています！','エンゲージメント率の向上余地があります'] };
+      case 'getDailyCheckIn': return { streak:5, message:'5日連続投稿中！今日も頑張りましょう 🔥\n最近はAI系の投稿が好調です。', recommendTime:'21:00', recommendTheme:'AI活用' };
+      case 'getGoals': return { goals:[
+        { id:'g1', title:'フォロワー2,000人達成', target:2000, current:1823, unit:'人', deadline:'2026-04-30' },
+        { id:'g2', title:'月間投稿30回', target:30, current:22, unit:'回', deadline:'2026-03-31' }
+      ]};
+      case 'searchKeyword': return {
+        posts:Array.from({length:8},function(_,i){ return {
+          id:'kw_'+i, text:'キーワード「'+((params&&params.keyword)||'AI')+'」に関連する投稿 #'+(i+1)+'\n\nこれはデモデータです。', username:['tech_lover','ai_researcher','daily_coder','startup_jp'][i%4],
+          timestamp:new Date(now-i*3600000*6).toISOString(), views:Math.floor(Math.random()*5000)+200, likes:Math.floor(Math.random()*200)+10, replies:Math.floor(Math.random()*30), mediaType:['TEXT','TEXT','IMAGE','TEXT'][i%4]
+        };}),
+        summary:{total:8,avgViews:2600}
+      };
+      case 'getWeeklyReportList': return [];
+      default: return { success:true };
+    }
+  },
+
+  // === Local Draft API ===
   localDraftApi_(action, params) {
     return new Promise(resolve => {
-      const key = 'insight_master_demo_drafts';
-      let drafts = JSON.parse(localStorage.getItem(key) || '[]');
-
+      var key = 'insight_master_demo_drafts';
+      var drafts = JSON.parse(localStorage.getItem(key) || '[]');
       switch(action) {
         case 'getDrafts': {
-          let result = drafts;
-          if (params && params.status === 'unused') result = drafts.filter(d => !d.used);
-          if (params && params.status === 'used') result = drafts.filter(d => d.used);
-          resolve({ drafts: result });
-          break;
+          var r = drafts;
+          if (params && params.status === 'unused') r = drafts.filter(function(d){return !d.used;});
+          if (params && params.status === 'used') r = drafts.filter(function(d){return d.used;});
+          resolve({ drafts: r }); break;
         }
         case 'saveDraft': {
-          const draft = {
-            id: 'draft_' + Date.now(),
-            text: params.text || '',
-            isThread: params.isThread || false,
-            threadParts: params.threadParts || [],
-            source: params.source || 'manual',
-            used: false,
-            createdAt: new Date().toISOString()
-          };
-          drafts.unshift(draft);
-          localStorage.setItem(key, JSON.stringify(drafts));
-          resolve({ success: true, draft });
-          break;
+          var draft = { id:'draft_'+Date.now(), text:params.text||'', isThread:params.isThread||false, threadParts:params.threadParts||[], source:params.source||'manual', used:false, createdAt:new Date().toISOString() };
+          drafts.unshift(draft); localStorage.setItem(key, JSON.stringify(drafts));
+          resolve({ success:true, draft:draft }); break;
         }
         case 'toggleDraftStatus': {
-          const idx = drafts.findIndex(d => d.id === params.draftId);
-          if (idx >= 0) { drafts[idx].used = !drafts[idx].used; localStorage.setItem(key, JSON.stringify(drafts)); }
-          resolve({ success: true });
-          break;
+          var idx = drafts.findIndex(function(d){return d.id===params.draftId;});
+          if (idx>=0) { drafts[idx].used = !drafts[idx].used; localStorage.setItem(key, JSON.stringify(drafts)); }
+          resolve({ success:true }); break;
         }
         case 'deleteDraft': {
-          drafts = drafts.filter(d => d.id !== params.draftId);
+          drafts = drafts.filter(function(d){return d.id!==params.draftId;});
           localStorage.setItem(key, JSON.stringify(drafts));
-          resolve({ success: true });
-          break;
+          resolve({ success:true }); break;
         }
         case 'updateDraft': {
-          const ui = drafts.findIndex(d => d.id === params.draftId);
-          if (ui >= 0) { drafts[ui].text = params.text; localStorage.setItem(key, JSON.stringify(drafts)); }
-          resolve({ success: true });
-          break;
+          var ui = drafts.findIndex(function(d){return d.id===params.draftId;});
+          if (ui>=0) { drafts[ui].text = params.text; localStorage.setItem(key, JSON.stringify(drafts)); }
+          resolve({ success:true }); break;
         }
-        default: resolve({ success: true });
+        default: resolve({ success:true });
       }
     });
   },
 
-  // ---------- Gemini API ----------
+  // === Gemini API ===
   async geminiApi_(action, params) {
     try {
-      const prompt = this.buildGeminiPrompt_(action, params);
-      const res = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${this.state.geminiKey}`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            contents: [{ parts: [{ text: prompt }] }],
-            generationConfig: { temperature: 0.8, maxOutputTokens: 4096 }
-          })
-        }
-      );
-      if (!res.ok) throw new Error(`Gemini API error: ${res.status}`);
-      const data = await res.json();
-      const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+      var prompt = this.buildGeminiPrompt_(action, params);
+      var res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key='+this.state.geminiKey, {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({ contents:[{parts:[{text:prompt}]}], generationConfig:{temperature:0.8,maxOutputTokens:4096} })
+      });
+      if (!res.ok) throw new Error('Gemini API error: '+res.status);
+      var data = await res.json();
+      var text = data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts && data.candidates[0].content.parts[0] && data.candidates[0].content.parts[0].text || '';
       return this.parseGeminiResponse_(action, text);
-    } catch (e) {
-      console.warn('Gemini API failed, falling back to demo data:', e);
-      App.showToast('Gemini API エラー。サンプルデータにフォールバックします。', 'error');
+    } catch(e) {
+      console.warn('Gemini fallback:', e);
+      this.showToast('Gemini APIエラー。サンプルデータを表示します。', 'error');
       return this.demoData_(action, params);
     }
   },
 
   buildGeminiPrompt_(action, params) {
-    const demoStats = 'フォロワー1,823人、平均ER 4.2%、総ビュー12,450。AI・テクノロジー系が高ER。水曜21時台が最適。';
+    var stats = 'フォロワー1,823人、平均ER 4.2%、総ビュー12,450。AI・テクノロジー系が高ER。水曜21時台が最適。';
     switch(action) {
-      case 'generateAnalysisReport':
-        return `あなたはSNS分析の専門家です。以下のアカウントデータに基づいて、Markdownで詳細な分析レポートを作成してください。\n\nデータ: ${demoStats}\n\n以下の構成で:\n## 📋 総合分析レポート\n### アカウント概要\n### 強み\n### 改善機会\n### 推奨戦略`;
-
-      case 'generateImprovementSuggestions':
-        return `SNS分析の専門家として、以下のアカウントデータに基づいて改善提案を5つJSON形式で返してください。\n\nデータ: ${demoStats}\n\n形式: {"suggestions":[{"title":"...","description":"...","impact":"high/medium/low","category":"..."}]}`;
-
-      case 'generatePostWithAI':
-        return `あなたはThreads投稿の専門ライターです。テーマ「${params?.theme || '日常'}」で魅力的な投稿案を3つJSON形式で返してください。\n\nアカウント情報: ${demoStats}\n\n形式: {"items":[{"text":"投稿本文","reason":"この投稿が効果的な理由","meta":{"expectedER":"X%","bestTime":"HH:MM","mediaAdvice":"..."}}]}`;
-
-      case 'generatePostWithAnalysis':
-        return `分析データに基づいた投稿を2つJSON形式で生成してください。\n\nデータ: ${demoStats}\n\n形式: {"items":[{"text":"投稿本文","reason":"理由","meta":{"expectedER":"X%","bestTime":"HH:MM"}}],"analysisUsed":{"totalPosts":25,"avgER":"4.2%","topTheme":"AI・テクノロジー"}}`;
-
-      case 'refinePostWithAI':
-        return `以下の投稿をスタイル「${params?.style || 'improve'}」でリファイン（改善）してください。2つのバリエーションをJSON形式で返してください。\n\n元投稿:\n${params?.text || ''}\n\n${params?.instruction ? '追加指示: ' + params.instruction : ''}\n\n形式: {"variants":[{"text":"改善版テキスト","style":"${params?.style || 'improve'}"}]}`;
-
-      case 'generateBuzzReport':
-        return `バズパターン分析の専門家として、以下のデータに基づいてMarkdownで詳細なバズ分析レポートを作成してください。\n\nデータ: ${demoStats}\n\n以下の構成で:\n## 📊 バズパターン分析レポート\n### 🔥 高エンゲージメント傾向\n### 📈 改善ポイント\n### 💡 推奨アクション`;
-
-      case 'searchKeywordWithAI':
-        return `キーワード「${params?.keyword || ''}」に関するThreadsのトレンド分析をMarkdownで作成してください。\n\n以下の構成で:\n## 🔍 キーワード分析\n### トレンド概要\n### 主な話題\n### 投稿のヒント`;
-
-      case 'analyzeCompetitor':
-        return `競合アカウント分析の専門家として、SNSアカウントの比較分析をMarkdownで作成してください。\n\n自分のデータ: ${demoStats}\n\n以下の構成で:\n## 🏆 競合分析\n### 差別化ポイント\n### 学べるポイント\n### アクションプラン`;
-
-      default:
-        return `SNS分析の専門家として、「${action}」に関するアドバイスをMarkdownで作成してください。データ: ${demoStats}`;
+      case 'generateAnalysisReport': return 'SNS分析の専門家として、以下のデータに基づいてMarkdownで詳細な分析レポートを作成してください。\n\nデータ: '+stats+'\n\n構成:\n## 📋 総合分析レポート\n### アカウント概要\n### 強み\n### 改善機会\n### 推奨戦略';
+      case 'generateImprovementSuggestions': return 'SNS分析の専門家として、以下のデータに基づいてMarkdownで改善提案を5つ作成してください。\n\nデータ: '+stats;
+      case 'generatePostWithAI': return 'Threads投稿の専門ライターとして、テーマ「'+(params&&params.theme||'日常')+'」で魅力的な投稿案を3つ作成してください。各投稿は改行で区切り、---で分割してください。\n\nアカウント情報: '+stats;
+      case 'generatePostWithAnalysis': return '分析データに基づいた投稿を2つ作成してください。---で分割。\n\nデータ: '+stats;
+      case 'refinePostWithAI': return '以下の投稿を「'+(params&&params.style||'improve')+'」スタイルでリファイン（改善）して2つのバリエーションを作成してください。---で分割。\n\n元投稿:\n'+(params&&params.text||'')+'\n\n'+(params&&params.instruction?'追加指示: '+params.instruction:'');
+      case 'generateBuzzReport': return 'バズパターン分析の専門家として、以下のデータに基づいてMarkdownで詳細なバズ分析レポートを作成してください。\n\nデータ: '+stats+'\n\n構成:\n## 📊 バズパターン分析レポート\n### 🔥 高エンゲージメント傾向\n### 📈 改善ポイント\n### 💡 推奨アクション';
+      case 'searchKeywordWithAI': return 'キーワード「'+(params&&params.keyword||'')+'」に関するThreadsのトレンド分析をMarkdownで作成してください。';
+      default: return 'SNS分析の専門家として「'+action+'」に関するアドバイスをMarkdownで作成してください。データ: '+stats;
     }
   },
 
   parseGeminiResponse_(action, text) {
-    const jsonActions = ['generateImprovementSuggestions', 'generatePostWithAI', 'generatePostWithAnalysis', 'refinePostWithAI'];
-    if (jsonActions.includes(action)) {
-      try {
-        const jsonMatch = text.match(/```(?:json)?\s*([\s\S]*?)```/);
-        const jsonStr = jsonMatch ? jsonMatch[1].trim() : text.trim();
-        return JSON.parse(jsonStr);
-      } catch(e) {
-        console.warn('JSON parse failed, using raw text');
-        if (action === 'generatePostWithAI' || action === 'generatePostWithAnalysis') {
-          return { items: [{ text: text, reason: 'AI生成', meta: {} }] };
-        }
-        if (action === 'refinePostWithAI') {
-          return { variants: [{ text: text, style: 'improve' }] };
-        }
-        if (action === 'generateImprovementSuggestions') {
-          return { suggestions: [{ title: 'AI提案', description: text, impact: 'high', category: 'general' }] };
-        }
-      }
+    if (action === 'generatePostWithAI' || action === 'generatePostWithAnalysis') {
+      var parts = text.split(/---+/).map(function(s){return s.trim();}).filter(Boolean);
+      return { results: parts.map(function(t){return {text:t,reason:'AI生成'};}) };
+    }
+    if (action === 'refinePostWithAI') {
+      var parts = text.split(/---+/).map(function(s){return s.trim();}).filter(Boolean);
+      return { results: parts.map(function(t){return {text:t};}) };
     }
     if (action === 'generateBuzzReport') {
-      return { ...this.demoData_(action), report: text };
+      return Object.assign({}, this.demoData_(action), { report: text });
     }
-    if (action === 'generateAnalysisReport') {
-      return { report: text, summary: text.substring(0, 100) + '...' };
-    }
+    if (action === 'generateAnalysisReport') return { report: text };
+    if (action === 'generateImprovementSuggestions') return { suggestions: text };
     return { report: text };
   },
 
   async validateGeminiKey(key) {
     try {
-      const res = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${key}`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ contents: [{ parts: [{ text: 'test' }] }], generationConfig: { maxOutputTokens: 10 } })
-        }
-      );
+      var res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key='+key, {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({contents:[{parts:[{text:'test'}]}],generationConfig:{maxOutputTokens:10}})
+      });
       return res.ok;
-    } catch { return false; }
+    } catch(e) { return false; }
   },
 
-  // ---------- UI Utilities ----------
-  escapeHtml(str) {
-    if (!str) return '';
-    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-  },
-
-  escapeAttr(str) {
-    if (!str) return '';
-    return String(str).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#39;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  },
-
-  parseMd(text) {
+  // === UI Utilities ===
+  escapeHtml(text) {
     if (!text) return '';
-    let html = this.escapeHtml(text);
-    html = html.replace(/^### (.+)$/gm, '<h3>$1</h3>');
-    html = html.replace(/^## (.+)$/gm, '<h2>$1</h2>');
-    html = html.replace(/^# (.+)$/gm, '<h1>$1</h1>');
-    html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-    html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
-    html = html.replace(/`(.+?)`/g, '<code>$1</code>');
-    html = html.replace(/^- (.+)$/gm, '<li>$1</li>');
-    html = html.replace(/^(\d+)\. (.+)$/gm, '<li>$1. $2</li>');
-    html = html.replace(/((?:<li>.*<\/li>\n?)+)/g, '<ul>$1</ul>');
-    html = html.replace(/^&gt; (.+)$/gm, '<blockquote>$1</blockquote>');
-    html = html.replace(/\n\n/g, '</p><p>');
-    html = '<p>' + html + '</p>';
-    html = html.replace(/<p><(h[123]|ul|blockquote)/g, '<$1');
-    html = html.replace(/<\/(h[123]|ul|blockquote)><\/p>/g, '</$1>');
-    html = html.replace(/<p><\/p>/g, '');
+    return String(text).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;').replace(/\n/g,'<br>');
+  },
+  escapeAttr(text) {
+    if (!text) return '';
+    return String(text).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#039;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  },
+  escapeText(text) {
+    if (!text) return '';
+    return String(text).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  },
+  formatMarkdown_(text) {
+    if (!text) return '';
+    var self = this;
+    var lines = text.split('\n'), html = '';
+    for (var i = 0; i < lines.length; i++) {
+      var line = lines[i];
+      var hMatch = line.match(/^(#{1,4})\s+(.+)$/);
+      if (hMatch) { var lvl=hMatch[1].length; var sizes=['','18px','16px','15px','14px']; html+='<div style="font-weight:700;font-size:'+sizes[lvl]+';margin:16px 0 8px;color:var(--text-primary);">'+self.fmtInline_(self.escapeText(hMatch[2]))+'</div>'; continue; }
+      if (line.trim().match(/^[-*_]{3,}$/)) { html+='<hr style="border:none;border-top:1px solid var(--border);margin:16px 0;">'; continue; }
+      var olMatch = line.match(/^(\s*)\d+\.\s+(.+)$/);
+      if (olMatch) { html+='<div style="margin-left:'+(16+olMatch[1].length*8)+'px;margin-bottom:4px;font-size:14px;">'+self.fmtInline_(self.escapeText(olMatch[2]))+'</div>'; continue; }
+      var ulMatch = line.match(/^(\s*)[*\-]\s+(.+)$/);
+      if (ulMatch) { html+='<div style="margin-left:'+(16+ulMatch[1].length*8)+'px;margin-bottom:4px;font-size:14px;">• '+self.fmtInline_(self.escapeText(ulMatch[2]))+'</div>'; continue; }
+      if (line.trim() === '') { html+='<div style="height:8px;"></div>'; continue; }
+      html+='<div style="margin-bottom:2px;font-size:14px;">'+self.fmtInline_(self.escapeText(line))+'</div>';
+    }
     return html;
   },
-
-  showToast(msg, type = 'info') {
-    const container = document.getElementById('toastContainer');
-    const toast = document.createElement('div');
-    toast.className = `toast toast-${type}`;
-    toast.textContent = msg;
-    container.appendChild(toast);
-    setTimeout(() => { toast.style.opacity = '0'; toast.style.transition = 'opacity 0.3s'; setTimeout(() => toast.remove(), 300); }, 3000);
+  fmtInline_(text) {
+    text = text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+    text = text.replace(/`([^`]+)`/g, '<code style="background:var(--bg-tertiary);padding:1px 5px;border-radius:3px;font-size:13px;">$1</code>');
+    return text;
   },
-
+  renderMetricCard(icon, label, value, trend) {
+    var display = (value !== undefined && value !== null) ? (typeof value === 'number' ? value.toLocaleString() : value) : '0';
+    return '<div class="metric-card"><div class="metric-icon">'+icon+'</div><div class="metric-value">'+this.escapeText(String(display))+'</div><div class="metric-label">'+this.escapeText(String(label))+'</div>'+(trend?'<span class="metric-trend '+(trend>0?'up':'down')+'">'+(trend>0?'↑':'↓')+' '+Math.abs(trend)+'%</span>':'')+'</div>';
+  },
+  showToast(message, type) {
+    var existing = document.querySelector('.toast');
+    if (existing) { existing.classList.add('toast-exit'); setTimeout(function(){if(existing&&existing.parentNode)existing.remove();},300); }
+    var toast = document.createElement('div');
+    toast.className = 'toast' + (type ? ' '+type : '');
+    toast.innerHTML = '<span class="toast-icon"></span><span>'+this.escapeText(message)+'</span>';
+    document.body.appendChild(toast);
+    setTimeout(function(){ toast.classList.add('toast-exit'); setTimeout(function(){if(toast&&toast.parentNode)toast.remove();},300); },3000);
+  },
   copyToClipboard(text) {
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(text).then(() => this.showToast('コピーしました', 'success')).catch(() => this.fallbackCopy_(text));
-    } else {
-      this.fallbackCopy_(text);
-    }
+    var self = this;
+    if (navigator.clipboard) { navigator.clipboard.writeText(text).then(function(){self.showToast('コピーしました','success');}).catch(function(){self.fallbackCopy_(text);}); }
+    else { self.fallbackCopy_(text); }
   },
-
   fallbackCopy_(text) {
-    const ta = document.createElement('textarea');
-    ta.value = text;
-    ta.style.cssText = 'position:fixed;left:-9999px';
-    document.body.appendChild(ta);
-    ta.select();
-    try { document.execCommand('copy'); this.showToast('コピーしました', 'success'); }
-    catch { this.showToast('コピーに失敗しました', 'error'); }
+    var ta = document.createElement('textarea'); ta.value=text; ta.style.cssText='position:fixed;left:-9999px';
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); this.showToast('コピーしました','success'); } catch(e) { this.showToast('コピー失敗','error'); }
     document.body.removeChild(ta);
   },
-
-  formatDate(dateStr) {
+  formatTimeAgo_(ts) {
+    var diff = Math.max(0, Date.now() - ts);
+    var min = Math.floor(diff / 60000);
+    if (min < 1) return 'たった今';
+    if (min < 60) return min + '分前';
+    var hours = Math.floor(min / 60);
+    if (hours < 24) return hours + '時間前';
+    return Math.floor(hours / 24) + '日前';
+  },
+  formatDate_(dateStr) {
     if (!dateStr) return '';
-    const d = new Date(dateStr);
-    return `${d.getMonth()+1}/${d.getDate()} ${d.getHours()}:${String(d.getMinutes()).padStart(2,'0')}`;
+    var d = new Date(dateStr);
+    return (d.getMonth()+1)+'/'+d.getDate()+' '+d.getHours()+':'+String(d.getMinutes()).padStart(2,'0');
+  },
+  renderSkeleton_() {
+    return '<div style="padding:20px;border:1px solid var(--border);border-radius:16px;margin-bottom:12px;"><div class="skeleton skeleton-line skeleton-line-short" style="height:18px;margin-bottom:16px;"></div><div class="skeleton skeleton-line skeleton-line-full" style="height:100px;margin-bottom:8px;"></div><div class="skeleton skeleton-line skeleton-line-medium"></div></div>';
+  },
+  geminiLabel_() {
+    return this.state.geminiKey ? '<span class="status-badge success">🤖 AI</span>' : '<span class="status-badge warning">📎 サンプル</span>';
+  },
+  exportCSV(filename, headers, rows) {
+    var BOM = '\uFEFF';
+    var csv = BOM + headers.join(',') + '\n';
+    rows.forEach(function(row) { csv += row.map(function(c){ return '"'+String(c==null?'':c).replace(/"/g,'""')+'"'; }).join(',') + '\n'; });
+    var blob = new Blob([csv], {type:'text/csv;charset=utf-8'});
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a'); a.href=url; a.download=filename+'_'+new Date().toISOString().slice(0,10)+'.csv';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+    this.showToast('CSVをダウンロードしました','success');
+  },
+  renderTips_(tips) {
+    var id = 'tips-'+Math.random().toString(36).substr(2,6);
+    var html = '<div class="tips-wrap"><button class="tips-btn" data-target="'+id+'">💡 Tips を見る</button><div id="'+id+'" class="tips-panel" hidden>';
+    tips.forEach(function(t){ html+='<div class="tips-item"><div class="tips-title">'+t.title+'</div><div class="tips-body">'+t.body+'</div></div>'; });
+    html += '</div></div>';
+    return html;
+  },
+  bindTipsEvents_() {
+    document.querySelectorAll('.tips-btn').forEach(function(btn) {
+      if (btn.dataset.bound) return; btn.dataset.bound='true';
+      btn.addEventListener('click', function() {
+        var target = document.getElementById(this.getAttribute('data-target'));
+        if (target) { if (target.hidden) { target.hidden=false; this.innerHTML='💡 Tips を閉じる'; } else { target.hidden=true; this.innerHTML='💡 Tips を見る'; } }
+      });
+    });
   },
 
-  formatNumber(n) {
-    if (n >= 10000) return (n/10000).toFixed(1) + '万';
-    if (n >= 1000) return (n/1000).toFixed(1) + 'K';
-    return String(n);
-  },
-
-  timeAgo(dateStr) {
-    const diff = Date.now() - new Date(dateStr).getTime();
-    const mins = Math.floor(diff / 60000);
-    if (mins < 60) return `${mins}分前`;
-    const hours = Math.floor(mins / 60);
-    if (hours < 24) return `${hours}時間前`;
-    const days = Math.floor(hours / 24);
-    return `${days}日前`;
-  },
-
-  // ---------- App Shell ----------
-  renderShell() {
-    const app = document.getElementById('app');
-    app.innerHTML = `
-      <div class="app-header">
-        <div class="app-header-title">
-          <img src="https://files.catbox.moe/up3cd1.webp" alt="" style="width:28px;height:28px;border-radius:8px;">
-          Insight Master
-          <span class="badge badge-demo">Demo</span>
-        </div>
-        <div class="app-header-actions">
-          <button class="header-btn" id="refreshBtn" title="更新">🔄</button>
-        </div>
-      </div>
-      <div class="app-content" id="mainContent"></div>
-      <nav class="app-nav" id="mainNav">
-        <button class="nav-item active" data-screen="dashboard">
-          <span class="nav-item-icon">📊</span>
-          <span>ダッシュボード</span>
-        </button>
-        <button class="nav-item" data-screen="analytics">
-          <span class="nav-item-icon">📈</span>
-          <span>分析</span>
-        </button>
-        <button class="nav-item" data-screen="create">
-          <span class="nav-item-icon">✍️</span>
-          <span>作成</span>
-        </button>
-        <button class="nav-item" data-screen="keywords">
-          <span class="nav-item-icon">🔍</span>
-          <span>検索</span>
-        </button>
-        <button class="nav-item" data-screen="settings">
-          <span class="nav-item-icon">⚙️</span>
-          <span>設定</span>
-        </button>
-      </nav>
-    `;
+  // === App Shell (4 tabs like original) ===
+  renderApp_(activeTab) {
+    var app = document.getElementById('app');
+    var user = this.state.user || {};
+    app.innerHTML =
+      '<div class="header">' +
+        '<div class="brand-logo">' +
+          '<img src="https://files.catbox.moe/up3cd1.webp">' +
+          '<div class="brand-text">' +
+            '<span class="brand-en">Insight Master</span>' +
+            '<span class="brand-ja">インサイトマスター</span>' +
+          '</div>' +
+        '</div>' +
+        '<div style="display:flex;align-items:center;gap:8px;">' +
+          '<span class="status-badge warning" style="font-size:10px;">🎮 Demo</span>' +
+          (user.profilePicUrl ? '<img src="'+user.profilePicUrl+'" style="width:28px;height:28px;border-radius:50%;">' : '') +
+          '<span style="font-size:13px;color:var(--text-secondary);">@'+(user.username||'')+'</span>' +
+        '</div>' +
+      '</div>' +
+      '<div class="content" id="content"></div>' +
+      '<nav class="nav"><div class="nav-inner">' +
+        this.navBtn_('dashboard','📊','ホーム',activeTab) +
+        this.navBtn_('analytics','📈','分析',activeTab) +
+        this.navBtn_('create','✨','作成',activeTab) +
+        this.navBtn_('settings','⚙️','設定',activeTab) +
+      '</div></nav>';
     this.bindNavEvents_();
+    this.showScreen(activeTab);
+  },
+
+  navBtn_(screen, icon, label, active) {
+    return '<button class="nav-item'+(active===screen?' active':'')+'" data-screen="'+screen+'"><span class="nav-icon">'+icon+'</span><span>'+label+'</span></button>';
   },
 
   bindNavEvents_() {
-    document.getElementById('mainNav').addEventListener('click', e => {
-      const btn = e.target.closest('.nav-item');
-      if (!btn || this.state.navLocked) return;
-      const screen = btn.dataset.screen;
-      if (screen) this.showScreen(screen);
-    });
-    document.getElementById('refreshBtn').addEventListener('click', () => {
-      this.showScreen(this.state.currentScreen);
-      this.showToast('更新しました', 'success');
+    var self = this;
+    document.querySelectorAll('.nav-item').forEach(function(item) {
+      item.addEventListener('click', function() {
+        self.showScreen(this.getAttribute('data-screen'));
+      });
     });
   },
 
   showScreen(name) {
     this.state.currentScreen = name;
-    document.querySelectorAll('.nav-item').forEach(n => {
-      n.classList.toggle('active', n.dataset.screen === name);
-    });
-    const content = document.getElementById('mainContent');
-    content.scrollTop = 0;
-
+    document.querySelectorAll('.nav-item').forEach(function(n) { n.classList.toggle('active', n.getAttribute('data-screen')===name); });
+    var content = document.getElementById('content');
+    if (content) content.scrollTop = 0;
     switch(name) {
-      case 'dashboard': this.renderDashboard(); break;
-      case 'analytics': this.renderAnalytics(); break;
-      case 'create': this.renderCreate(); break;
-      case 'keywords': this.renderKeywords(); break;
-      case 'settings': this.renderSettings(); break;
-      default: content.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🚧</div><div class="empty-state-text">準備中...</div></div>';
+      case 'dashboard': this.renderDashboard_(); break;
+      case 'analytics': this.renderAnalytics_(); break;
+      case 'create': this.renderCreate_(); break;
+      case 'settings': this.renderSettings_(); break;
     }
   },
 
-  showModal(title, bodyHtml, onClose) {
-    const existing = document.querySelector('.modal-overlay');
-    if (existing) existing.remove();
-    const overlay = document.createElement('div');
-    overlay.className = 'modal-overlay';
-    overlay.innerHTML = `
-      <div class="modal">
-        <div class="modal-header">
-          <div class="modal-title">${title}</div>
-          <button class="modal-close" id="modalCloseBtn">&times;</button>
-        </div>
-        <div class="modal-body">${bodyHtml}</div>
-      </div>
-    `;
-    document.body.appendChild(overlay);
-    const close = () => { overlay.remove(); if (onClose) onClose(); };
-    overlay.querySelector('#modalCloseBtn').addEventListener('click', close);
-    overlay.addEventListener('click', e => { if (e.target === overlay) close(); });
-    return overlay;
+  // ==========================================================
+  // DASHBOARD
+  // ==========================================================
+  renderDashboard_() {
+    var content = document.getElementById('content');
+    var user = this.state.user;
+    var hasGemini = !!this.state.geminiKey;
+    content.innerHTML = '<div class="screen-content screen-animate">' +
+      '<div style="padding:12px 16px;background:linear-gradient(135deg,#eff6ff,#f0fdf4);border:1px solid #93c5fd;border-radius:12px;margin-bottom:12px;display:flex;align-items:center;"><div><span style="font-weight:600;color:#1e40af;">🎮 デモモード</span><span style="font-size:12px;color:#64748b;margin-left:8px;">サンプルデータを表示中</span></div></div>' +
+      '<div class="card"><div class="flex-row gap-12">' +
+        '<img src="'+user.profilePicUrl+'" class="avatar">' +
+        '<div><div class="text-subheading">@'+this.escapeText(user.username)+'</div><div class="text-caption">このアカウントの分析データを表示中</div></div>' +
+      '</div></div>' +
+      (!hasGemini ? '<div class="card warning-banner card-no-border"><div class="flex-between mb-8"><div class="flex-row gap-8"><div style="font-size:24px;">✨</div><div class="text-subheading">AI機能を有効にしましょう</div></div></div><div class="text-body mb-12">Gemini APIキーを設定すると、AI投稿生成・分析レポート・改善提案が使えるようになります。</div><button id="goGeminiSettings" class="btn btn-small">APIキーを設定する</button></div>' : '<div class="card" style="background:linear-gradient(135deg,#f0fdf4,#eff6ff);border-color:#86efac;"><div class="flex-row gap-8"><div style="font-size:20px;">✅</div><div><div class="text-subheading" style="color:#065f46;">Gemini AI 接続中</div><div class="text-caption">リアルタイムAI分析が有効です</div></div></div></div>') +
+      '<div id="growthScoreArea" class="card"><div class="card-title">🚀 Growth Score</div>' +
+        '<div class="growth-score-ring"><svg viewBox="0 0 120 120"><circle class="ring-bg" cx="60" cy="60" r="50"/><circle id="gsRingFill" class="ring-fill medium" cx="60" cy="60" r="50" stroke-dasharray="314" stroke-dashoffset="314"/></svg><div class="growth-score-number"><div id="gsValue" class="score-value">--</div><div class="score-label">/ 100</div></div></div>' +
+        '<div id="gsChange" class="text-caption" style="text-align:center;margin-bottom:8px;">計算中...</div>' +
+        '<div class="growth-breakdown">' +
+          '<div class="growth-breakdown-item"><div class="bd-icon">👥</div><div id="gsBdFollower" class="bd-score">-</div><div class="bd-label">フォロワー</div></div>' +
+          '<div class="growth-breakdown-item"><div class="bd-icon">📈</div><div id="gsBdER" class="bd-score">-</div><div class="bd-label">ER傾向</div></div>' +
+          '<div class="growth-breakdown-item"><div class="bd-icon">📝</div><div id="gsBdFreq" class="bd-score">-</div><div class="bd-label">投稿頻度</div></div>' +
+          '<div class="growth-breakdown-item"><div class="bd-icon">🤖</div><div id="gsBdAI" class="bd-score">-</div><div class="bd-label">AI活用</div></div>' +
+        '</div></div>' +
+      '<div class="card checkin-card"><div class="flex-between mb-8"><div class="card-title" style="margin-bottom:0;">☀️ 今日のひとこと</div><div id="streakBadge" class="streak-badge"><span class="streak-fire">🔥</span> <span id="streakCount">-</span>日連続</div></div><div id="checkInMessage" class="checkin-message">読み込み中...</div><div class="checkin-recommend"><div class="checkin-recommend-item"><div class="cr-icon">⏰</div><div id="recTime" class="cr-value">--:--</div><div class="cr-label">おすすめ時間</div></div><div class="checkin-recommend-item"><div class="cr-icon">💡</div><div id="recTheme" class="cr-value">---</div><div class="cr-label">おすすめテーマ</div></div></div></div>' +
+      '<div class="card goal-card"><div class="flex-between mb-8"><div class="card-title" style="margin-bottom:0;">🎯 目標</div></div><div id="goalList">目標を読み込み中...</div></div>' +
+      '<div id="userInsightsArea">' + this.renderSkeleton_() + '</div>' +
+      '<div class="card" id="followerChartCard"><div class="flex-row gap-8 mb-12"><div class="card-title" style="flex:1;">📈 フォロワー推移</div><div class="btn-group"><button class="subtab active" data-follower-days="7">7日</button><button class="subtab" data-follower-days="30">30日</button><button class="subtab" data-follower-days="90">90日</button></div></div><div id="followerSummary" class="flex-row gap-12 mb-12"></div><canvas id="followerCanvas" width="600" height="200" style="width:100%;height:200px;"></canvas><div class="flex-row gap-8 mt-8"><button id="exportFollowerCSV" class="btn btn-secondary btn-small" style="flex:1;">📥 CSV</button></div></div>' +
+      '<div id="demographicsArea"></div>' +
+      '<div id="summaryArea"></div>' +
+      '<div class="card"><div class="card-title">🤖 AI分析</div><div style="display:flex;gap:8px;flex-wrap:wrap;"><button id="aiReportBtn" class="btn btn-small btn-secondary" style="flex:1;min-width:140px;">📊 分析レポート</button><button id="aiSuggestBtn" class="btn btn-small btn-secondary" style="flex:1;min-width:140px;">💡 改善提案</button></div><div id="aiDashboardResult" style="margin-top:12px;"></div></div>' +
+      this.renderTips_([
+        {title:'📊 ビュー数の見方',body:'過去7日間の総閲覧数です。前週と比較して増減を確認しましょう。'},
+        {title:'📈 ER（エンゲージメント率）',body:'ER =（いいね＋返信＋リポスト＋引用）÷ ビュー × 100。<b>3%以上</b>で優秀です。'},
+        {title:'🤖 AIへの活かし方',body:'「作成」→「分析ベース」を使うと、数値がAIに渡されバズ投稿を提案してくれます。'}
+      ]) +
+    '</div>';
+    this.loadDashboard_();
   },
 
-  showSkeleton() {
-    return `
-      <div class="skeleton skeleton-title"></div>
-      <div class="skeleton skeleton-box"></div>
-      <div class="skeleton skeleton-text"></div>
-      <div class="skeleton skeleton-text" style="width:60%"></div>
-    `;
-  },
-
-  geminiLabel() {
-    return this.state.geminiKey
-      ? '<span class="badge badge-ai">🤖 AI (リアルタイム)</span>'
-      : '<span class="badge badge-demo">📎 サンプル</span>';
-  },
-
-  geminiFooter() {
-    return this.state.geminiKey
-      ? ''
-      : '<div class="tip-card" style="margin-top:12px">💡 これはサンプルデータです。設定画面でGemini APIキーを入力すると、リアルタイムAI分析が利用できます。</div>';
-  },
-
-  // ============================================================
-  // Dashboard Screen
-  // ============================================================
-  renderDashboard() {
-    const content = document.getElementById('mainContent');
-    content.innerHTML = this.showSkeleton();
-    this.loadDashboardData_();
-  },
-
-  async loadDashboardData_() {
-    const [insights, growth, checkIn, goals, follower] = await Promise.all([
-      this.api('fetchUserInsights'),
-      this.api('getGrowthScore'),
-      this.api('getDailyCheckIn'),
-      this.api('getGoals'),
-      this.api('getFollowerHistory', { days: 30 })
+  async loadDashboard_() {
+    var self = this;
+    var goBtn = document.getElementById('goGeminiSettings');
+    if (goBtn) goBtn.addEventListener('click', function(){ self.showScreen('settings'); });
+    var results = await Promise.all([
+      this.api('fetchUserInsights',{sinceDays:7}).then(function(v){return{ok:true,value:v};}).catch(function(e){return{ok:false,error:e};}),
+      this.api('getAnalyticsData',{periodDays:7}).then(function(v){return{ok:true,value:v};}).catch(function(e){return{ok:false,error:e};}),
+      this.api('getGrowthScore'), this.api('getDailyCheckIn'), this.api('getGoals'), this.api('getFollowerHistory',{days:7})
     ]);
-    this.state.insightsData = insights;
-    this.state.followerHistory = follower.history;
-    this.renderDashboardContent_(insights, growth, checkIn, goals, follower);
-  },
-
-  renderDashboardContent_(insights, growth, checkIn, goals, follower) {
-    const content = document.getElementById('mainContent');
-    const user = this.state.user;
-    const hasGemini = !!this.state.geminiKey;
-
-    content.innerHTML = `
-      <div class="demo-banner">
-        🎮 デモモードで動作中 — 表示データはすべてサンプルです
-      </div>
-
-      ${!hasGemini ? `
-      <div class="gemini-banner">
-        🤖 <strong>Gemini APIで本格AI分析</strong><br>
-        <span style="color:var(--text-secondary)">設定画面でAPIキーを入力すると、リアルタイムAI分析・投稿生成が利用できます</span>
-        <br><button class="btn btn-sm btn-secondary" style="margin-top:8px" onclick="App.showScreen('settings')">⚙️ 設定を開く</button>
-      </div>` : `
-      <div class="gemini-banner">
-        ✅ <strong>Gemini API 接続中</strong> — リアルタイムAI分析が有効です
-      </div>`}
-
-      <!-- User Info -->
-      <div class="card">
-        <div style="display:flex;align-items:center;gap:12px">
-          <img src="${user.profilePicUrl}" alt="" style="width:48px;height:48px;border-radius:50%;border:2px solid var(--accent-primary)">
-          <div>
-            <div style="font-weight:700;font-size:15px">${this.escapeHtml(user.name)}</div>
-            <div style="font-size:12px;color:var(--text-secondary)">@${this.escapeHtml(user.username)}</div>
-          </div>
-          <div style="margin-left:auto;text-align:right">
-            <div style="font-size:20px;font-weight:700;background:var(--accent-gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent">${this.formatNumber(insights.followers_count)}</div>
-            <div style="font-size:11px;color:var(--text-secondary)">フォロワー</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Growth Score -->
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">📈 成長スコア</div>
-          <div class="badge badge-${growth.score >= 70 ? 'success' : growth.score >= 40 ? 'warning' : 'danger'}">${growth.score}/100</div>
-        </div>
-        <div class="progress-bar" style="margin-bottom:12px">
-          <div class="progress-fill" style="width:${growth.score}%"></div>
-        </div>
-        <div class="stats-grid">
-          <div class="stat-item"><div class="stat-value">${growth.breakdown.consistency}</div><div class="stat-label">継続性</div></div>
-          <div class="stat-item"><div class="stat-value">${growth.breakdown.engagement}</div><div class="stat-label">エンゲージメント</div></div>
-          <div class="stat-item"><div class="stat-value">${growth.breakdown.growth}</div><div class="stat-label">成長率</div></div>
-          <div class="stat-item"><div class="stat-value">${growth.breakdown.content}</div><div class="stat-label">コンテンツ質</div></div>
-        </div>
-        <div style="margin-top:10px">
-          ${growth.tips.map(t => `<div style="font-size:12px;color:var(--text-secondary);padding:4px 0">💡 ${this.escapeHtml(t)}</div>`).join('')}
-        </div>
-      </div>
-
-      <!-- Daily Check-in -->
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">🔥 デイリーチェックイン</div>
-          <div class="badge badge-warning">${checkIn.streak}日連続</div>
-        </div>
-        <div style="font-size:13px;margin-bottom:10px">${this.escapeHtml(checkIn.message)}</div>
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
-          <div style="font-size:12px;color:var(--text-secondary)">今週の投稿</div>
-          <div style="flex:1">
-            <div class="progress-bar"><div class="progress-fill" style="width:${(checkIn.weeklyCount/checkIn.weeklyGoal*100)}%"></div></div>
-          </div>
-          <div style="font-size:12px;font-weight:600">${checkIn.weeklyCount}/${checkIn.weeklyGoal}</div>
-        </div>
-      </div>
-
-      <!-- Goals -->
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">🎯 目標</div>
-        </div>
-        ${goals.goals.map(g => {
-          const pct = Math.min(100, (g.current / g.target * 100)).toFixed(0);
-          return `
-            <div style="margin-bottom:12px">
-              <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px">
-                <span>${this.escapeHtml(g.title)}</span>
-                <span style="color:var(--text-secondary)">${g.current}/${g.target}${g.unit}</span>
-              </div>
-              <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
-              <div style="font-size:11px;color:var(--text-muted);margin-top:2px">期限: ${g.deadline}</div>
-            </div>`;
-        }).join('')}
-      </div>
-
-      <!-- Insights -->
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">📊 インサイト概要</div>
-          ${this.geminiLabel()}
-        </div>
-        <div class="stats-grid">
-          <div class="stat-item"><div class="stat-value">${this.formatNumber(insights.views)}</div><div class="stat-label">ビュー</div></div>
-          <div class="stat-item"><div class="stat-value">${this.formatNumber(insights.likes)}</div><div class="stat-label">いいね</div></div>
-          <div class="stat-item"><div class="stat-value">${this.formatNumber(insights.replies)}</div><div class="stat-label">返信</div></div>
-          <div class="stat-item"><div class="stat-value">${this.formatNumber(insights.reposts)}</div><div class="stat-label">リポスト</div></div>
-        </div>
-      </div>
-
-      <!-- Follower Chart -->
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">📈 フォロワー推移</div>
-          <div class="card-subtitle">過去30日間</div>
-        </div>
-        <div class="chart-container">
-          <canvas id="followerChart" class="chart-canvas"></canvas>
-        </div>
-        <div id="followerSummary" style="font-size:12px;color:var(--text-secondary);margin-top:8px"></div>
-      </div>
-
-      <!-- Demographics -->
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">👥 デモグラフィック</div>
-        </div>
-        <div id="demographicsArea"></div>
-      </div>
-
-      <!-- AI Analysis -->
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">🤖 AI分析</div>
-          ${this.geminiLabel()}
-        </div>
-        <div style="display:flex;flex-direction:column;gap:8px">
-          <button class="btn btn-primary btn-block" id="runAnalysisBtn">📋 総合分析レポートを生成</button>
-          <button class="btn btn-secondary btn-block" id="runSuggestionsBtn">💡 改善提案を取得</button>
-        </div>
-        <div id="aiResultArea" style="margin-top:12px"></div>
-      </div>
-
-      ${this.geminiFooter()}
-    `;
-
-    this.drawFollowerChart_(follower.history);
-    this.renderFollowerSummary_(follower.history);
-    this.renderDemographics_(insights.demographics);
-    this.bindDashboardEvents_();
-  },
-
-  drawFollowerChart_(history) {
-    const canvas = document.getElementById('followerChart');
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    const rect = canvas.parentElement.getBoundingClientRect();
-    canvas.width = rect.width * 2;
-    canvas.height = rect.height * 2;
-    ctx.scale(2, 2);
-    const w = rect.width, h = rect.height;
-    const padding = { top: 20, right: 15, bottom: 30, left: 45 };
-    const chartW = w - padding.left - padding.right;
-    const chartH = h - padding.top - padding.bottom;
-
-    const counts = history.map(d => d.count);
-    const min = Math.min(...counts) - 10;
-    const max = Math.max(...counts) + 10;
-    const range = max - min || 1;
-
-    // Grid
-    ctx.strokeStyle = '#222';
-    ctx.lineWidth = 0.5;
-    for (let i = 0; i <= 4; i++) {
-      const y = padding.top + (chartH / 4) * i;
-      ctx.beginPath(); ctx.moveTo(padding.left, y); ctx.lineTo(w - padding.right, y); ctx.stroke();
-      ctx.fillStyle = '#666';
-      ctx.font = '10px sans-serif';
-      ctx.textAlign = 'right';
-      ctx.fillText(Math.round(max - (range / 4) * i), padding.left - 5, y + 3);
+    var insResult=results[0],analyticsResult=results[1],growth=results[2],checkIn=results[3],goals=results[4],follower=results[5];
+    if (insResult.ok) {
+      var ins = insResult.value; this.state.userInsights = ins;
+      document.getElementById('userInsightsArea').innerHTML = '<div class="card"><div class="card-title">@'+this.escapeText(ins.accountUsername||'')+' 過去7日間のインサイト</div><div class="metric-grid">'+this.renderMetricCard('👁','ビュー',ins.views)+this.renderMetricCard('👥','フォロワー',ins.followersCount)+this.renderMetricCard('❤️','いいね',ins.likes)+this.renderMetricCard('💬','返信',ins.replies)+this.renderMetricCard('🔄','リポスト',ins.reposts)+this.renderMetricCard('💎','引用',ins.quotes)+'</div></div>';
+      if (ins.demographics) document.getElementById('demographicsArea').innerHTML = this.renderDemographics_(ins.demographics);
     }
-
-    // Line
-    const gradient = ctx.createLinearGradient(0, padding.top, 0, padding.top + chartH);
-    gradient.addColorStop(0, 'rgba(200,162,255,0.3)');
-    gradient.addColorStop(1, 'rgba(200,162,255,0)');
-
-    ctx.beginPath();
-    history.forEach((d, i) => {
-      const x = padding.left + (i / (history.length - 1)) * chartW;
-      const y = padding.top + (1 - (d.count - min) / range) * chartH;
-      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-    });
-    ctx.strokeStyle = '#c8a2ff';
-    ctx.lineWidth = 2;
-    ctx.stroke();
-
-    // Fill
-    const lastX = padding.left + chartW;
-    const baseY = padding.top + chartH;
-    ctx.lineTo(lastX, baseY);
-    ctx.lineTo(padding.left, baseY);
-    ctx.closePath();
-    ctx.fillStyle = gradient;
-    ctx.fill();
-
-    // Dots
-    history.forEach((d, i) => {
-      if (i % 5 !== 0 && i !== history.length - 1) return;
-      const x = padding.left + (i / (history.length - 1)) * chartW;
-      const y = padding.top + (1 - (d.count - min) / range) * chartH;
-      ctx.beginPath();
-      ctx.arc(x, y, 3, 0, Math.PI * 2);
-      ctx.fillStyle = '#c8a2ff';
-      ctx.fill();
-    });
-
-    // X labels
-    ctx.fillStyle = '#666';
-    ctx.font = '9px sans-serif';
-    ctx.textAlign = 'center';
-    [0, Math.floor(history.length / 2), history.length - 1].forEach(i => {
-      const x = padding.left + (i / (history.length - 1)) * chartW;
-      const label = history[i].date.substring(5);
-      ctx.fillText(label, x, h - 5);
-    });
-  },
-
-  renderFollowerSummary_(history) {
-    const el = document.getElementById('followerSummary');
-    if (!el || !history.length) return;
-    const first = history[0].count;
-    const last = history[history.length - 1].count;
-    const diff = last - first;
-    const pct = ((diff / first) * 100).toFixed(1);
-    const sign = diff >= 0 ? '+' : '';
-    el.innerHTML = `30日間: <strong style="color:${diff >= 0 ? 'var(--success)' : 'var(--danger)'}">${sign}${diff}人 (${sign}${pct}%)</strong> | 現在: <strong>${this.formatNumber(last)}人</strong>`;
+    if (analyticsResult.ok) {
+      var a=analyticsResult.value;
+      if(a&&a.summary&&a.summary.totalPosts>0){var s=a.summary;document.getElementById('summaryArea').innerHTML='<div class="card"><div class="card-title">投稿パフォーマンス（7日間）</div><div class="metric-grid">'+this.renderMetricCard('📝','投稿数',s.totalPosts)+this.renderMetricCard('📈','平均ER',s.avgEngagementRate+'%')+this.renderMetricCard('👁','総ビュー',s.totalViews)+this.renderMetricCard('❤️','総いいね',s.totalLikes)+'</div></div>';}
+    }
+    if (growth) {
+      var ring=document.getElementById('gsRingFill'),circumference=314,offset=circumference-(growth.score/100)*circumference;
+      var cls=growth.score>=80?'high':growth.score>=50?'medium':growth.score>=30?'low':'critical';
+      if(ring){ring.setAttribute('stroke-dashoffset',offset);ring.classList.remove('high','medium','low','critical');ring.classList.add(cls);}
+      var gsVal=document.getElementById('gsValue');if(gsVal)gsVal.textContent=growth.score;
+      var gsChange=document.getElementById('gsChange');if(gsChange){var sign=growth.change>=0?'+':'';gsChange.innerHTML='<span style="color:'+(growth.change>=0?'var(--success)':'var(--error)')+';">'+sign+growth.change+' ポイント</span> 前回比';}
+      var bd=growth.breakdown;if(bd){var f=document.getElementById('gsBdFollower');if(f)f.textContent=bd.follower;var e=document.getElementById('gsBdER');if(e)e.textContent=bd.er;var fr=document.getElementById('gsBdFreq');if(fr)fr.textContent=bd.freq;var ai=document.getElementById('gsBdAI');if(ai)ai.textContent=bd.ai;}
+    }
+    if (checkIn) {
+      var sc=document.getElementById('streakCount');if(sc)sc.textContent=checkIn.streak;
+      var cm=document.getElementById('checkInMessage');if(cm)cm.innerHTML=this.escapeHtml(checkIn.message);
+      var rt=document.getElementById('recTime');if(rt)rt.textContent=checkIn.recommendTime||'21:00';
+      var rth=document.getElementById('recTheme');if(rth)rth.textContent=checkIn.recommendTheme||'AI活用';
+    }
+    if (goals&&goals.goals) {
+      var gl=document.getElementById('goalList');if(gl){var html='';goals.goals.forEach(function(g){var pct=Math.min(100,(g.current/g.target*100)).toFixed(0);html+='<div style="margin-bottom:12px;"><div class="goal-header"><div class="goal-label">'+self.escapeText(g.title)+'</div><div class="goal-pct">'+pct+'%</div></div><div class="goal-progress"><div class="goal-progress-bar" style="width:'+pct+'%;"></div></div><div class="goal-detail"><span>'+g.current+'/'+g.target+g.unit+'</span><span>期限: '+g.deadline+'</span></div></div>';});gl.innerHTML=html;}
+    }
+    this.state.followerData_=follower;this.renderFollowerSummary_(follower);this.drawFollowerChart_('followerCanvas',follower);this.bindFollowerEvents_();this.bindDashboardAI_();this.bindTipsEvents_();
   },
 
   renderDemographics_(demo) {
-    const el = document.getElementById('demographicsArea');
-    if (!el || !demo) return;
-
-    let html = '<div style="font-size:12px">';
-
-    // Gender
-    html += '<div style="margin-bottom:12px"><div style="font-weight:600;margin-bottom:6px">👤 性別</div>';
-    if (demo.gender) {
-      demo.gender.forEach(g => {
-        const [key, val] = Object.entries(g)[0];
-        const label = key === 'male' ? '男性' : key === 'female' ? '女性' : 'その他';
-        const color = key === 'male' ? 'var(--info)' : key === 'female' ? 'var(--danger)' : 'var(--warning)';
-        html += `<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
-          <span style="width:40px">${label}</span>
-          <div style="flex:1;height:8px;background:var(--bg-card-hover);border-radius:4px;overflow:hidden">
-            <div style="height:100%;width:${val}%;background:${color};border-radius:4px"></div>
-          </div>
-          <span style="width:30px;text-align:right;color:var(--text-secondary)">${val}%</span>
-        </div>`;
-      });
-    }
-    html += '</div>';
-
-    // Age
-    html += '<div style="margin-bottom:12px"><div style="font-weight:600;margin-bottom:6px">📅 年齢</div>';
-    if (demo.age) {
-      demo.age.forEach(a => {
-        const [key, val] = Object.entries(a)[0];
-        html += `<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
-          <span style="width:45px;color:var(--text-secondary)">${key}</span>
-          <div style="flex:1;height:8px;background:var(--bg-card-hover);border-radius:4px;overflow:hidden">
-            <div style="height:100%;width:${val}%;background:var(--accent-primary);border-radius:4px"></div>
-          </div>
-          <span style="width:30px;text-align:right;color:var(--text-secondary)">${val}%</span>
-        </div>`;
-      });
-    }
-    html += '</div>';
-
-    // Countries
-    html += '<div><div style="font-weight:600;margin-bottom:6px">🌍 国</div>';
-    if (demo.countries) {
-      demo.countries.forEach(c => {
-        html += `<div style="display:flex;justify-content:space-between;padding:3px 0;color:var(--text-secondary)">
-          <span>${this.escapeHtml(c.name)}</span><span>${c.value}%</span>
-        </div>`;
-      });
-    }
-    html += '</div></div>';
-
-    el.innerHTML = html;
+    var html='<div class="card"><div class="card-title">👥 フォロワー属性</div><div class="grid-2" style="gap:16px;">';
+    var genderMap={M:'男性',F:'女性',U:'未設定'};var self=this;
+    [{key:'country',icon:'🌍',label:'国'},{key:'city',icon:'🏙️',label:'都市'},{key:'age',icon:'📊',label:'年齢'},{key:'gender',icon:'👤',label:'性別'}].forEach(function(sec){
+      var data=demo[sec.key];if(!data||typeof data!=='object')return;
+      var items=[],keys=Object.keys(data);keys.forEach(function(k){items.push({label:k,value:data[k]});});
+      items.sort(function(a,b){return b.value-a.value;});items=items.slice(0,5);
+      var maxVal=items.length>0?items[0].value:1,total=items.reduce(function(s,i){return s+i.value;},0);
+      html+='<div><div style="font-weight:600;font-size:13px;margin-bottom:8px;">'+sec.icon+' '+sec.label+'</div>';
+      items.forEach(function(item){var label=genderMap[item.label]||item.label;var pct=total>0?Math.round((item.value/total)*100):0;var barW=maxVal>0?Math.round((item.value/maxVal)*100):0;
+        html+='<div style="margin-bottom:6px;"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:2px;"><span>'+self.escapeText(label)+'</span><span style="color:var(--text-secondary);">'+item.value+'人 ('+pct+'%)</span></div><div class="demo-bar-track"><div class="demo-bar-fill" style="width:'+barW+'%;"></div></div></div>';
+      });html+='</div>';
+    });html+='</div></div>';return html;
   },
 
-  bindDashboardEvents_() {
-    const analysisBtn = document.getElementById('runAnalysisBtn');
-    const suggestionsBtn = document.getElementById('runSuggestionsBtn');
-    const resultArea = document.getElementById('aiResultArea');
-
-    if (analysisBtn) {
-      analysisBtn.addEventListener('click', async () => {
-        analysisBtn.disabled = true;
-        analysisBtn.textContent = '⏳ 分析中...';
-        resultArea.innerHTML = this.showSkeleton();
-        try {
-          const data = await this.api('generateAnalysisReport');
-          resultArea.innerHTML = `
-            <div class="card" style="background:var(--bg-secondary)">
-              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-                <div style="font-weight:600;font-size:13px">📋 総合分析レポート</div>
-                ${this.geminiLabel()}
-              </div>
-              <div class="md-content">${this.parseMd(data.report)}</div>
-              <button class="btn btn-sm btn-secondary" style="margin-top:12px" onclick="App.copyToClipboard(${this.escapeAttr(JSON.stringify(data.report))})">📋 コピー</button>
-            </div>
-          `;
-        } catch(e) {
-          resultArea.innerHTML = `<div class="tip-card" style="color:var(--danger)">エラーが発生しました: ${this.escapeHtml(e.message)}</div>`;
-        }
-        analysisBtn.disabled = false;
-        analysisBtn.textContent = '📋 総合分析レポートを生成';
-      });
-    }
-
-    if (suggestionsBtn) {
-      suggestionsBtn.addEventListener('click', async () => {
-        suggestionsBtn.disabled = true;
-        suggestionsBtn.textContent = '⏳ 取得中...';
-        resultArea.innerHTML = this.showSkeleton();
-        try {
-          const data = await this.api('generateImprovementSuggestions');
-          let html = '<div style="margin-top:8px">';
-          html += `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-            <div style="font-weight:600;font-size:13px">💡 改善提案</div>
-            ${this.geminiLabel()}
-          </div>`;
-          (data.suggestions || []).forEach((s, i) => {
-            const impactColor = s.impact === 'high' ? 'var(--success)' : s.impact === 'medium' ? 'var(--warning)' : 'var(--text-muted)';
-            html += `
-              <div class="card" style="background:var(--bg-secondary)">
-                <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:6px">
-                  <div style="font-weight:600;font-size:13px">${i+1}. ${this.escapeHtml(s.title)}</div>
-                  <span class="badge" style="background:${impactColor}22;color:${impactColor}">${s.impact}</span>
-                </div>
-                <div style="font-size:12px;color:var(--text-secondary);line-height:1.6">${this.escapeHtml(s.description)}</div>
-              </div>`;
-          });
-          html += '</div>';
-          resultArea.innerHTML = html;
-        } catch(e) {
-          resultArea.innerHTML = `<div class="tip-card" style="color:var(--danger)">エラーが発生しました: ${this.escapeHtml(e.message)}</div>`;
-        }
-        suggestionsBtn.disabled = false;
-        suggestionsBtn.textContent = '💡 改善提案を取得';
-      });
-    }
+  drawFollowerChart_(canvasId, data) {
+    var canvas=document.getElementById(canvasId);if(!canvas||!data||!data.dates||data.dates.length===0)return;
+    var ctx=canvas.getContext('2d'),dpr=window.devicePixelRatio||1,rect=canvas.getBoundingClientRect();
+    canvas.width=rect.width*dpr;canvas.height=rect.height*dpr;ctx.scale(dpr,dpr);
+    var W=rect.width,H=rect.height,pad={top:20,right:16,bottom:30,left:48},gW=W-pad.left-pad.right,gH=H-pad.top-pad.bottom;
+    ctx.clearRect(0,0,W,H);var counts=data.counts,mn=Math.min.apply(null,counts),mx=Math.max.apply(null,counts);
+    if(mn===mx){mn-=10;mx+=10;}var range=mx-mn;mn-=range*0.1;mx+=range*0.1;
+    function xPos(i){return pad.left+(i/(counts.length-1||1))*gW;}
+    function yPos(v){return pad.top+gH-((v-mn)/(mx-mn))*gH;}
+    var isDark=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches;
+    ctx.strokeStyle=isDark?'rgba(255,255,255,0.1)':'rgba(0,0,0,0.08)';ctx.lineWidth=1;
+    for(var g=0;g<=4;g++){var gy=pad.top+(gH/4)*g;ctx.beginPath();ctx.moveTo(pad.left,gy);ctx.lineTo(W-pad.right,gy);ctx.stroke();}
+    var grad=ctx.createLinearGradient(0,pad.top,0,pad.top+gH);grad.addColorStop(0,isDark?'rgba(99,102,241,0.3)':'rgba(99,102,241,0.15)');grad.addColorStop(1,'rgba(99,102,241,0)');
+    ctx.beginPath();ctx.moveTo(xPos(0),yPos(counts[0]));for(var i=1;i<counts.length;i++)ctx.lineTo(xPos(i),yPos(counts[i]));
+    ctx.lineTo(xPos(counts.length-1),pad.top+gH);ctx.lineTo(xPos(0),pad.top+gH);ctx.closePath();ctx.fillStyle=grad;ctx.fill();
+    ctx.beginPath();ctx.moveTo(xPos(0),yPos(counts[0]));for(var i=1;i<counts.length;i++)ctx.lineTo(xPos(i),yPos(counts[i]));
+    ctx.strokeStyle='#6366f1';ctx.lineWidth=2.5;ctx.lineJoin='round';ctx.stroke();
+    for(var i=0;i<counts.length;i++){ctx.beginPath();ctx.arc(xPos(i),yPos(counts[i]),3.5,0,Math.PI*2);ctx.fillStyle='#6366f1';ctx.fill();ctx.strokeStyle=isDark?'#1e1e2e':'#ffffff';ctx.lineWidth=2;ctx.stroke();}
+    ctx.fillStyle=isDark?'#94a3b8':'#64748b';ctx.font='11px sans-serif';ctx.textAlign='center';
+    var step=counts.length<=7?1:counts.length<=30?5:15;for(var i=0;i<data.dates.length;i+=step)ctx.fillText(data.dates[i],xPos(i),H-8);
+    ctx.textAlign='right';for(var g=0;g<=4;g++){var val=Math.round(mx-((mx-mn)/4)*g);ctx.fillText(val.toLocaleString(),pad.left-6,pad.top+(gH/4)*g+4);}
   },
 
-  // ============================================================
-  // Analytics Screen
-  // ============================================================
-  renderAnalytics() {
-    const content = document.getElementById('mainContent');
-    content.innerHTML = `
-      <div class="demo-banner">🎮 デモモードで動作中</div>
-      <div class="tabs" id="analyticsTabs">
-        <button class="tab-btn active" data-tab="posts">📝 投稿分析</button>
-        <button class="tab-btn" data-tab="heatmap">🕐 時間帯</button>
-        <button class="tab-btn" data-tab="buzz">🔥 バズ分析</button>
-      </div>
-      <div id="analyticsContent"></div>
-    `;
-    this.bindAnalyticsTabEvents_();
+  renderFollowerSummary_(data) {
+    var el=document.getElementById('followerSummary');if(!el||!data||!data.counts||data.counts.length===0)return;
+    var current=data.counts[data.counts.length-1],first=data.counts[0],prev=data.counts.length>1?data.counts[data.counts.length-2]:current;
+    var dc=current-prev,pc=current-first,pp=first>0?Math.round(pc/first*1000)/10:0;
+    var ti=dc>0?'📈':dc<0?'📉':'➡️',tc=dc>0?'var(--success)':dc<0?'var(--error)':'var(--text-secondary)';
+    el.innerHTML='<div style="flex:1;text-align:center;"><div style="font-size:24px;font-weight:700;">'+current.toLocaleString()+'</div><div class="text-caption">フォロワー</div></div><div style="flex:1;text-align:center;"><div style="font-size:18px;font-weight:600;color:'+tc+';">'+ti+' '+(dc>=0?'+':'')+dc+'</div><div class="text-caption">前日比</div></div><div style="flex:1;text-align:center;"><div style="font-size:18px;font-weight:600;color:'+tc+';">'+(pp>=0?'+':'')+pp+'%</div><div class="text-caption">期間変動</div></div>';
+  },
+
+  bindFollowerEvents_() {
+    var self=this;
+    document.querySelectorAll('[data-follower-days]').forEach(function(btn){btn.addEventListener('click',async function(){document.querySelectorAll('[data-follower-days]').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');var d=await self.api('getFollowerHistory',{days:parseInt(btn.getAttribute('data-follower-days'))});self.state.followerData_=d;self.renderFollowerSummary_(d);self.drawFollowerChart_('followerCanvas',d);});});
+    var csvBtn=document.getElementById('exportFollowerCSV');if(csvBtn)csvBtn.addEventListener('click',function(){var d=self.state.followerData_;if(!d||!d.dates.length){self.showToast('データがありません','error');return;}self.exportCSV('followers',['日付','フォロワー数','前日比'],d.dates.map(function(date,i){return[date,d.counts[i],d.changes[i]];}));});
+  },
+
+  bindDashboardAI_() {
+    var self=this,resultDiv=document.getElementById('aiDashboardResult');
+    function runAI(action,loadingText,btn){btn.disabled=true;var orig=btn.textContent;btn.textContent=loadingText;
+      resultDiv.innerHTML='<div style="text-align:center;padding:20px;"><div class="loading-spinner" style="margin:0 auto 12px;"></div><div class="text-caption">AI分析中...</div></div>';
+      self.api(action,{periodDays:30}).then(function(res){btn.disabled=false;btn.textContent=orig;var c=res.report||res.suggestions||'';if(!c){resultDiv.innerHTML='<div class="text-caption" style="padding:12px;">結果なし</div>';return;}resultDiv.innerHTML='<div class="flex-between mb-8"><span class="text-subheading">結果</span>'+self.geminiLabel_()+'</div><div class="ai-result-container">'+self.formatMarkdown_(c)+'</div>';}).catch(function(err){btn.disabled=false;btn.textContent=orig;resultDiv.innerHTML='<div style="color:var(--error);padding:12px;">'+self.escapeText(err.message)+'</div>';});}
+    var a=document.getElementById('aiReportBtn'),b=document.getElementById('aiSuggestBtn');
+    if(a)a.addEventListener('click',function(){runAI('generateAnalysisReport','📊 生成中...',this);});
+    if(b)b.addEventListener('click',function(){runAI('generateImprovementSuggestions','💡 取得中...',this);});
+  },
+
+  // ==========================================================
+  // ANALYTICS
+  // ==========================================================
+  renderAnalytics_() {
+    var content = document.getElementById('content');
+    content.innerHTML = '<div class="screen-content screen-animate">' +
+      '<div style="padding:12px 16px;background:linear-gradient(135deg,#eff6ff,#f0fdf4);border:1px solid #93c5fd;border-radius:12px;margin-bottom:12px;"><span style="font-weight:600;color:#1e40af;">🎮 デモモード</span><span style="font-size:12px;color:#64748b;margin-left:8px;">サンプルデータ</span></div>' +
+      '<div class="subtabs" id="analyticsTabs">' +
+        '<button class="subtab active" data-atab="posts">📝 投稿分析</button>' +
+        '<button class="subtab" data-atab="heatmap">🕐 時間帯</button>' +
+        '<button class="subtab" data-atab="buzz">🔥 バズ分析</button>' +
+      '</div>' +
+      '<div id="analyticsContent"></div>' +
+    '</div>';
+    var self = this;
+    document.getElementById('analyticsTabs').addEventListener('click', function(e) {
+      var btn = e.target.closest('.subtab'); if (!btn) return;
+      document.querySelectorAll('#analyticsTabs .subtab').forEach(function(b){b.classList.remove('active');});
+      btn.classList.add('active');
+      self.loadAnalyticsTab_(btn.getAttribute('data-atab'));
+    });
     this.loadAnalyticsTab_('posts');
   },
 
-  bindAnalyticsTabEvents_() {
-    document.getElementById('analyticsTabs').addEventListener('click', e => {
-      const btn = e.target.closest('.tab-btn');
-      if (!btn) return;
-      document.querySelectorAll('#analyticsTabs .tab-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      this.loadAnalyticsTab_(btn.dataset.tab);
-    });
-  },
-
   async loadAnalyticsTab_(tab) {
-    const area = document.getElementById('analyticsContent');
-    area.innerHTML = this.showSkeleton();
-
-    switch(tab) {
-      case 'posts': await this.renderPostAnalytics_(area); break;
-      case 'heatmap': await this.renderHeatmap_(area); break;
-      case 'buzz': await this.renderBuzzAnalysis_(area); break;
-    }
+    var area = document.getElementById('analyticsContent');
+    area.innerHTML = this.renderSkeleton_();
+    if (tab === 'posts') await this.renderPostAnalytics_(area);
+    else if (tab === 'heatmap') await this.renderHeatmap_(area);
+    else if (tab === 'buzz') await this.renderBuzzAnalysis_(area);
   },
 
   async renderPostAnalytics_(area) {
-    const data = await this.api('getAnalyticsData');
-    this.state.analyticsData = data;
-    const s = data.summary;
-
-    let html = `
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">📊 サマリー</div>
-          <div class="card-subtitle">${this.escapeHtml(s.period)}</div>
-        </div>
-        <div class="stats-grid">
-          <div class="stat-item"><div class="stat-value">${s.totalPosts}</div><div class="stat-label">投稿数</div></div>
-          <div class="stat-item"><div class="stat-value">${this.formatNumber(s.totalViews)}</div><div class="stat-label">総ビュー</div></div>
-          <div class="stat-item"><div class="stat-value">${this.formatNumber(s.totalLikes)}</div><div class="stat-label">総いいね</div></div>
-          <div class="stat-item"><div class="stat-value">${s.averageER}%</div><div class="stat-label">平均ER</div></div>
-        </div>
-      </div>
-      <div class="card-header" style="margin-top:8px">
-        <div class="card-title">📝 投稿一覧</div>
-        <button class="btn btn-sm btn-secondary" id="exportCsvBtn">📥 CSV</button>
-      </div>
-    `;
-
-    data.posts.forEach(p => {
-      html += `
-        <div class="post-card">
-          <div class="post-card-text">${this.escapeHtml(p.text.substring(0, 120))}${p.text.length > 120 ? '...' : ''}</div>
-          <div class="post-card-meta">
-            <span>👁️ ${this.formatNumber(p.views)}</span>
-            <span>❤️ ${p.likes}</span>
-            <span>💬 ${p.replies}</span>
-            <span>🔁 ${p.reposts}</span>
-            <span>📊 ER ${p.engagement_rate}%</span>
-            <span>📅 ${this.formatDate(p.timestamp)}</span>
-          </div>
-        </div>`;
+    var data = await this.api('getAnalyticsData'); this.state.analyticsData = data; var s = data.summary, self = this;
+    var html = '<div class="card"><div class="card-title">📊 サマリー（'+this.escapeText(s.period)+'）</div><div class="metric-grid">'+
+      this.renderMetricCard('📝','投稿数',s.totalPosts)+this.renderMetricCard('👁','総ビュー',s.totalViews)+this.renderMetricCard('❤️','総いいね',s.totalLikes)+this.renderMetricCard('📈','平均ER',s.avgEngagementRate+'%')+
+    '</div></div><div class="flex-between mb-8"><div class="text-subheading">📝 投稿一覧</div><button class="btn btn-secondary btn-small" id="exportPostCSV">📥 CSV</button></div>';
+    data.posts.forEach(function(p) {
+      html += '<div class="post-card"><div class="post-text">'+self.escapeText(p.text.substring(0,120))+(p.text.length>120?'...':'')+'</div><div class="post-metrics"><span class="post-metric">👁 '+p.views.toLocaleString()+'</span><span class="post-metric">❤️ '+p.likes+'</span><span class="post-metric">💬 '+p.replies+'</span><span class="post-metric">🔄 '+p.reposts+'</span><span class="er-badge">ER '+p.engagement_rate+'%</span></div><div class="post-meta">'+self.formatDate_(p.timestamp)+'</div></div>';
     });
-
     area.innerHTML = html;
-
-    document.getElementById('exportCsvBtn')?.addEventListener('click', () => {
-      this.exportAnalyticsCsv_(data.posts);
+    var csvBtn = document.getElementById('exportPostCSV');
+    if (csvBtn) csvBtn.addEventListener('click', function() {
+      self.exportCSV('analytics', ['ID','テキスト','ビュー','いいね','返信','リポスト','ER%','日時'],
+        data.posts.map(function(p){return [p.id,p.text.substring(0,100),p.views,p.likes,p.replies,p.reposts,p.engagement_rate,p.timestamp];}));
     });
-  },
-
-  exportAnalyticsCsv_(posts) {
-    const header = 'ID,テキスト,ビュー,いいね,返信,リポスト,ER%,日時\n';
-    const rows = posts.map(p =>
-      `"${p.id}","${p.text.replace(/"/g, '""').substring(0, 100)}",${p.views},${p.likes},${p.replies},${p.reposts},${p.engagement_rate},"${p.timestamp}"`
-    ).join('\n');
-    const csv = '\uFEFF' + header + rows;
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url; a.download = `insight_master_analytics_${new Date().toISOString().split('T')[0]}.csv`;
-    a.click();
-    URL.revokeObjectURL(url);
-    this.showToast('CSVをエクスポートしました', 'success');
   },
 
   async renderHeatmap_(area) {
-    const data = await this.api('getTimeAnalysisData');
-    const days = ['月', '火', '水', '木', '金', '土', '日'];
-    const hours = Array.from({length:24}, (_, i) => i);
-
-    let html = `
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">🕐 投稿時間帯分析</div>
-          ${this.geminiLabel()}
-        </div>
-        <div style="font-size:12px;color:var(--text-secondary);margin-bottom:12px">
-          色が濃いほどエンゲージメント率が高い時間帯です
-        </div>
-        <div style="overflow-x:auto">
-          <table style="width:100%;border-collapse:collapse;font-size:10px">
-            <tr>
-              <th style="padding:4px;color:var(--text-muted)"></th>
-              ${days.map(d => `<th style="padding:4px;color:var(--text-secondary)">${d}</th>`).join('')}
-            </tr>
-    `;
-
-    hours.forEach(h => {
-      html += `<tr><td style="padding:3px;color:var(--text-muted);text-align:right">${h}時</td>`;
-      days.forEach((_, d) => {
-        const cell = data.heatmap.find(c => c.hour === h && c.day === d);
-        const val = cell ? cell.value : 0;
-        const alpha = (val * 0.8 + 0.05).toFixed(2);
-        const er = cell ? cell.avgER : '0';
-        html += `<td style="padding:3px;text-align:center">
-          <div style="width:100%;aspect-ratio:1;background:rgba(200,162,255,${alpha});border-radius:3px;display:flex;align-items:center;justify-content:center;cursor:pointer" title="${h}時 ${days[d]}曜 ER:${er}%">
-            ${val > 0.6 ? '<span style="font-size:8px;color:white">' + er + '</span>' : ''}
-          </div>
-        </td>`;
-      });
-      html += '</tr>';
-    });
-
-    html += `</table></div></div>`;
-
-    // Best times
-    html += `<div class="card">
-      <div class="card-title" style="margin-bottom:8px">⭐ ベストタイム</div>
-      ${data.bestTimes.map(t => `
-        <div style="display:flex;justify-content:space-between;padding:8px;background:var(--bg-secondary);border-radius:var(--radius-sm);margin-bottom:6px">
-          <span style="font-size:13px">${days[t.day]}曜 ${t.hour}:00</span>
-          <span class="badge badge-success">ER ${t.avgER}%</span>
-        </div>`).join('')}
-    </div>`;
-
-    html += this.geminiFooter();
+    var data = await this.api('getTimeAnalysisData');
+    var days = ['月','火','水','木','金','土','日'];
+    var html = '<div class="card"><div class="card-title">🕐 投稿時間帯分析</div><div class="text-caption mb-12">色が濃いほどER が高い時間帯</div><div style="overflow-x:auto;"><table class="heatmap-table"><tr><th class="heatmap-cell"></th>';
+    days.forEach(function(d){html+='<th class="heatmap-cell" style="font-weight:600;">'+d+'</th>';});html+='</tr>';
+    for (var h=0;h<24;h++) {
+      html+='<tr><td class="heatmap-cell" style="text-align:right;font-size:10px;color:var(--text-tertiary);">'+h+'時</td>';
+      for(var d=0;d<7;d++){
+        var cell=data.heatmap[h+'_'+d];var val=cell?cell.value:0;var er=cell?cell.avgER:'0';
+        var alpha=(val*0.8+0.05).toFixed(2);
+        html+='<td class="heatmap-cell"><div style="width:100%;aspect-ratio:1;background:rgba(99,102,241,'+alpha+');border-radius:3px;display:flex;align-items:center;justify-content:center;" title="'+h+'時 '+days[d]+'曜 ER:'+er+'%">'+(val>0.6?'<span style="font-size:8px;color:white;">'+er+'</span>':'')+'</div></td>';
+      }html+='</tr>';
+    }
+    html+='</table></div></div>';
+    if (data.bestTimes) {
+      html+='<div class="card"><div class="card-title">⭐ ベストタイム</div>';
+      data.bestTimes.forEach(function(t){html+='<div class="flex-between" style="padding:8px;background:var(--bg-secondary);border-radius:8px;margin-bottom:6px;"><span>'+days[t.day]+'曜 '+t.hour+':00</span><span class="status-badge success">ER '+t.avgER+'%</span></div>';});
+      html+='</div>';
+    }
     area.innerHTML = html;
   },
 
   async renderBuzzAnalysis_(area) {
-    area.innerHTML = `
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">🔥 バズパターン分析</div>
-          ${this.geminiLabel()}
-        </div>
-        <div style="font-size:12px;color:var(--text-secondary);margin-bottom:12px">
-          投稿データからバズのパターンをAIが分析します
-        </div>
-        <button class="btn btn-primary btn-block" id="buzzAnalysisBtn">🔥 バズ分析を実行</button>
-        <div id="buzzResultArea" style="margin-top:12px"></div>
-      </div>
-      ${this.geminiFooter()}
-    `;
-
-    document.getElementById('buzzAnalysisBtn').addEventListener('click', async () => {
-      const btn = document.getElementById('buzzAnalysisBtn');
-      const resultArea = document.getElementById('buzzResultArea');
-      btn.disabled = true;
-      btn.textContent = '⏳ 分析中...';
-      resultArea.innerHTML = this.showSkeleton();
-
+    var self = this;
+    area.innerHTML = '<div class="card"><div class="card-title">🔥 バズパターン分析</div><div class="text-caption mb-12">投稿データからバズのパターンをAIが分析</div><button class="btn btn-full" id="buzzBtn">🔥 バズ分析を実行</button><div id="buzzResult" style="margin-top:12px;"></div></div>';
+    document.getElementById('buzzBtn').addEventListener('click', async function() {
+      var btn=this,result=document.getElementById('buzzResult');btn.disabled=true;btn.textContent='⏳ 分析中...';result.innerHTML=self.renderSkeleton_();
       try {
-        const data = await this.api('generateBuzzReport');
-
-        let html = '';
-
-        // Stats
-        if (data.stats) {
-          html += `<div class="stats-grid" style="margin-bottom:12px">
-            <div class="stat-item"><div class="stat-value">${data.stats.avgER_top}</div><div class="stat-label">トップ平均ER</div></div>
-            <div class="stat-item"><div class="stat-value">${data.stats.bestHour}時</div><div class="stat-label">ベスト時間</div></div>
-            <div class="stat-item"><div class="stat-value">${this.escapeHtml(data.stats.bestDay)}</div><div class="stat-label">ベスト曜日</div></div>
-            <div class="stat-item"><div class="stat-value">${this.escapeHtml(data.stats.topMediaType)}</div><div class="stat-label">メディア</div></div>
-          </div>`;
-        }
-
-        // Top posts
-        if (data.topPosts && data.topPosts.length) {
-          html += '<div style="font-weight:600;font-size:13px;margin-bottom:6px">🏆 トップ投稿</div>';
-          data.topPosts.forEach(p => {
-            html += `<div class="post-card">
-              <div class="post-card-text">${this.escapeHtml(p.text)}</div>
-              <div class="post-card-meta"><span>👁️ ${this.formatNumber(p.views)}</span><span>📊 ER ${p.er}</span></div>
-            </div>`;
-          });
-        }
-
-        // Bottom posts
-        if (data.bottomPosts && data.bottomPosts.length) {
-          html += '<div style="font-weight:600;font-size:13px;margin:12px 0 6px">📉 低パフォーマンス投稿</div>';
-          data.bottomPosts.forEach(p => {
-            html += `<div class="post-card">
-              <div class="post-card-text">${this.escapeHtml(p.text)}</div>
-              <div class="post-card-meta"><span>👁️ ${this.formatNumber(p.views)}</span><span>📊 ER ${p.er}</span></div>
-            </div>`;
-          });
-        }
-
-        // AI Report
-        if (data.report) {
-          html += `<div style="margin-top:12px;font-weight:600;font-size:13px;margin-bottom:6px">📊 AIレポート</div>
-            <div class="card" style="background:var(--bg-secondary)">
-              <div class="md-content">${this.parseMd(data.report)}</div>
-            </div>
-            <button class="btn btn-sm btn-secondary" style="margin-top:8px" onclick="App.copyToClipboard(\`${data.report.replace(/`/g, '\\`').replace(/\\/g, '\\\\')}\`)">📋 レポートをコピー</button>`;
-        }
-
-        resultArea.innerHTML = html;
-      } catch(e) {
-        resultArea.innerHTML = `<div class="tip-card" style="color:var(--danger)">エラー: ${this.escapeHtml(e.message)}</div>`;
-      }
-
-      btn.disabled = false;
-      btn.textContent = '🔥 バズ分析を実行';
+        var data = await self.api('generateBuzzReport');
+        var html='';
+        if(data.stats){html+='<div class="metric-grid mb-12">'+self.renderMetricCard('📈','トップ平均ER',data.stats.avgER_top)+self.renderMetricCard('🕐','ベスト時間',data.stats.bestHour+'時')+self.renderMetricCard('📅','ベスト曜日',data.stats.bestDay)+self.renderMetricCard('📷','メディア',data.stats.topMediaType)+'</div>';}
+        if(data.topPosts&&data.topPosts.length){html+='<div class="text-subheading mb-8">🏆 トップ投稿</div>';data.topPosts.forEach(function(p){html+='<div class="post-card"><div class="post-text">'+self.escapeText(p.text)+'</div><div class="post-metrics"><span class="post-metric">👁 '+p.views+'</span><span class="er-badge">ER '+p.er+'</span></div></div>';});}
+        if(data.report){html+='<div class="text-subheading mt-12 mb-8">📊 AIレポート '+self.geminiLabel_()+'</div><div class="ai-result-container">'+self.formatMarkdown_(data.report)+'</div>';}
+        result.innerHTML=html;
+      }catch(e){result.innerHTML='<div style="color:var(--error);padding:12px;">'+self.escapeText(e.message)+'</div>';}
+      btn.disabled=false;btn.textContent='🔥 バズ分析を実行';
     });
   },
 
-  // ============================================================
-  // Create Screen
-  // ============================================================
-  renderCreate() {
-    const content = document.getElementById('mainContent');
-    const lastTab = localStorage.getItem('im_create_tab') || 'generate';
-    content.innerHTML = `
-      <div class="demo-banner">🎮 デモモードで動作中</div>
-      <div class="tabs" id="createTabs">
-        <button class="tab-btn ${lastTab==='generate'?'active':''}" data-tab="generate">🤖 AI生成</button>
-        <button class="tab-btn ${lastTab==='drafts'?'active':''}" data-tab="drafts">📝 下書き</button>
-      </div>
-      <div id="createContent"></div>
-    `;
-    document.getElementById('createTabs').addEventListener('click', e => {
-      const btn = e.target.closest('.tab-btn');
-      if (!btn) return;
-      document.querySelectorAll('#createTabs .tab-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      localStorage.setItem('im_create_tab', btn.dataset.tab);
-      this.loadCreateTab_(btn.dataset.tab);
+  // ==========================================================
+  // CREATE (3 sub-tabs: AI生成 / 検索 / 下書き)
+  // ==========================================================
+  renderCreate_() {
+    var content = document.getElementById('content');
+    var lastTab = localStorage.getItem('im_create_tab') || 'generate';
+    content.innerHTML = '<div class="screen-content screen-animate">' +
+      '<div style="padding:12px 16px;background:linear-gradient(135deg,#eff6ff,#f0fdf4);border:1px solid #93c5fd;border-radius:12px;margin-bottom:12px;"><span style="font-weight:600;color:#1e40af;">🎮 デモモード</span></div>' +
+      '<div class="subtabs" id="createTabs">' +
+        '<button class="subtab '+(lastTab==='generate'?'active':'')+'" data-ctab="generate">🤖 AI生成</button>' +
+        '<button class="subtab '+(lastTab==='search'?'active':'')+'" data-ctab="search">🔍 検索</button>' +
+        '<button class="subtab '+(lastTab==='drafts'?'active':'')+'" data-ctab="drafts">📝 下書き</button>' +
+      '</div>' +
+      '<div id="createContent"></div>' +
+    '</div>';
+    var self = this;
+    document.getElementById('createTabs').addEventListener('click', function(e) {
+      var btn = e.target.closest('.subtab'); if (!btn) return;
+      document.querySelectorAll('#createTabs .subtab').forEach(function(b){b.classList.remove('active');});
+      btn.classList.add('active'); var tab = btn.getAttribute('data-ctab');
+      localStorage.setItem('im_create_tab', tab); self.loadCreateTab_(tab);
     });
     this.loadCreateTab_(lastTab);
   },
 
   loadCreateTab_(tab) {
-    if (tab === 'generate') this.renderGenerateContent_();
-    else if (tab === 'drafts') this.renderDraftsContent_();
+    if (tab === 'generate') this.renderGenerate_();
+    else if (tab === 'search') this.renderSearch_();
+    else if (tab === 'drafts') this.renderDrafts_();
   },
 
-  renderGenerateContent_() {
-    const area = document.getElementById('createContent');
-    const hasKey = !!this.state.geminiKey;
-    area.innerHTML = `
-      ${!hasKey ? '<div class="tip-card">💡 Gemini APIキーを設定すると、AIがリアルタイムで投稿を生成します。現在はサンプルデータで動作します。</div>' : ''}
-      <div class="card">
-        <div class="card-title" style="margin-bottom:12px">✍️ AI投稿生成 ${this.geminiLabel()}</div>
-        <div style="margin-bottom:12px">
-          <label style="font-size:12px;color:var(--text-secondary);display:block;margin-bottom:6px">テーマ・キーワード</label>
-          <input type="text" class="input" id="genThemeInput" placeholder="例: AI, 朝活, プログラミング..." value="${this.escapeAttr(localStorage.getItem('im_gen_theme') || '')}">
-        </div>
-        <div style="margin-bottom:12px">
-          <label style="font-size:12px;color:var(--text-secondary);display:block;margin-bottom:6px">モード</label>
-          <div style="display:flex;gap:6px" id="genModeButtons">
-            <button class="btn btn-sm btn-primary gen-mode-btn" data-mode="normal">通常</button>
-            <button class="btn btn-sm btn-secondary gen-mode-btn" data-mode="thread">スレッド</button>
-            <button class="btn btn-sm btn-secondary gen-mode-btn" data-mode="analysis">分析ベース</button>
-          </div>
-          <div style="font-size:11px;color:var(--text-muted);margin-top:6px" id="genModeDesc">テーマに沿った投稿を生成します</div>
-        </div>
-        <button class="btn btn-primary btn-block" id="generateBtn">🤖 投稿を生成</button>
-      </div>
-      <div id="generateResultArea"></div>
-    `;
-    this.bindGenerateEvents_();
-  },
-
-  bindGenerateEvents_() {
-    let currentMode = 'normal';
-    const modeDescs = {
-      normal: 'テーマに沿った投稿を生成します',
-      thread: 'スレッド形式（親+返信）で生成します',
-      analysis: '分析データに基づいた投稿を生成します'
-    };
-
-    document.getElementById('genModeButtons').addEventListener('click', e => {
-      const btn = e.target.closest('.gen-mode-btn');
-      if (!btn) return;
-      currentMode = btn.dataset.mode;
-      document.querySelectorAll('.gen-mode-btn').forEach(b => {
-        b.className = `btn btn-sm ${b.dataset.mode === currentMode ? 'btn-primary' : 'btn-secondary'} gen-mode-btn`;
-      });
-      document.getElementById('genModeDesc').textContent = modeDescs[currentMode];
-    });
-
-    document.getElementById('generateBtn').addEventListener('click', async () => {
-      const theme = document.getElementById('genThemeInput').value.trim() || 'AI';
-      localStorage.setItem('im_gen_theme', theme);
-      const btn = document.getElementById('generateBtn');
-      const resultArea = document.getElementById('generateResultArea');
-      btn.disabled = true;
-      btn.textContent = '⏳ 生成中...';
-      resultArea.innerHTML = this.showSkeleton();
-
+  // --- AI Generate ---
+  renderGenerate_() {
+    var area = document.getElementById('createContent'), self = this, hasKey = !!this.state.geminiKey;
+    area.innerHTML =
+      (!hasKey ? '<div class="card warning-banner card-no-border mb-12"><div class="text-body">💡 Gemini APIキーを設定するとリアルタイムAI生成が利用できます。現在はサンプルで動作します。</div></div>' : '') +
+      '<div class="card"><div class="card-title">✍️ AI投稿生成 '+this.geminiLabel_()+'</div>' +
+        '<div class="mb-12"><label class="form-label">テーマ・キーワード</label><input type="text" class="input" id="genTheme" placeholder="例: AI, 朝活, プログラミング..." value="'+this.escapeAttr(localStorage.getItem('im_gen_theme')||'')+'"></div>' +
+        '<div class="mb-12"><label class="form-label">モード</label><div class="segment" id="genModeSeg"><button class="segment-btn active" data-mode="normal">通常</button><button class="segment-btn" data-mode="thread">スレッド</button><button class="segment-btn" data-mode="analysis-based">分析ベース</button></div></div>' +
+        '<button class="btn btn-full" id="generateBtn">✨ 生成</button>' +
+      '</div><div id="genResults"></div>';
+    var modeSeg = document.getElementById('genModeSeg');
+    modeSeg.addEventListener('click', function(e){var btn=e.target.closest('.segment-btn');if(!btn)return;modeSeg.querySelectorAll('.segment-btn').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');});
+    document.getElementById('generateBtn').addEventListener('click', async function() {
+      var theme = document.getElementById('genTheme').value.trim()||'AI'; localStorage.setItem('im_gen_theme',theme);
+      var modeBtn = modeSeg.querySelector('.segment-btn.active'); var mode = modeBtn?modeBtn.getAttribute('data-mode'):'normal';
+      var btn = this, results = document.getElementById('genResults');
+      btn.disabled=true;btn.textContent='⏳ 生成中...';results.innerHTML=self.renderSkeleton_();
       try {
-        const action = currentMode === 'analysis' ? 'generatePostWithAnalysis' : 'generatePostWithAI';
-        const data = await this.api(action, { theme, mode: currentMode });
-        this.renderGenerateResults_(resultArea, data, currentMode);
-      } catch(e) {
-        resultArea.innerHTML = `<div class="tip-card" style="color:var(--danger)">エラー: ${this.escapeHtml(e.message)}</div>`;
-      }
-      btn.disabled = false;
-      btn.textContent = '🤖 投稿を生成';
+        var action = mode==='analysis-based'?'generatePostWithAnalysis':'generatePostWithAI';
+        var data = await self.api(action,{theme:theme,mode:mode,count:3});
+        var items = data.results||[];
+        var html='<div class="flex-between mb-8 mt-12"><span class="text-subheading">✨ 生成結果</span>'+self.geminiLabel_()+'</div>';
+        items.forEach(function(item,i){
+          var text=item.text||item;
+          html+='<div class="card card-relative"><div class="flex-between mb-8"><span class="status-badge info">案'+(i+1)+'</span></div><div class="post-text" style="white-space:pre-wrap;">'+self.escapeText(text)+'</div>'+(item.reason?'<div class="text-caption mb-8">💡 '+self.escapeText(item.reason)+'</div>':'')+'<div class="btn-group"><button class="btn btn-secondary btn-small gen-copy" data-text="'+self.escapeAttr(text)+'">📋 コピー</button><button class="btn btn-small gen-save" data-text="'+self.escapeAttr(text)+'">💾 下書き保存</button></div></div>';
+        });
+        results.innerHTML=html;
+        results.querySelectorAll('.gen-copy').forEach(function(b){b.addEventListener('click',function(){self.copyToClipboard(b.getAttribute('data-text'));});});
+        results.querySelectorAll('.gen-save').forEach(function(b){b.addEventListener('click',async function(){await self.api('saveDraft',{text:b.getAttribute('data-text'),source:'ai'});b.textContent='✅ 保存済';b.disabled=true;self.showToast('下書き保存しました','success');});});
+      }catch(e){results.innerHTML='<div style="color:var(--error);padding:12px;">'+self.escapeText(e.message)+'</div>';}
+      btn.disabled=false;btn.textContent='✨ 生成';
     });
   },
 
-  renderGenerateResults_(area, data, mode) {
-    let html = `<div style="display:flex;justify-content:space-between;align-items:center;margin:12px 0 8px">
-      <div style="font-weight:600;font-size:13px">✨ 生成結果</div>
-      ${this.geminiLabel()}
-    </div>`;
+  // --- Search ---
+  renderSearch_() {
+    var area = document.getElementById('createContent'), self = this;
+    var history = JSON.parse(localStorage.getItem('im_search_history')||'[]');
+    area.innerHTML = '<div class="card"><div class="card-title">🔍 キーワード検索</div><div class="mb-12"><input type="text" class="input" id="kwInput" placeholder="キーワードを入力..."></div><button class="btn btn-full" id="kwSearchBtn">🔍 検索</button></div>' +
+      (history.length ? '<div class="card"><div class="card-title">🕐 検索履歴</div><div style="display:flex;flex-wrap:wrap;gap:6px;">'+history.map(function(h){return '<button class="btn btn-secondary btn-small kw-hist" data-kw="'+self.escapeAttr(h)+'">'+self.escapeText(h)+'</button>';}).join('')+'</div><button class="btn btn-secondary btn-small mt-8" id="clearKwHist">🗑️ 履歴クリア</button></div>' : '') +
+      '<div id="kwResults"></div>';
+    document.getElementById('kwSearchBtn').addEventListener('click', function(){self.execSearch_();});
+    document.getElementById('kwInput').addEventListener('keydown', function(e){if(e.key==='Enter')self.execSearch_();});
+    document.querySelectorAll('.kw-hist').forEach(function(b){b.addEventListener('click',function(){document.getElementById('kwInput').value=b.getAttribute('data-kw');self.execSearch_();});});
+    var clr = document.getElementById('clearKwHist'); if(clr)clr.addEventListener('click',function(){localStorage.removeItem('im_search_history');self.renderSearch_();self.showToast('履歴クリア','success');});
+  },
 
-    if (data.analysisUsed) {
-      html += `<div class="tip-card">📊 分析データ使用: ${data.analysisUsed.totalPosts}投稿, 平均ER ${data.analysisUsed.avgER}, トップテーマ「${this.escapeHtml(data.analysisUsed.topTheme)}」</div>`;
-    }
-
-    (data.items || []).forEach((item, i) => {
-      html += `
-        <div class="card">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-            <span class="badge badge-demo">案${i+1}</span>
-            ${item.meta?.expectedER ? `<span style="font-size:11px;color:var(--text-secondary)">予想ER: ${item.meta.expectedER}</span>` : ''}
-          </div>
-          <div class="post-card-text" style="font-size:14px;line-height:1.7;margin-bottom:10px">${this.escapeHtml(item.text)}</div>
-          ${item.reason ? `<div style="font-size:11px;color:var(--text-secondary);margin-bottom:8px">💡 ${this.escapeHtml(item.reason)}</div>` : ''}
-          ${item.meta ? `<div class="post-card-meta">
-            ${item.meta.bestTime ? `<span>🕐 ${item.meta.bestTime}</span>` : ''}
-            ${item.meta.mediaAdvice ? `<span>📷 ${this.escapeHtml(item.meta.mediaAdvice)}</span>` : ''}
-          </div>` : ''}
-          <div style="display:flex;gap:6px;margin-top:10px">
-            <button class="btn btn-sm btn-secondary copy-gen-btn" data-text="${this.escapeAttr(item.text)}">📋 コピー</button>
-            <button class="btn btn-sm btn-primary save-draft-btn" data-text="${this.escapeAttr(item.text)}">💾 下書き保存</button>
-          </div>
-        </div>`;
-    });
-
-    html += this.geminiFooter();
-    area.innerHTML = html;
-
-    area.querySelectorAll('.copy-gen-btn').forEach(btn => {
-      btn.addEventListener('click', () => this.copyToClipboard(btn.dataset.text));
-    });
-    area.querySelectorAll('.save-draft-btn').forEach(btn => {
-      btn.addEventListener('click', async () => {
-        await this.api('saveDraft', { text: btn.dataset.text, source: 'ai' });
-        btn.textContent = '✅ 保存済';
-        btn.disabled = true;
-        this.showToast('下書きに保存しました', 'success');
+  async execSearch_() {
+    var kw = document.getElementById('kwInput').value.trim(); if(!kw){this.showToast('キーワードを入力','error');return;}
+    var history = JSON.parse(localStorage.getItem('im_search_history')||'[]');
+    history=[kw].concat(history.filter(function(h){return h!==kw;})).slice(0,10);
+    localStorage.setItem('im_search_history',JSON.stringify(history));
+    var results=document.getElementById('kwResults'),self=this;results.innerHTML=this.renderSkeleton_();
+    try {
+      var data = await this.api('searchKeyword',{keyword:kw});
+      var html='<div class="card mt-12"><div class="flex-between mb-8"><div class="card-title">検索結果: 「'+this.escapeText(kw)+'」</div><span class="status-badge info">'+data.posts.length+'件</span></div>';
+      if(data.summary){html+='<div class="metric-grid mb-12">'+this.renderMetricCard('📊','総数',data.summary.total)+this.renderMetricCard('👁','平均ビュー',data.summary.avgViews)+'</div>';}
+      html+='</div>';
+      data.posts.forEach(function(p){
+        html+='<div class="post-card"><div class="flex-between mb-4"><span style="font-size:12px;font-weight:600;color:var(--primary);">@'+self.escapeText(p.username)+'</span><span class="text-small">'+self.formatDate_(p.timestamp)+'</span></div><div class="post-text">'+self.escapeText(p.text)+'</div><div class="post-metrics"><span class="post-metric">👁 '+p.views.toLocaleString()+'</span><span class="post-metric">❤️ '+p.likes+'</span><span class="post-metric">💬 '+p.replies+'</span></div></div>';
       });
-    });
+      results.innerHTML=html;
+    }catch(e){results.innerHTML='<div style="color:var(--error);padding:12px;">'+self.escapeText(e.message)+'</div>';}
   },
 
-  // ============================================================
-  // Drafts (inside Create tab)
-  // ============================================================
-  renderDraftsContent_() {
-    const area = document.getElementById('createContent');
-    area.innerHTML = `
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-        <div class="tabs" style="flex:1;margin-bottom:0;margin-right:8px" id="draftFilterTabs">
-          <button class="tab-btn active" data-filter="all">すべて</button>
-          <button class="tab-btn" data-filter="unused">未使用</button>
-          <button class="tab-btn" data-filter="used">使用済</button>
-        </div>
-        <button class="btn btn-sm btn-primary" id="addDraftBtn">＋ 追加</button>
-      </div>
-      <div id="draftsListArea"></div>
-    `;
-    this.bindDraftFilterEvents_();
-    this.fetchDraftsList_('all');
-
-    document.getElementById('addDraftBtn').addEventListener('click', () => this.showAddDraftModal_());
+  // --- Drafts ---
+  renderDrafts_() {
+    var area = document.getElementById('createContent'), self = this;
+    area.innerHTML = '<div class="flex-between mb-12"><div class="subtabs" style="flex:1;margin-bottom:0;margin-right:8px;" id="draftFilters"><button class="subtab active" data-df="all">すべて</button><button class="subtab" data-df="unused">未使用</button><button class="subtab" data-df="used">使用済</button></div><button class="btn btn-small" id="addDraftBtn">＋ 追加</button></div><div id="draftsList"></div>';
+    document.getElementById('draftFilters').addEventListener('click', function(e){var btn=e.target.closest('.subtab');if(!btn)return;document.querySelectorAll('#draftFilters .subtab').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');self.fetchDrafts_(btn.getAttribute('data-df'));});
+    document.getElementById('addDraftBtn').addEventListener('click', function(){self.showAddDraftModal_();});
+    this.fetchDrafts_('all');
   },
 
-  bindDraftFilterEvents_() {
-    document.getElementById('draftFilterTabs').addEventListener('click', e => {
-      const btn = e.target.closest('.tab-btn');
-      if (!btn) return;
-      document.querySelectorAll('#draftFilterTabs .tab-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      this.fetchDraftsList_(btn.dataset.filter);
+  async fetchDrafts_(filter) {
+    var area=document.getElementById('draftsList'),self=this;area.innerHTML=this.renderSkeleton_();
+    var status=filter==='all'?undefined:filter;
+    var data=await this.api('getDrafts',{status:status});var drafts=data.drafts||[];
+    if(!drafts.length){area.innerHTML='<div class="empty-state"><div class="empty-state-icon">📝</div><div class="empty-state-title">下書きがありません</div></div>';return;}
+    var html='';
+    drafts.forEach(function(d){
+      html+='<div class="card" id="draft-'+d.id+'"><div class="flex-between mb-8"><div style="display:flex;gap:6px;"><span class="status-badge '+(d.used?'success':'warning')+'">'+(d.used?'使用済':'未使用')+'</span><span class="status-badge info">'+(d.source==='ai'?'🤖 AI':'✏️ 手動')+'</span></div><span class="text-small">'+self.formatDate_(d.createdAt)+'</span></div><div class="post-text">'+self.escapeHtml(d.text)+'</div><div class="btn-group mt-8"><button class="btn btn-secondary btn-small dc" data-text="'+self.escapeAttr(d.text)+'">📋 コピー</button><button class="btn btn-secondary btn-small dt" data-id="'+d.id+'">'+(d.used?'📌 未使用に':'✅ 使用済に')+'</button><button class="btn btn-secondary btn-small dr" data-id="'+d.id+'" data-text="'+self.escapeAttr(d.text)+'">🤖 AI編集</button><button class="btn btn-small" style="background:var(--error);color:#fff;" data-id="'+d.id+'">🗑️</button></div></div>';
     });
-  },
-
-  async fetchDraftsList_(filter) {
-    const area = document.getElementById('draftsListArea');
-    area.innerHTML = this.showSkeleton();
-    const status = filter === 'all' ? undefined : filter;
-    const data = await this.api('getDrafts', { status });
-    const drafts = data.drafts || [];
-
-    if (!drafts.length) {
-      area.innerHTML = `<div class="empty-state"><div class="empty-state-icon">📝</div><div class="empty-state-text">下書きがありません</div></div>`;
-      return;
-    }
-
-    let html = '';
-    drafts.forEach(d => {
-      html += `
-        <div class="card" id="draft-${d.id}">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-            <div style="display:flex;gap:6px;align-items:center">
-              <span class="badge ${d.used ? 'badge-success' : 'badge-warning'}">${d.used ? '使用済' : '未使用'}</span>
-              <span class="badge badge-demo">${d.source === 'ai' ? '🤖 AI' : '✏️ 手動'}</span>
-            </div>
-            <span style="font-size:11px;color:var(--text-muted)">${this.formatDate(d.createdAt)}</span>
-          </div>
-          <div class="post-card-text">${this.escapeHtml(d.isThread ? (d.threadParts || []).map((p,i) => `[${i===0?'親':'返信'+(i)}] ${p}`).join('\n\n') : d.text)}</div>
-          <div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap">
-            <button class="btn btn-sm btn-secondary draft-copy-btn" data-text="${this.escapeAttr(d.text || (d.threadParts || []).join('\n\n'))}">📋 コピー</button>
-            <button class="btn btn-sm btn-secondary draft-toggle-btn" data-id="${d.id}">${d.used ? '📌 未使用に戻す' : '✅ 使用済にする'}</button>
-            <button class="btn btn-sm btn-secondary draft-refine-btn" data-id="${d.id}" data-text="${this.escapeAttr(d.text || '')}">🤖 AI編集</button>
-            <button class="btn btn-sm btn-danger draft-delete-btn" data-id="${d.id}">🗑️</button>
-          </div>
-        </div>`;
-    });
-    area.innerHTML = html;
-    this.bindDraftItemEvents_();
-  },
-
-  bindDraftItemEvents_() {
-    document.querySelectorAll('.draft-copy-btn').forEach(btn => {
-      btn.addEventListener('click', () => this.copyToClipboard(btn.dataset.text));
-    });
-    document.querySelectorAll('.draft-toggle-btn').forEach(btn => {
-      btn.addEventListener('click', async () => {
-        await this.api('toggleDraftStatus', { draftId: btn.dataset.id });
-        const activeFilter = document.querySelector('#draftFilterTabs .tab-btn.active')?.dataset.filter || 'all';
-        this.fetchDraftsList_(activeFilter);
-        this.showToast('ステータスを変更しました', 'success');
-      });
-    });
-    document.querySelectorAll('.draft-delete-btn').forEach(btn => {
-      btn.addEventListener('click', async () => {
-        if (!confirm('この下書きを削除しますか？')) return;
-        await this.api('deleteDraft', { draftId: btn.dataset.id });
-        document.getElementById(`draft-${btn.dataset.id}`)?.remove();
-        this.showToast('削除しました', 'success');
-      });
-    });
-    document.querySelectorAll('.draft-refine-btn').forEach(btn => {
-      btn.addEventListener('click', () => this.showRefineModal_(btn.dataset.id, btn.dataset.text));
-    });
+    area.innerHTML=html;
+    area.querySelectorAll('.dc').forEach(function(b){b.addEventListener('click',function(){self.copyToClipboard(b.getAttribute('data-text'));});});
+    area.querySelectorAll('.dt').forEach(function(b){b.addEventListener('click',async function(){await self.api('toggleDraftStatus',{draftId:b.getAttribute('data-id')});self.fetchDrafts_(document.querySelector('#draftFilters .subtab.active').getAttribute('data-df'));self.showToast('ステータス変更','success');});});
+    area.querySelectorAll('.dr').forEach(function(b){b.addEventListener('click',function(){self.showRefineModal_(b.getAttribute('data-id'),b.getAttribute('data-text'));});});
+    area.querySelectorAll('[style*="background:var(--error)"]').forEach(function(b){b.addEventListener('click',async function(){if(!confirm('削除しますか？'))return;await self.api('deleteDraft',{draftId:b.getAttribute('data-id')});var el=document.getElementById('draft-'+b.getAttribute('data-id'));if(el)el.remove();self.showToast('削除しました','success');});});
   },
 
   showRefineModal_(draftId, text) {
-    const styles = [
-      { id: 'improve', label: '✨ 改善', desc: '全体的にブラッシュアップ' },
-      { id: 'shorter', label: '📏 短く', desc: 'より簡潔に' },
-      { id: 'longer', label: '📝 長く', desc: 'より詳細に' },
-      { id: 'casual', label: '😊 カジュアル', desc: 'くだけた口調に' },
-      { id: 'professional', label: '💼 プロフェッショナル', desc: 'フォーマルに' },
-      { id: 'engaging', label: '🔥 エンゲージング', desc: '反応が得られるように' },
-      { id: 'hook', label: '🎣 フック', desc: '冒頭で惹きつける' }
-    ];
-
-    const body = `
-      <div style="margin-bottom:12px">
-        <div style="font-size:12px;color:var(--text-secondary);margin-bottom:8px">元の投稿:</div>
-        <div style="background:var(--bg-secondary);padding:10px;border-radius:var(--radius-sm);font-size:13px;line-height:1.6;max-height:100px;overflow-y:auto">${this.escapeHtml(text)}</div>
-      </div>
-      <div style="margin-bottom:12px">
-        <div style="font-size:12px;color:var(--text-secondary);margin-bottom:6px">スタイルを選択:</div>
-        <div style="display:flex;flex-wrap:wrap;gap:6px" id="refineStyleBtns">
-          ${styles.map(s => `<button class="btn btn-sm btn-secondary refine-style-btn" data-style="${s.id}" title="${s.desc}">${s.label}</button>`).join('')}
-        </div>
-      </div>
-      <div style="margin-bottom:12px">
-        <label style="font-size:12px;color:var(--text-secondary);display:block;margin-bottom:6px">追加指示（任意）</label>
-        <textarea class="input" id="refineInstruction" rows="2" placeholder="例: もっと数字を入れて..."></textarea>
-      </div>
-      <button class="btn btn-primary btn-block" id="executeRefineBtn">🤖 リファイン実行</button>
-      <div id="refineResultArea" style="margin-top:12px"></div>
-    `;
-
-    const modal = this.showModal('🤖 AI編集', body);
-    let selectedStyle = 'improve';
-
-    modal.querySelector('#refineStyleBtns').addEventListener('click', e => {
-      const btn = e.target.closest('.refine-style-btn');
-      if (!btn) return;
-      selectedStyle = btn.dataset.style;
-      modal.querySelectorAll('.refine-style-btn').forEach(b => {
-        b.className = `btn btn-sm ${b.dataset.style === selectedStyle ? 'btn-primary' : 'btn-secondary'} refine-style-btn`;
-      });
-    });
-    // Set first as active
-    modal.querySelector('.refine-style-btn').classList.replace('btn-secondary', 'btn-primary');
-
-    modal.querySelector('#executeRefineBtn').addEventListener('click', async () => {
-      const btn = modal.querySelector('#executeRefineBtn');
-      const resultArea = modal.querySelector('#refineResultArea');
-      const instruction = modal.querySelector('#refineInstruction').value.trim();
-      btn.disabled = true;
-      btn.textContent = '⏳ 生成中...';
-      resultArea.innerHTML = this.showSkeleton();
-
-      try {
-        const data = await this.api('refinePostWithAI', { text, style: selectedStyle, instruction });
-        let html = '';
-        (data.variants || []).forEach((v, i) => {
-          html += `
-            <div class="card" style="background:var(--bg-secondary)">
-              <div style="display:flex;justify-content:space-between;margin-bottom:6px">
-                <span class="badge badge-demo">バリエーション ${i+1}</span>
-                ${this.geminiLabel()}
-              </div>
-              <div class="post-card-text">${this.escapeHtml(v.text)}</div>
-              <div style="display:flex;gap:6px;margin-top:8px">
-                <button class="btn btn-sm btn-secondary" onclick="App.copyToClipboard(\`${v.text.replace(/`/g, '\\`').replace(/\\/g, '\\\\')}\`)">📋 コピー</button>
-                <button class="btn btn-sm btn-primary refine-save-btn" data-text="${this.escapeAttr(v.text)}">💾 新規下書き保存</button>
-                <button class="btn btn-sm btn-secondary refine-replace-btn" data-id="${draftId}" data-text="${this.escapeAttr(v.text)}">🔄 上書き</button>
-              </div>
-            </div>`;
-        });
-        resultArea.innerHTML = html;
-
-        resultArea.querySelectorAll('.refine-save-btn').forEach(b => {
-          b.addEventListener('click', async () => {
-            await this.api('saveDraft', { text: b.dataset.text, source: 'ai' });
-            b.textContent = '✅ 保存済';
-            b.disabled = true;
-            this.showToast('新規下書きとして保存しました', 'success');
-          });
-        });
-        resultArea.querySelectorAll('.refine-replace-btn').forEach(b => {
-          b.addEventListener('click', async () => {
-            await this.api('updateDraft', { draftId: b.dataset.id, text: b.dataset.text });
-            b.textContent = '✅ 上書き済';
-            b.disabled = true;
-            this.showToast('下書きを上書きしました', 'success');
-          });
-        });
-      } catch(e) {
-        resultArea.innerHTML = `<div class="tip-card" style="color:var(--danger)">エラー: ${this.escapeHtml(e.message)}</div>`;
-      }
-      btn.disabled = false;
-      btn.textContent = '🤖 リファイン実行';
+    var self = this;
+    var styles = [{id:'improve',label:'✨ 改善'},{id:'shorter',label:'📏 短く'},{id:'longer',label:'📝 長く'},{id:'casual',label:'😊 カジュアル'},{id:'professional',label:'💼 プロ'},{id:'engaging',label:'🔥 エンゲージング'}];
+    var overlay = document.createElement('div'); overlay.className='modal-overlay show'; overlay.id='refineModal';
+    overlay.innerHTML='<div class="modal-sheet"><div class="modal-header"><div class="text-heading">🤖 AI編集</div><button class="modal-close" id="closeRefine">✕</button></div><div class="text-caption mb-8">元の投稿:</div><div style="background:var(--bg-secondary);padding:10px;border-radius:8px;font-size:13px;max-height:80px;overflow-y:auto;margin-bottom:12px;">'+self.escapeHtml(text)+'</div><div class="form-label mb-4">スタイル</div><div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;" id="refStyles">'+styles.map(function(s){return '<button class="btn btn-secondary btn-small rs" data-style="'+s.id+'">'+s.label+'</button>';}).join('')+'</div><div class="mb-12"><label class="form-label">追加指示（任意）</label><textarea class="input" id="refInst" rows="2" placeholder="例: もっと数字を入れて..."></textarea></div><button class="btn btn-full" id="execRefine">🤖 リファイン実行</button><div id="refResult" style="margin-top:12px;"></div></div>';
+    document.body.appendChild(overlay);
+    var selectedStyle='improve';
+    overlay.querySelector('#refStyles').addEventListener('click',function(e){var b=e.target.closest('.rs');if(!b)return;selectedStyle=b.getAttribute('data-style');overlay.querySelectorAll('.rs').forEach(function(x){x.classList.remove('btn-primary');x.classList.add('btn-secondary');});b.classList.remove('btn-secondary');b.classList.add('btn-primary');});
+    overlay.querySelector('.rs').classList.remove('btn-secondary');overlay.querySelector('.rs').classList.add('btn-primary');
+    overlay.querySelector('#closeRefine').addEventListener('click',function(){overlay.remove();});
+    overlay.addEventListener('click',function(e){if(e.target===overlay)overlay.remove();});
+    overlay.querySelector('#execRefine').addEventListener('click',async function(){
+      var btn=this,res=overlay.querySelector('#refResult'),inst=overlay.querySelector('#refInst').value.trim();
+      btn.disabled=true;btn.textContent='⏳ 生成中...';res.innerHTML=self.renderSkeleton_();
+      try{var data=await self.api('refinePostWithAI',{text:text,style:selectedStyle,instruction:inst});
+        var items=data.results||[];var html='';items.forEach(function(item,i){var t=item.text||item;html+='<div class="card" style="background:var(--bg-secondary);"><div class="flex-between mb-4"><span class="status-badge info">バリエーション '+(i+1)+'</span>'+self.geminiLabel_()+'</div><div class="post-text" style="white-space:pre-wrap;">'+self.escapeText(t)+'</div><div class="btn-group mt-8"><button class="btn btn-secondary btn-small rc" data-text="'+self.escapeAttr(t)+'">📋 コピー</button><button class="btn btn-small rsv" data-text="'+self.escapeAttr(t)+'">💾 新規保存</button></div></div>';});
+        res.innerHTML=html;
+        res.querySelectorAll('.rc').forEach(function(b){b.addEventListener('click',function(){self.copyToClipboard(b.getAttribute('data-text'));});});
+        res.querySelectorAll('.rsv').forEach(function(b){b.addEventListener('click',async function(){await self.api('saveDraft',{text:b.getAttribute('data-text'),source:'ai'});b.textContent='✅ 保存済';b.disabled=true;self.showToast('保存しました','success');});});
+      }catch(e){res.innerHTML='<div style="color:var(--error);">'+self.escapeText(e.message)+'</div>';}
+      btn.disabled=false;btn.textContent='🤖 リファイン実行';
     });
   },
 
   showAddDraftModal_() {
-    const body = `
-      <div style="margin-bottom:12px">
-        <label style="font-size:12px;color:var(--text-secondary);display:block;margin-bottom:6px">投稿テキスト</label>
-        <textarea class="input" id="newDraftText" rows="5" placeholder="投稿内容を入力..."></textarea>
-      </div>
-      <button class="btn btn-primary btn-block" id="saveNewDraftBtn">💾 保存</button>
-    `;
-    const modal = this.showModal('📝 新規下書き', body);
-    modal.querySelector('#saveNewDraftBtn').addEventListener('click', async () => {
-      const text = modal.querySelector('#newDraftText').value.trim();
-      if (!text) { this.showToast('テキストを入力してください', 'error'); return; }
-      await this.api('saveDraft', { text, source: 'manual' });
-      modal.querySelector('.modal-overlay')?.remove() || modal.remove();
-      this.fetchDraftsList_('all');
-      this.showToast('下書きを保存しました', 'success');
+    var self = this;
+    var overlay = document.createElement('div'); overlay.className='modal-overlay show'; overlay.id='draftModal';
+    overlay.innerHTML='<div class="modal-sheet"><div class="modal-header"><div class="text-heading">📝 新規下書き</div><button class="modal-close" id="closeDraft">✕</button></div><div class="mb-12"><label class="form-label">投稿テキスト</label><textarea class="input" id="newDraftText" rows="5" placeholder="投稿内容を入力..."></textarea></div><button class="btn btn-full" id="saveNewDraft">💾 保存</button></div>';
+    document.body.appendChild(overlay);
+    overlay.querySelector('#closeDraft').addEventListener('click',function(){overlay.remove();});
+    overlay.addEventListener('click',function(e){if(e.target===overlay)overlay.remove();});
+    overlay.querySelector('#saveNewDraft').addEventListener('click',async function(){
+      var text=overlay.querySelector('#newDraftText').value.trim();if(!text){self.showToast('テキストを入力','error');return;}
+      await self.api('saveDraft',{text:text,source:'manual'});overlay.remove();self.fetchDrafts_('all');self.showToast('保存しました','success');
     });
   },
 
-  // ============================================================
-  // Keywords Screen
-  // ============================================================
-  renderKeywords() {
-    const content = document.getElementById('mainContent');
-    const history = JSON.parse(localStorage.getItem('im_search_history') || '[]');
-
-    content.innerHTML = `
-      <div class="demo-banner">🎮 デモモードで動作中 — キーワード検索はサンプルデータを返します</div>
-      <div class="card">
-        <div class="card-title" style="margin-bottom:12px">🔍 キーワード検索</div>
-        <div style="margin-bottom:12px">
-          <input type="text" class="input" id="kwInput" placeholder="キーワードを入力..." value="">
-        </div>
-        <button class="btn btn-primary btn-block" id="kwSearchBtn">🔍 検索</button>
-      </div>
-      ${history.length ? `
-        <div class="card">
-          <div class="card-title" style="margin-bottom:8px">🕐 検索履歴</div>
-          <div style="display:flex;flex-wrap:wrap;gap:6px">
-            ${history.map(h => `<button class="btn btn-sm btn-secondary kw-history-btn" data-kw="${this.escapeAttr(h)}">${this.escapeHtml(h)}</button>`).join('')}
-          </div>
-          <button class="btn btn-sm btn-secondary" style="margin-top:8px" id="clearKwHistory">🗑️ 履歴クリア</button>
-        </div>` : ''}
-      <div id="kwResultArea"></div>
-    `;
-
-    document.getElementById('kwSearchBtn').addEventListener('click', () => this.executeKeywordSearch_());
-    document.getElementById('kwInput').addEventListener('keydown', e => { if (e.key === 'Enter') this.executeKeywordSearch_(); });
-
-    document.querySelectorAll('.kw-history-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.getElementById('kwInput').value = btn.dataset.kw;
-        this.executeKeywordSearch_();
-      });
-    });
-
-    document.getElementById('clearKwHistory')?.addEventListener('click', () => {
-      localStorage.removeItem('im_search_history');
-      this.renderKeywords();
-      this.showToast('検索履歴をクリアしました', 'success');
-    });
-  },
-
-  async executeKeywordSearch_() {
-    const keyword = document.getElementById('kwInput').value.trim();
-    if (!keyword) { this.showToast('キーワードを入力してください', 'error'); return; }
-
-    // Save history
-    let history = JSON.parse(localStorage.getItem('im_search_history') || '[]');
-    history = [keyword, ...history.filter(h => h !== keyword)].slice(0, 10);
-    localStorage.setItem('im_search_history', JSON.stringify(history));
-
-    const resultArea = document.getElementById('kwResultArea');
-    resultArea.innerHTML = this.showSkeleton();
-
-    try {
-      const data = await this.api('searchKeyword', { keyword });
-
-      let html = `
-        <div class="card" style="margin-top:12px">
-          <div class="card-header">
-            <div class="card-title">📊 検索結果: 「${this.escapeHtml(keyword)}」</div>
-            <span class="badge badge-demo">${data.posts.length}件</span>
-          </div>
-          ${data.summary ? `
-            <div class="stats-grid" style="margin-bottom:12px">
-              <div class="stat-item"><div class="stat-value">${data.summary.total}</div><div class="stat-label">総数</div></div>
-              <div class="stat-item"><div class="stat-value">${this.formatNumber(data.summary.avgViews)}</div><div class="stat-label">平均ビュー</div></div>
-            </div>` : ''}
-        </div>
-      `;
-
-      data.posts.forEach(p => {
-        html += `
-          <div class="post-card">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
-              <span style="font-size:12px;font-weight:600;color:var(--accent-primary)">@${this.escapeHtml(p.username)}</span>
-              <span style="font-size:11px;color:var(--text-muted)">${this.timeAgo(p.timestamp)}</span>
-            </div>
-            <div class="post-card-text">${this.escapeHtml(p.text)}</div>
-            <div class="post-card-meta">
-              <span>👁️ ${this.formatNumber(p.views)}</span>
-              <span>❤️ ${p.likes}</span>
-              <span>💬 ${p.replies}</span>
-              <span>📷 ${p.mediaType}</span>
-            </div>
-          </div>`;
-      });
-
-      // AI Analysis button
-      html += `
-        <div class="card">
-          <button class="btn btn-primary btn-block" id="kwAiAnalysisBtn">🤖 AIでトレンド分析</button>
-          <div id="kwAiResultArea" style="margin-top:12px"></div>
-        </div>
-        ${this.geminiFooter()}
-      `;
-
-      resultArea.innerHTML = html;
-
-      document.getElementById('kwAiAnalysisBtn')?.addEventListener('click', async () => {
-        const btn = document.getElementById('kwAiAnalysisBtn');
-        const aiArea = document.getElementById('kwAiResultArea');
-        btn.disabled = true;
-        btn.textContent = '⏳ 分析中...';
-        aiArea.innerHTML = this.showSkeleton();
-
-        try {
-          const aiData = await this.api('searchKeywordWithAI', { keyword });
-          aiArea.innerHTML = `
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-              <span style="font-weight:600;font-size:13px">📊 トレンド分析</span>
-              ${this.geminiLabel()}
-            </div>
-            <div class="md-content">${this.parseMd(aiData.report || aiData.text || 'レポートを生成できませんでした')}</div>
-          `;
-        } catch(e) {
-          aiArea.innerHTML = `<div class="tip-card" style="color:var(--danger)">エラー: ${this.escapeHtml(e.message)}</div>`;
-        }
-        btn.disabled = false;
-        btn.textContent = '🤖 AIでトレンド分析';
-      });
-    } catch(e) {
-      resultArea.innerHTML = `<div class="tip-card" style="color:var(--danger)">エラー: ${this.escapeHtml(e.message)}</div>`;
-    }
-  },
-
-  // ============================================================
-  // Settings Screen (Enhanced)
-  // ============================================================
-  renderSettings() {
-    const content = document.getElementById('mainContent');
-    const hasKey = !!this.state.geminiKey;
-    const user = this.state.user;
-
-    content.innerHTML = `
-      <style>
-        .tooltip-wrap { position:relative; display:inline-flex; align-items:center; }
-        .tooltip-icon { display:inline-flex; align-items:center; justify-content:center; width:18px; height:18px; border-radius:50%; background:var(--border-light); color:var(--text-secondary); font-size:11px; cursor:pointer; margin-left:6px; flex-shrink:0; }
-        .tooltip-bubble { display:none; position:absolute; bottom:calc(100% + 8px); left:50%; transform:translateX(-50%); background:var(--bg-card-hover); border:1px solid var(--border-light); border-radius:var(--radius-sm); padding:10px 12px; font-size:11px; color:var(--text-secondary); line-height:1.6; width:260px; z-index:200; box-shadow:var(--shadow-lg); }
-        .tooltip-bubble::after { content:''; position:absolute; top:100%; left:50%; transform:translateX(-50%); border:6px solid transparent; border-top-color:var(--border-light); }
-        .tooltip-wrap.active .tooltip-bubble { display:block; }
-        .preview-field { background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:var(--radius-md); padding:10px 14px; font-size:13px; color:var(--text-muted); position:relative; }
-        .preview-field .lock-badge { position:absolute; top:8px; right:8px; }
-        .settings-section-title { font-size:13px; font-weight:600; color:var(--text-secondary); margin-bottom:8px; display:flex; align-items:center; gap:4px; }
-      </style>
-
-      <div class="demo-banner">🎮 デモモードで動作中</div>
-
-      <!-- Account Info -->
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">👤 アカウント</div>
-          <span class="badge badge-demo">デモ</span>
-        </div>
-        <div style="display:flex;align-items:center;gap:12px">
-          <img src="${user.profilePicUrl}" alt="" style="width:44px;height:44px;border-radius:50%;border:2px solid var(--border-light)">
-          <div>
-            <div style="font-weight:600">${this.escapeHtml(user.name)}</div>
-            <div style="font-size:12px;color:var(--text-secondary)">@${this.escapeHtml(user.username)}</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Meta Developer Settings (Preview) -->
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">
-            📱 Meta Developer設定
-            <span class="tooltip-wrap" data-tooltip>
-              <span class="tooltip-icon">?</span>
-              <span class="tooltip-bubble">Threads APIに接続するためのMeta App設定です。本体版ではここにApp IDとApp Secretを入力し、Threadsアカウントと連携します。<br><br>👉 <a href="https://developers.facebook.com/" target="_blank" style="color:var(--accent-primary)">Meta Developer Console</a></span>
-            </span>
-          </div>
-          <span class="badge badge-warning">🔒 本体版で設定</span>
-        </div>
-        <div style="margin-bottom:10px">
-          <div class="settings-section-title">App ID</div>
-          <div class="preview-field">
-            <span style="opacity:0.5">例: 123456789012345</span>
-            <span class="badge badge-warning lock-badge" style="font-size:10px">本体版</span>
-          </div>
-        </div>
-        <div style="margin-bottom:10px">
-          <div class="settings-section-title">App Secret</div>
-          <div class="preview-field">
-            <span style="opacity:0.5">例: ●●●●●●●●●●●●●●●●</span>
-            <span class="badge badge-warning lock-badge" style="font-size:10px">本体版</span>
-          </div>
-        </div>
-        <div style="font-size:11px;color:var(--text-muted);line-height:1.5;margin-top:4px">
-          本体版では Meta Developer Console で取得したApp IDとApp Secretを入力して、Threads APIと連携します。
-        </div>
-      </div>
-
-      <!-- Threads Auth (Preview) -->
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">
-            🔗 Threads認証
-            <span class="tooltip-wrap" data-tooltip>
-              <span class="tooltip-icon">?</span>
-              <span class="tooltip-bubble">本体版ではOAuth認証でThreadsアカウントと接続し、実際のフォロワー数・投稿データ・インサイトをリアルタイムで取得できます。デモ版ではサンプルデータを表示しています。</span>
-            </span>
-          </div>
-          <span class="badge badge-warning">🔒 本体版で設定</span>
-        </div>
-        <button class="btn btn-secondary btn-block" disabled style="opacity:0.5">
-          🔗 Threadsアカウントと接続（本体版で利用可能）
-        </button>
-        <div style="font-size:11px;color:var(--text-muted);margin-top:8px;line-height:1.5">
-          本体版では実際のThreadsアカウントを接続して、リアルデータでの分析が可能になります。
-        </div>
-      </div>
-
-      <!-- Spreadsheet (Preview) -->
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">
-            📊 Google スプレッドシート
-            <span class="tooltip-wrap" data-tooltip>
-              <span class="tooltip-icon">?</span>
-              <span class="tooltip-bubble">本体版はGoogle Apps Script上で動作し、スプレッドシートにデータを保存します。フォロワー履歴、投稿分析結果、下書きなどが自動的にシートに記録されます。</span>
-            </span>
-          </div>
-          <span class="badge badge-warning">🔒 本体版で設定</span>
-        </div>
-        <div class="preview-field">
-          <span style="opacity:0.5">例: https://docs.google.com/spreadsheets/d/xxxxx</span>
-          <span class="badge badge-warning lock-badge" style="font-size:10px">本体版</span>
-        </div>
-        <div style="font-size:11px;color:var(--text-muted);margin-top:8px;line-height:1.5">
-          本体版ではGoogleスプレッドシートがデータベースとして機能し、分析履歴やフォロワー推移が永続的に記録されます。
-        </div>
-      </div>
-
-      <!-- Gemini API Key (Active!) -->
-      <div class="card" style="border-color:${hasKey ? 'rgba(74,222,128,0.3)' : 'rgba(200,162,255,0.3)'}">
-        <div class="card-header">
-          <div class="card-title">
-            🤖 Gemini AI設定
-            <span class="tooltip-wrap" data-tooltip>
-              <span class="tooltip-icon">?</span>
-              <span class="tooltip-bubble">Google AI Studio で無料のAPIキーを取得できます。キーを入力するとデモ内でもリアルタイムAI分析・投稿生成が体験できます。キーはブラウザのlocalStorageにのみ保存され、Googleのサーバーに直接送信されます（第三者には送信されません）。<br><br>👉 <a href="https://aistudio.google.com/apikey" target="_blank" style="color:var(--accent-primary)">APIキーを取得</a></span>
-            </span>
-          </div>
-          <span class="badge ${hasKey ? 'badge-success' : 'badge-warning'}">${hasKey ? '✅ 接続中' : '⚠️ 未設定'}</span>
-        </div>
-        ${!hasKey ? `
-        <div style="background:rgba(200,162,255,0.08);border:1px solid rgba(200,162,255,0.2);border-radius:var(--radius-sm);padding:10px;margin-bottom:12px;font-size:12px;color:var(--text-secondary);line-height:1.6">
-          ✨ <strong style="color:var(--accent-primary)">このデモでも利用可能！</strong><br>
-          APIキーを入力すると、サンプルデータの代わりにリアルタイムAI分析・投稿生成を体験できます。
-        </div>` : `
-        <div style="background:rgba(74,222,128,0.08);border:1px solid rgba(74,222,128,0.2);border-radius:var(--radius-sm);padding:10px;margin-bottom:12px;font-size:12px;color:var(--text-secondary);line-height:1.6">
-          ✅ <strong style="color:var(--success)">Gemini AI 接続中</strong><br>
-          AI分析・投稿生成がリアルタイムモードで動作しています。
-        </div>`}
-        <div style="margin-bottom:10px">
-          <label style="font-size:12px;color:var(--text-secondary);display:block;margin-bottom:6px">APIキー</label>
-          <div style="display:flex;gap:8px">
-            <input type="password" class="input" id="geminiKeyInput" placeholder="AIza..." value="${this.escapeAttr(this.state.geminiKey || '')}" style="flex:1">
-            <button class="btn btn-sm btn-secondary" id="toggleKeyVisibility" style="white-space:nowrap">👁️</button>
-          </div>
-        </div>
-        <div style="display:flex;gap:8px;margin-bottom:12px">
-          <button class="btn btn-primary" id="saveGeminiKeyBtn" style="flex:1">💾 保存 & テスト</button>
-          ${hasKey ? '<button class="btn btn-danger btn-sm" id="deleteGeminiKeyBtn">🗑️ 削除</button>' : ''}
-        </div>
-        <div id="geminiTestResult"></div>
-        <div style="margin-top:8px">
-          <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener" style="font-size:12px;color:var(--accent-primary);text-decoration:none">
-            🔗 Google AI Studio でAPIキーを取得 →
-          </a>
-        </div>
-      </div>
-
-      <!-- Data Management -->
-      <div class="card">
-        <div class="card-title" style="margin-bottom:12px">🗄️ データ管理</div>
-        <div style="display:flex;flex-direction:column;gap:8px">
-          <button class="btn btn-secondary btn-block" id="exportDataBtn">📥 データエクスポート (JSON)</button>
-          <button class="btn btn-danger btn-block" id="clearAllDataBtn">🗑️ 全データ削除</button>
-        </div>
-      </div>
-
-      <!-- Links -->
-      <div class="card">
-        <div class="card-title" style="margin-bottom:12px">🔗 リンク</div>
-        <div style="display:flex;flex-direction:column;gap:8px;font-size:13px">
-          <a href="https://github.com/goroyattemiyo/insight-master" target="_blank" rel="noopener" style="color:var(--accent-primary);text-decoration:none;padding:8px;background:var(--bg-secondary);border-radius:var(--radius-sm)">
-            📦 Insight Master（本体プロジェクト）
-          </a>
-          <a href="https://github.com/goroyattemiyo/Synapse" target="_blank" rel="noopener" style="color:var(--accent-primary);text-decoration:none;padding:8px;background:var(--bg-secondary);border-radius:var(--radius-sm)">
-            🧠 Synapse（設計フレームワーク）
-          </a>
-          <a href="https://sordid-echinacea-374.notion.site/Threads-InsightMaster-AI-1-313b3545dbc6809aa5d6fcf0f710091f" target="_blank" rel="noopener" style="color:var(--accent-primary);text-decoration:none;padding:8px;background:var(--bg-secondary);border-radius:var(--radius-sm)">
-            📖 セットアップガイド（Notion）
-          </a>
-        </div>
-      </div>
-
-      <!-- App Info -->
-      <div class="card" style="text-align:center">
-        <img src="https://files.catbox.moe/up3cd1.webp" alt="" style="width:48px;height:48px;border-radius:12px;margin-bottom:8px">
-        <div style="font-weight:700;font-size:15px">Insight Master</div>
-        <div style="font-size:12px;color:var(--text-secondary)">Demo Version 1.0.0</div>
-        <div style="font-size:11px;color:var(--text-muted);margin-top:4px">Based on v2.1.0 (2026-02-28)</div>
-        <div style="font-size:11px;color:var(--text-muted);margin-top:2px">Designed with Synapse Architecture</div>
-      </div>
-
-      <div style="height:20px"></div>
-    `;
-
+  // ==========================================================
+  // SETTINGS
+  // ==========================================================
+  renderSettings_() {
+    var content = document.getElementById('content'), self = this;
+    var hasKey = !!this.state.geminiKey, user = this.state.user;
+    content.innerHTML = '<div class="screen-content screen-animate">' +
+      '<div style="padding:12px 16px;background:linear-gradient(135deg,#eff6ff,#f0fdf4);border:1px solid #93c5fd;border-radius:12px;margin-bottom:12px;"><span style="font-weight:600;color:#1e40af;">🎮 デモモード</span></div>' +
+      // Account
+      '<div class="card"><div class="flex-between mb-8"><div class="card-title" style="margin-bottom:0;">👤 アカウント</div><span class="status-badge warning">デモ</span></div><div class="flex-row gap-12"><img src="'+user.profilePicUrl+'" class="avatar"><div><div class="text-subheading">'+self.escapeText(user.name)+'</div><div class="text-caption">@'+self.escapeText(user.username)+'</div></div></div></div>' +
+      // Meta Developer (Preview)
+      '<div class="card"><div class="flex-between mb-8"><div class="card-title" style="margin-bottom:0;">📱 Meta Developer設定 <span class="tooltip-wrap" data-tooltip><span class="tooltip-icon">?</span><span class="tooltip-bubble">Threads APIに接続するためのMeta App設定です。本体版ではここにApp IDとApp Secretを入力し、Threadsアカウントと連携します。<br><br><a href="https://developers.facebook.com/" target="_blank" style="color:var(--primary);">Meta Developer Console →</a></span></span></div><span class="status-badge warning">🔒 本体版</span></div>' +
+        '<div class="mb-8"><div class="form-label">App ID</div><div class="preview-field"><span style="opacity:0.5;">例: 123456789012345</span><span class="status-badge warning lock-badge" style="font-size:10px;">本体版</span></div></div>' +
+        '<div class="mb-8"><div class="form-label">App Secret</div><div class="preview-field"><span style="opacity:0.5;">例: ●●●●●●●●●●●●●●●●</span><span class="status-badge warning lock-badge" style="font-size:10px;">本体版</span></div></div>' +
+        '<div class="text-small" style="line-height:1.5;">本体版では Meta Developer Console で取得したApp IDとApp Secretを入力して、Threads APIと連携します。</div>' +
+      '</div>' +
+      // Threads Auth (Preview)
+      '<div class="card"><div class="flex-between mb-8"><div class="card-title" style="margin-bottom:0;">🔗 Threads認証 <span class="tooltip-wrap" data-tooltip><span class="tooltip-icon">?</span><span class="tooltip-bubble">本体版ではOAuth認証でThreadsアカウントと接続し、実際のフォロワー数・投稿データ・インサイトをリアルタイムで取得できます。デモ版ではサンプルデータを表示しています。</span></span></div><span class="status-badge warning">🔒 本体版</span></div>' +
+        '<button class="btn btn-secondary btn-full" disabled style="opacity:0.5;">🔗 Threadsアカウントと接続（本体版で利用可能）</button>' +
+        '<div class="text-small mt-8" style="line-height:1.5;">本体版では実際のThreadsアカウントを接続して、リアルデータでの分析が可能になります。</div>' +
+      '</div>' +
+      // Spreadsheet (Preview)
+      '<div class="card"><div class="flex-between mb-8"><div class="card-title" style="margin-bottom:0;">📊 Google スプレッドシート <span class="tooltip-wrap" data-tooltip><span class="tooltip-icon">?</span><span class="tooltip-bubble">本体版はGoogle Apps Script上で動作し、スプレッドシートにデータを保存します。フォロワー履歴、投稿分析結果、下書きなどが自動的にシートに記録されます。</span></span></div><span class="status-badge warning">🔒 本体版</span></div>' +
+        '<div class="preview-field"><span style="opacity:0.5;">例: https://docs.google.com/spreadsheets/d/xxxxx</span><span class="status-badge warning lock-badge" style="font-size:10px;">本体版</span></div>' +
+        '<div class="text-small mt-8" style="line-height:1.5;">本体版ではGoogleスプレッドシートがデータベースとして機能し、分析履歴が永続的に記録されます。</div>' +
+      '</div>' +
+      // Gemini API Key (Active!)
+      '<div class="card" style="border-color:'+(hasKey?'#86efac':'#818cf8')+';border-width:2px;"><div class="flex-between mb-8"><div class="card-title" style="margin-bottom:0;">🤖 Gemini AI設定 <span class="tooltip-wrap" data-tooltip><span class="tooltip-icon">?</span><span class="tooltip-bubble">Google AI Studio で無料のAPIキーを取得できます。キーを入力するとデモ内でもリアルタイムAI分析・投稿生成が体験できます。キーはブラウザのlocalStorageにのみ保存されます。<br><br><a href="https://aistudio.google.com/apikey" target="_blank" style="color:var(--primary);">APIキーを取得 →</a></span></span></div><span class="status-badge '+(hasKey?'success':'warning')+'">'+(hasKey?'✅ 接続中':'⚠️ 未設定')+'</span></div>' +
+        (hasKey ?
+          '<div style="background:#f0fdf4;border:1px solid #86efac;border-radius:8px;padding:10px;margin-bottom:12px;font-size:12px;"><strong style="color:#065f46;">✅ Gemini AI 接続中</strong><br><span style="color:var(--text-secondary);">リアルタイムAI分析が有効です</span></div>' :
+          '<div style="background:#eff6ff;border:1px solid #93c5fd;border-radius:8px;padding:10px;margin-bottom:12px;font-size:12px;"><strong style="color:#1e40af;">✨ このデモでも利用可能！</strong><br><span style="color:var(--text-secondary);">APIキーを入力するとリアルタイムAI分析を体験できます</span></div>'
+        ) +
+        '<div class="mb-8"><label class="form-label">APIキー</label><div style="display:flex;gap:8px;"><input type="password" class="input" id="geminiKeyInput" placeholder="AIza..." value="'+this.escapeAttr(this.state.geminiKey||'')+'" style="flex:1;"><button class="btn btn-secondary btn-small" id="toggleKeyVis">👁️</button></div></div>' +
+        '<div style="display:flex;gap:8px;margin-bottom:12px;"><button class="btn" id="saveGeminiKey" style="flex:1;">💾 保存 & テスト</button>'+(hasKey?'<button class="btn btn-small" id="deleteGeminiKey" style="background:var(--error);color:#fff;">🗑️</button>':'')+'</div>' +
+        '<div id="geminiTestResult"></div>' +
+        '<a href="https://aistudio.google.com/apikey" target="_blank" style="font-size:12px;color:var(--primary);display:block;margin-top:8px;">🔗 Google AI Studio でAPIキーを取得 →</a>' +
+      '</div>' +
+      // Data Management
+      '<div class="card"><div class="card-title">🗄️ データ管理</div><div style="display:flex;flex-direction:column;gap:8px;"><button class="btn btn-secondary btn-full" id="exportDataBtn">📥 データエクスポート (JSON)</button><button class="btn btn-full" id="clearAllBtn" style="background:var(--error);color:#fff;">🗑️ 全データ削除</button></div></div>' +
+      // Links
+      '<div class="card"><div class="card-title">🔗 リンク</div><ul class="link-list">' +
+        '<li class="link-list-item"><a href="https://github.com/goroyattemiyo/insight-master" target="_blank" style="display:flex;align-items:center;gap:8px;flex:1;"><span>📦</span> Insight Master（本体）</a><span style="color:var(--text-tertiary);">›</span></li>' +
+        '<li class="link-list-item"><a href="https://github.com/goroyattemiyo/Synapse" target="_blank" style="display:flex;align-items:center;gap:8px;flex:1;"><span>🧠</span> Synapse（設計）</a><span style="color:var(--text-tertiary);">›</span></li>' +
+        '<li class="link-list-item"><a href="https://sordid-echinacea-374.notion.site/Threads-InsightMaster-AI-1-313b3545dbc6809aa5d6fcf0f710091f" target="_blank" style="display:flex;align-items:center;gap:8px;flex:1;"><span>📖</span> セットアップガイド</a><span style="color:var(--text-tertiary);">›</span></li>' +
+      '</ul></div>' +
+      // App Info
+      '<div class="card" style="text-align:center;"><img src="https://files.catbox.moe/up3cd1.webp" style="width:48px;height:48px;border-radius:12px;margin-bottom:8px;"><div style="font-weight:700;font-size:15px;">Insight Master</div><div class="text-caption">Demo Version 1.0.0</div><div class="text-small mt-4">Based on v2.1.0 (2026-02-28)</div><div class="text-small">Designed with Synapse Architecture</div></div>' +
+      '<div style="height:20px;"></div>' +
+    '</div>';
     this.bindSettingsEvents_();
     this.bindTooltips_();
   },
 
   bindTooltips_() {
-    document.querySelectorAll('[data-tooltip]').forEach(wrap => {
-      wrap.addEventListener('click', e => {
+    document.querySelectorAll('[data-tooltip]').forEach(function(wrap) {
+      wrap.addEventListener('click', function(e) {
         e.stopPropagation();
-        const wasActive = wrap.classList.contains('active');
-        // Close all tooltips
-        document.querySelectorAll('.tooltip-wrap.active').forEach(w => w.classList.remove('active'));
+        var wasActive = wrap.classList.contains('active');
+        document.querySelectorAll('.tooltip-wrap.active').forEach(function(w){w.classList.remove('active');});
         if (!wasActive) wrap.classList.add('active');
       });
     });
-    // Close tooltips when clicking outside
-    document.addEventListener('click', () => {
-      document.querySelectorAll('.tooltip-wrap.active').forEach(w => w.classList.remove('active'));
-    }, { once: false });
+    document.addEventListener('click', function(){document.querySelectorAll('.tooltip-wrap.active').forEach(function(w){w.classList.remove('active');});});
   },
 
   bindSettingsEvents_() {
-    // Toggle key visibility
-    const keyInput = document.getElementById('geminiKeyInput');
-    document.getElementById('toggleKeyVisibility')?.addEventListener('click', () => {
-      keyInput.type = keyInput.type === 'password' ? 'text' : 'password';
-    });
-
+    var self = this, keyInput = document.getElementById('geminiKeyInput');
+    // Toggle visibility
+    var togBtn = document.getElementById('toggleKeyVis');
+    if (togBtn) togBtn.addEventListener('click', function(){keyInput.type=keyInput.type==='password'?'text':'password';});
     // Save & test
-    document.getElementById('saveGeminiKeyBtn')?.addEventListener('click', async () => {
-      const btn = document.getElementById('saveGeminiKeyBtn');
-      const resultEl = document.getElementById('geminiTestResult');
-      const key = keyInput.value.trim();
-
-      if (!key) {
-        this.showToast('APIキーを入力してください', 'error');
-        return;
-      }
-
-      btn.disabled = true;
-      btn.textContent = '⏳ テスト中...';
-      resultEl.innerHTML = '<div style="font-size:12px;color:var(--text-secondary)">接続テスト中...</div>';
-
-      const valid = await this.validateGeminiKey(key);
+    var saveBtn = document.getElementById('saveGeminiKey');
+    if (saveBtn) saveBtn.addEventListener('click', async function() {
+      var key = keyInput.value.trim(); if(!key){self.showToast('APIキーを入力','error');return;}
+      var resultEl = document.getElementById('geminiTestResult');
+      saveBtn.disabled=true;saveBtn.textContent='⏳ テスト中...';
+      resultEl.innerHTML='<div class="text-caption">接続テスト中...</div>';
+      var valid = await self.validateGeminiKey(key);
       if (valid) {
-        localStorage.setItem('insight_master_gemini_key', key);
-        this.state.geminiKey = key;
-        resultEl.innerHTML = '<div style="font-size:12px;color:var(--success)">✅ 接続成功！APIキーを保存しました。</div>';
-        this.showToast('Gemini APIキーを保存しました', 'success');
-        setTimeout(() => this.renderSettings(), 1000);
+        localStorage.setItem('insight_master_gemini_key',key);self.state.geminiKey=key;self.state.settings.hasGeminiKey=true;
+        resultEl.innerHTML='<div style="color:var(--success);font-size:12px;">✅ 接続成功！保存しました。</div>';
+        self.showToast('Gemini APIキー保存','success');setTimeout(function(){self.renderSettings_();},1000);
       } else {
-        resultEl.innerHTML = '<div style="font-size:12px;color:var(--danger)">❌ 接続失敗。APIキーを確認してください。</div>';
-        this.showToast('APIキーが無効です', 'error');
+        resultEl.innerHTML='<div style="color:var(--error);font-size:12px;">❌ 接続失敗。キーを確認してください。</div>';
+        self.showToast('APIキーが無効','error');
       }
-      btn.disabled = false;
-      btn.textContent = '💾 保存 & テスト';
+      saveBtn.disabled=false;saveBtn.textContent='💾 保存 & テスト';
     });
-
     // Delete key
-    document.getElementById('deleteGeminiKeyBtn')?.addEventListener('click', () => {
-      if (!confirm('Gemini APIキーを削除しますか？')) return;
-      localStorage.removeItem('insight_master_gemini_key');
-      this.state.geminiKey = null;
-      this.showToast('APIキーを削除しました', 'success');
-      this.renderSettings();
+    var delBtn = document.getElementById('deleteGeminiKey');
+    if (delBtn) delBtn.addEventListener('click', function(){if(!confirm('APIキーを削除しますか？'))return;localStorage.removeItem('insight_master_gemini_key');self.state.geminiKey=null;self.state.settings.hasGeminiKey=false;self.showToast('APIキー削除','success');self.renderSettings_();});
+    // Export
+    var expBtn = document.getElementById('exportDataBtn');
+    if (expBtn) expBtn.addEventListener('click', function(){
+      var data={drafts:JSON.parse(localStorage.getItem('insight_master_demo_drafts')||'[]'),searchHistory:JSON.parse(localStorage.getItem('im_search_history')||'[]'),exportedAt:new Date().toISOString()};
+      var blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});var url=URL.createObjectURL(blob);
+      var a=document.createElement('a');a.href=url;a.download='insight_master_demo_'+new Date().toISOString().slice(0,10)+'.json';a.click();URL.revokeObjectURL(url);
+      self.showToast('エクスポート完了','success');
     });
-
-    // Export data
-    document.getElementById('exportDataBtn')?.addEventListener('click', () => {
-      const data = {
-        drafts: JSON.parse(localStorage.getItem('insight_master_demo_drafts') || '[]'),
-        searchHistory: JSON.parse(localStorage.getItem('im_search_history') || '[]'),
-        settings: { theme: localStorage.getItem('im_gen_theme') || '' },
-        exportedAt: new Date().toISOString()
-      };
-      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `insight_master_demo_export_${new Date().toISOString().split('T')[0]}.json`;
-      a.click();
-      URL.revokeObjectURL(url);
-      this.showToast('データをエクスポートしました', 'success');
-    });
-
-    // Clear all data
-    document.getElementById('clearAllDataBtn')?.addEventListener('click', () => {
-      if (!confirm('すべてのデモデータを削除しますか？\n（下書き、検索履歴、設定が消去されます）')) return;
-      localStorage.removeItem('insight_master_demo_drafts');
-      localStorage.removeItem('insight_master_gemini_key');
-      localStorage.removeItem('im_search_history');
-      localStorage.removeItem('im_gen_theme');
-      localStorage.removeItem('im_create_tab');
-      this.state.geminiKey = null;
-      this.showToast('全データを削除しました', 'success');
-      this.renderSettings();
+    // Clear all
+    var clrBtn = document.getElementById('clearAllBtn');
+    if (clrBtn) clrBtn.addEventListener('click', function(){if(!confirm('全データを削除しますか？'))return;
+      ['insight_master_demo_drafts','insight_master_gemini_key','im_search_history','im_gen_theme','im_create_tab'].forEach(function(k){localStorage.removeItem(k);});
+      self.state.geminiKey=null;self.state.settings.hasGeminiKey=false;self.showToast('全データ削除','success');self.renderSettings_();
     });
   }
 
-}; // End of App object
+}; // End App
 
-// ============================================================
+// ==========================================================
 // Initialize
-// ============================================================
-document.addEventListener('DOMContentLoaded', () => {
-  App.init();
-});
+// ==========================================================
+document.addEventListener('DOMContentLoaded', function() { App.init(); });
 </script>
 </body>
 </html>
