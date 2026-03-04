@@ -1895,6 +1895,9 @@ const App = {
         btn.textContent = '🤖 AIでトレンド分析';
       });
     } catch(e) {
+      resultArea.innerHTML = `<div class="tip-card" style="color:var(--danger)">エラー: ${this.escapeHtml(e.message)}</div>`;
+    }
+  },
 
   // ============================================================
   // Settings Screen (Enhanced)
