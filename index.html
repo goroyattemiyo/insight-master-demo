@@ -1,0 +1,2193 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#000000">
+<title>Insight Master Demo</title>
+<link rel="icon" href="https://files.catbox.moe/up3cd1.webp" type="image/webp">
+<style>
+:root {
+  --bg-primary: #000000;
+  --bg-secondary: #0a0a0a;
+  --bg-card: #111111;
+  --bg-card-hover: #1a1a1a;
+  --border-color: #222222;
+  --border-light: #333333;
+  --text-primary: #ffffff;
+  --text-secondary: #aaaaaa;
+  --text-muted: #666666;
+  --accent-primary: #c8a2ff;
+  --accent-secondary: #a855f7;
+  --accent-gradient: linear-gradient(135deg, #c8a2ff, #a855f7);
+  --accent-glow: rgba(200,162,255,0.15);
+  --success: #4ade80;
+  --warning: #fbbf24;
+  --danger: #f87171;
+  --info: #60a5fa;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.4);
+  --shadow-lg: 0 8px 24px rgba(0,0,0,0.5);
+  --transition: 0.2s ease;
+  --font-main: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+html,body { font-family:var(--font-main); background:var(--bg-primary); color:var(--text-primary); height:100%; overflow:hidden; }
+
+/* Splash */
+.splash { position:fixed; inset:0; background:var(--bg-primary); display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:9999; transition:opacity 0.5s; }
+.splash.hide { opacity:0; pointer-events:none; }
+.splash-logo { width:80px; height:80px; border-radius:20px; margin-bottom:16px; animation:pulse 1.5s infinite; }
+.splash-title { font-size:20px; font-weight:700; margin-bottom:8px; }
+.splash-sub { font-size:13px; color:var(--text-secondary); }
+@keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.05)} }
+
+/* App Shell */
+#app { height:100%; display:flex; flex-direction:column; }
+.app-header { display:flex; align-items:center; justify-content:space-between; padding:12px 16px; background:var(--bg-secondary); border-bottom:1px solid var(--border-color); position:sticky; top:0; z-index:100; min-height:52px; }
+.app-header-title { font-size:16px; font-weight:700; display:flex; align-items:center; gap:8px; }
+.app-header-actions { display:flex; gap:8px; }
+.header-btn { background:none; border:none; color:var(--text-secondary); font-size:18px; padding:6px; cursor:pointer; border-radius:var(--radius-sm); transition:var(--transition); }
+.header-btn:hover { color:var(--text-primary); background:var(--bg-card); }
+
+/* Main Content */
+.app-content { flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; padding:16px; padding-bottom:80px; }
+
+/* Bottom Nav */
+.app-nav { display:flex; background:var(--bg-secondary); border-top:1px solid var(--border-color); position:sticky; bottom:0; z-index:100; padding:4px 0; padding-bottom:max(4px, env(safe-area-inset-bottom)); }
+.nav-item { flex:1; display:flex; flex-direction:column; align-items:center; padding:6px 0; cursor:pointer; transition:var(--transition); border:none; background:none; color:var(--text-muted); font-size:10px; gap:2px; }
+.nav-item.active { color:var(--accent-primary); }
+.nav-item-icon { font-size:20px; }
+
+/* Cards */
+.card { background:var(--bg-card); border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:16px; margin-bottom:12px; transition:var(--transition); }
+.card:hover { border-color:var(--border-light); }
+.card-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
+.card-title { font-size:14px; font-weight:600; display:flex; align-items:center; gap:6px; }
+.card-subtitle { font-size:12px; color:var(--text-secondary); }
+
+/* Buttons */
+.btn { display:inline-flex; align-items:center; justify-content:center; gap:6px; padding:10px 16px; border-radius:var(--radius-md); font-size:13px; font-weight:600; cursor:pointer; transition:var(--transition); border:none; outline:none; }
+.btn-primary { background:var(--accent-gradient); color:white; }
+.btn-primary:hover { opacity:0.9; transform:translateY(-1px); }
+.btn-secondary { background:var(--bg-card); color:var(--text-primary); border:1px solid var(--border-color); }
+.btn-secondary:hover { border-color:var(--border-light); background:var(--bg-card-hover); }
+.btn-sm { padding:6px 12px; font-size:12px; }
+.btn-danger { background:var(--danger); color:white; }
+.btn-block { width:100%; }
+.btn:disabled { opacity:0.5; cursor:not-allowed; }
+
+/* Inputs */
+.input { width:100%; padding:10px 14px; background:var(--bg-card); border:1px solid var(--border-color); border-radius:var(--radius-md); color:var(--text-primary); font-size:14px; outline:none; transition:var(--transition); }
+.input:focus { border-color:var(--accent-primary); box-shadow:0 0 0 3px var(--accent-glow); }
+.input::placeholder { color:var(--text-muted); }
+textarea.input { resize:vertical; min-height:80px; font-family:var(--font-main); }
+
+/* Badges */
+.badge { display:inline-flex; align-items:center; gap:4px; padding:3px 8px; border-radius:20px; font-size:11px; font-weight:600; }
+.badge-demo { background:rgba(200,162,255,0.15); color:var(--accent-primary); }
+.badge-ai { background:rgba(74,222,128,0.15); color:var(--success); }
+.badge-success { background:rgba(74,222,128,0.15); color:var(--success); }
+.badge-warning { background:rgba(251,191,36,0.15); color:var(--warning); }
+.badge-danger { background:rgba(248,113,113,0.15); color:var(--danger); }
+
+/* Stats */
+.stats-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:8px; }
+.stat-item { background:var(--bg-card); border:1px solid var(--border-color); border-radius:var(--radius-md); padding:12px; text-align:center; }
+.stat-value { font-size:20px; font-weight:700; background:var(--accent-gradient); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+.stat-label { font-size:11px; color:var(--text-secondary); margin-top:2px; }
+
+/* Tabs */
+.tabs { display:flex; gap:4px; margin-bottom:16px; background:var(--bg-card); border-radius:var(--radius-md); padding:4px; }
+.tab-btn { flex:1; padding:8px; border:none; background:none; color:var(--text-secondary); font-size:12px; font-weight:600; border-radius:var(--radius-sm); cursor:pointer; transition:var(--transition); }
+.tab-btn.active { background:var(--accent-gradient); color:white; }
+
+/* Toast */
+.toast-container { position:fixed; top:60px; left:50%; transform:translateX(-50%); z-index:10000; display:flex; flex-direction:column; gap:8px; pointer-events:none; }
+.toast { padding:10px 20px; border-radius:var(--radius-md); font-size:13px; font-weight:500; animation:toastIn 0.3s ease; pointer-events:auto; box-shadow:var(--shadow-lg); }
+.toast-success { background:var(--success); color:#000; }
+.toast-error { background:var(--danger); color:#fff; }
+.toast-info { background:var(--info); color:#000; }
+@keyframes toastIn { from{opacity:0;transform:translateY(-10px)} to{opacity:1;transform:translateY(0)} }
+
+/* Modal */
+.modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:5000; display:flex; align-items:flex-end; justify-content:center; animation:fadeIn 0.2s; }
+.modal { background:var(--bg-card); border-radius:var(--radius-xl) var(--radius-xl) 0 0; width:100%; max-width:500px; max-height:85vh; overflow-y:auto; padding:20px; animation:slideUp 0.3s ease; }
+.modal-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; }
+.modal-title { font-size:16px; font-weight:700; }
+.modal-close { background:none; border:none; color:var(--text-secondary); font-size:20px; cursor:pointer; padding:4px; }
+@keyframes fadeIn { from{opacity:0} to{opacity:1} }
+@keyframes slideUp { from{transform:translateY(100%)} to{transform:translateY(0)} }
+
+/* Skeleton */
+.skeleton { background:linear-gradient(90deg, var(--bg-card) 25%, var(--bg-card-hover) 50%, var(--bg-card) 75%); background-size:200% 100%; animation:shimmer 1.5s infinite; border-radius:var(--radius-sm); }
+.skeleton-text { height:14px; margin-bottom:8px; width:80%; }
+.skeleton-title { height:20px; margin-bottom:12px; width:60%; }
+.skeleton-box { height:100px; margin-bottom:12px; }
+@keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+
+/* Chart */
+.chart-container { position:relative; width:100%; height:200px; margin:12px 0; }
+.chart-canvas { width:100%; height:100%; }
+
+/* Heatmap */
+.heatmap-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:3px; }
+.heatmap-cell { aspect-ratio:1; border-radius:4px; display:flex; align-items:center; justify-content:center; font-size:9px; color:var(--text-muted); cursor:pointer; transition:var(--transition); }
+
+/* Post Card */
+.post-card { background:var(--bg-card); border:1px solid var(--border-color); border-radius:var(--radius-md); padding:14px; margin-bottom:10px; }
+.post-card-text { font-size:13px; line-height:1.6; margin-bottom:10px; white-space:pre-wrap; word-break:break-word; }
+.post-card-meta { display:flex; gap:12px; flex-wrap:wrap; font-size:11px; color:var(--text-secondary); }
+
+/* Misc */
+.divider { border:none; border-top:1px solid var(--border-color); margin:16px 0; }
+.empty-state { text-align:center; padding:40px 20px; color:var(--text-secondary); }
+.empty-state-icon { font-size:40px; margin-bottom:12px; }
+.empty-state-text { font-size:14px; }
+.tip-card { background:rgba(200,162,255,0.08); border:1px solid rgba(200,162,255,0.2); border-radius:var(--radius-md); padding:12px; margin-bottom:12px; font-size:12px; color:var(--text-secondary); line-height:1.5; }
+.tip-card strong { color:var(--accent-primary); }
+.demo-banner { background:linear-gradient(135deg, rgba(200,162,255,0.1), rgba(168,85,247,0.1)); border:1px solid rgba(200,162,255,0.2); border-radius:var(--radius-md); padding:12px; margin-bottom:16px; font-size:12px; text-align:center; color:var(--text-secondary); }
+.demo-banner a { color:var(--accent-primary); text-decoration:none; }
+.gemini-banner { background:linear-gradient(135deg, rgba(74,222,128,0.1), rgba(96,165,250,0.1)); border:1px solid rgba(74,222,128,0.2); border-radius:var(--radius-md); padding:12px; margin-bottom:16px; font-size:12px; }
+.accordion { border:1px solid var(--border-color); border-radius:var(--radius-md); overflow:hidden; margin-bottom:8px; }
+.accordion-header { display:flex; justify-content:space-between; align-items:center; padding:12px; cursor:pointer; background:var(--bg-card); font-size:13px; font-weight:600; }
+.accordion-body { padding:0 12px; max-height:0; overflow:hidden; transition:max-height 0.3s ease, padding 0.3s ease; }
+.accordion-body.open { max-height:500px; padding:12px; }
+.progress-bar { height:6px; background:var(--bg-card); border-radius:3px; overflow:hidden; }
+.progress-fill { height:100%; background:var(--accent-gradient); border-radius:3px; transition:width 0.5s ease; }
+.fab { position:fixed; bottom:76px; right:16px; width:52px; height:52px; border-radius:50%; background:var(--accent-gradient); color:white; border:none; font-size:22px; cursor:pointer; box-shadow:var(--shadow-lg); z-index:90; display:flex; align-items:center; justify-content:center; transition:var(--transition); }
+.fab:hover { transform:scale(1.1); }
+
+/* Scrollbar */
+::-webkit-scrollbar { width:4px; }
+::-webkit-scrollbar-track { background:transparent; }
+::-webkit-scrollbar-thumb { background:var(--border-color); border-radius:2px; }
+
+/* Responsive */
+@media(min-width:500px) {
+  .app-content { max-width:500px; margin:0 auto; }
+  .modal { border-radius:var(--radius-xl); margin-bottom:20px; }
+}
+
+/* Markdown Content */
+.md-content h1,.md-content h2,.md-content h3 { margin:16px 0 8px; }
+.md-content h1 { font-size:18px; }
+.md-content h2 { font-size:16px; }
+.md-content h3 { font-size:14px; }
+.md-content p { margin:8px 0; line-height:1.7; font-size:13px; }
+.md-content ul,.md-content ol { margin:8px 0 8px 20px; font-size:13px; }
+.md-content li { margin:4px 0; line-height:1.6; }
+.md-content strong { color:var(--accent-primary); }
+.md-content code { background:var(--bg-card-hover); padding:2px 6px; border-radius:4px; font-size:12px; }
+.md-content blockquote { border-left:3px solid var(--accent-primary); padding-left:12px; color:var(--text-secondary); margin:8px 0; }
+</style>
+</head>
+<body>
+<div class="splash" id="splash">
+  <img src="https://files.catbox.moe/up3cd1.webp" alt="Insight Master" class="splash-logo">
+  <div class="splash-title">Insight Master</div>
+  <div class="splash-sub">Demo Version Loading...</div>
+</div>
+<div class="toast-container" id="toastContainer"></div>
+<div id="app"></div>
+<script>
+// ============================================================
+// Insight Master Demo - Core Application
+// ============================================================
+const App = {
+  state: {
+    demoMode: true,
+    currentScreen: 'dashboard',
+    user: null,
+    accounts: [],
+    activeAccount: null,
+    settings: {},
+    analyticsData: null,
+    insightsData: null,
+    followerHistory: [],
+    navLocked: false,
+    geminiKey: null
+  },
+
+  // ---------- Initialize ----------
+  init() {
+    this.state.geminiKey = localStorage.getItem('insight_master_gemini_key') || null;
+    this.startDemoMode();
+  },
+
+  startDemoMode() {
+    this.state.demoMode = true;
+    this.state.user = {
+      userId: 'demo_user',
+      username: 'demo_threads_user',
+      name: 'Demo User',
+      profilePicUrl: 'https://files.catbox.moe/up3cd1.webp',
+      biography: 'Insight Master デモアカウント',
+      followersCount: 1823
+    };
+    this.state.accounts = [{
+      id: 'demo_account',
+      label: 'Demo Account',
+      userId: 'demo_user',
+      username: 'demo_threads_user',
+      isActive: true
+    }];
+    this.state.activeAccount = this.state.accounts[0];
+    this.state.settings = { appId: 'demo', geminiKey: this.state.geminiKey || '' };
+
+    setTimeout(() => {
+      document.getElementById('splash').classList.add('hide');
+      setTimeout(() => { document.getElementById('splash').style.display = 'none'; }, 500);
+    }, 1200);
+
+    this.renderShell();
+    this.showScreen('dashboard');
+  },
+
+  // ---------- API Router ----------
+  api(action, params) {
+    const geminiActions = [
+      'generateAnalysisReport', 'generateImprovementSuggestions',
+      'generatePostWithAI', 'generatePostWithAnalysis',
+      'refinePostWithAI', 'generateBuzzReport',
+      'searchKeywordWithAI', 'analyzeCompetitor'
+    ];
+    const draftActions = ['getDrafts', 'saveDraft', 'toggleDraftStatus', 'deleteDraft', 'updateDraft'];
+
+    if (draftActions.includes(action)) {
+      return this.localDraftApi_(action, params);
+    }
+    if (geminiActions.includes(action) && this.state.geminiKey) {
+      return this.geminiApi_(action, params);
+    }
+    return this.demoApi_(action, params);
+  },
+
+  // ---------- Demo API (mock data) ----------
+  demoApi_(action, params) {
+    return new Promise(resolve => {
+      const delay = 200 + Math.random() * 400;
+      setTimeout(() => resolve(this.demoData_(action, params)), delay);
+    });
+  },
+
+  demoData_(action, params) {
+    const now = new Date();
+    switch(action) {
+      case 'fetchUserInsights': return {
+        followers_count: 1823, views: 12450, likes: 3210, replies: 456, reposts: 189, quotes: 67,
+        demographics: {
+          countries: [{code:'JP',name:'Japan',value:78},{code:'US',name:'United States',value:12},{code:'GB',name:'UK',value:5}],
+          cities: [{name:'Tokyo',value:42},{name:'Osaka',value:18},{name:'Yokohama',value:12}],
+          age: [{'13-17':2},{'18-24':28},{'25-34':42},{'35-44':18},{'45-54':7},{'55-64':2},{'65+':1}],
+          gender: [{male:38},{female:52},{other:10}]
+        }
+      };
+
+      case 'getAnalyticsData': {
+        const posts = [];
+        for (let i = 0; i < 25; i++) {
+          const d = new Date(now - (i * 86400000 * 1.2));
+          const views = Math.floor(Math.random() * 2000) + 100;
+          const likes = Math.floor(views * (Math.random() * 0.08 + 0.02));
+          const replies = Math.floor(likes * (Math.random() * 0.3 + 0.05));
+          const reposts = Math.floor(likes * (Math.random() * 0.2 + 0.02));
+          posts.push({
+            id: 'post_' + i,
+            text: this.samplePostTexts_()[i % this.samplePostTexts_().length],
+            timestamp: d.toISOString(),
+            views, likes, replies, reposts, quotes: Math.floor(reposts * 0.3),
+            engagement_rate: ((likes + replies + reposts) / views * 100).toFixed(2)
+          });
+        }
+        const totalViews = posts.reduce((s, p) => s + p.views, 0);
+        const totalLikes = posts.reduce((s, p) => s + p.likes, 0);
+        const totalReplies = posts.reduce((s, p) => s + p.replies, 0);
+        const avgER = (posts.reduce((s, p) => s + parseFloat(p.engagement_rate), 0) / posts.length).toFixed(2);
+        return {
+          posts, summary: { totalPosts: 25, totalViews, totalLikes, totalReplies, averageER: avgER,
+            period: '過去30日間', lastUpdated: now.toISOString() }
+        };
+      }
+
+      case 'getFollowerHistory': {
+        const days = (params && params.days) || 30;
+        const history = [];
+        let count = 1823;
+        for (let i = days; i >= 0; i--) {
+          const d = new Date(now - i * 86400000);
+          const change = Math.floor(Math.random() * 15) - 3;
+          count += change;
+          history.push({ date: d.toISOString().split('T')[0], count, change });
+        }
+        return { history };
+      }
+
+      case 'getTimeAnalysisData': {
+        const heatmap = [];
+        for (let h = 0; h < 24; h++) {
+          for (let d = 0; d < 7; d++) {
+            const val = Math.random();
+            const score = h >= 7 && h <= 22 ? val * 0.8 + 0.2 : val * 0.3;
+            heatmap.push({ hour: h, day: d, value: score, posts: Math.floor(score * 10), avgER: (score * 8).toFixed(1) });
+          }
+        }
+        return { heatmap, bestTimes: [{ hour: 21, day: 3, avgER: '6.8' }, { hour: 12, day: 1, avgER: '5.2' }] };
+      }
+
+      case 'generateBuzzReport': return {
+        stats: { avgER_top: '6.8%', bestHour: 21, bestDay: '水曜日', topMediaType: 'テキスト' },
+        topPosts: [
+          { text: 'AIの進化が止まらない...', views: 4500, er: '8.2%' },
+          { text: '朝活始めて1ヶ月の変化', views: 3800, er: '7.1%' }
+        ],
+        bottomPosts: [
+          { text: 'ランチなう', views: 120, er: '0.8%' },
+          { text: '眠い...', views: 95, er: '0.5%' }
+        ],
+        report: '## 📊 バズパターン分析レポート\n\n### 🔥 高エンゲージメント傾向\n- **AI・テクノロジー系**の投稿がER平均6.8%と最も高い\n- **朝活・自己成長系**が続いてER5.2%\n- 水曜21時台の投稿が最もリーチが広い\n\n### 📈 改善ポイント\n1. 具体的な数字を含む投稿はERが2倍\n2. 問いかけ形式の投稿は返信率が3倍\n3. 140文字前後が最適な長さ\n\n### 💡 推奨アクション\n- 水曜・金曜の21時に投稿を集中\n- AI×日常のクロスジャンル投稿を増やす\n- スレッド形式で深い考察を展開'
+      };
+
+      case 'generateAnalysisReport': return {
+        report: '## 📋 総合分析レポート\n\n### アカウント概要\n- フォロワー: 1,823人（前月比 +5.2%）\n- 平均エンゲージメント率: 4.2%\n- 総ビュー数: 12,450\n\n### 強み\n- AI・テクノロジー分野での高い専門性\n- 一貫した投稿頻度（週5-6回）\n- 返信率が業界平均の2倍\n\n### 改善機会\n- 週末の投稿が少ない\n- 画像・動画コンテンツの活用余地\n- フォロワーとの対話をさらに増やす\n\n### 推奨戦略\n1. 週末にもライトな投稿を追加\n2. インフォグラフィックの導入\n3. 週1回のQ&Aスレッド開催',
+        summary: 'フォロワー1,823人、ER4.2%。AI系コンテンツが強み。週末投稿の強化が課題。'
+      };
+
+      case 'generateImprovementSuggestions': return {
+        suggestions: [
+          { title: '投稿時間の最適化', description: '水曜21時の投稿がER6.8%と最高。この時間帯を軸にスケジュールを組みましょう。', impact: 'high', category: 'timing' },
+          { title: 'スレッド投稿の活用', description: '深い考察をスレッド形式で展開すると、平均滞在時間が3倍に。', impact: 'high', category: 'content' },
+          { title: '数字を使った見出し', description: '「3つのポイント」「7日間の変化」など具体的数字入りの投稿はCTRが2倍。', impact: 'medium', category: 'writing' },
+          { title: 'ハッシュタグ戦略', description: '関連性の高いタグを3-5個に絞ることでリーチが15%向上。', impact: 'medium', category: 'reach' },
+          { title: 'フォロワー参加型コンテンツ', description: '「あなたはどう思う？」形式の投稿で返信率が180%アップ。', impact: 'high', category: 'engagement' }
+        ]
+      };
+
+      case 'generatePostWithAI': {
+        const theme = (params && params.theme) || '日常';
+        return {
+          items: [
+            { text: `${theme}について考えてみた。\n\n結局のところ、大事なのは「継続」なんだよね。\n\n1日1%の改善を365日続けると、37倍になる。\n\n小さな一歩を、今日も。`, reason: 'パーソナルな気づき × 具体的数字で共感を呼ぶ構成', meta: { expectedER: '5.2%', bestTime: '21:00', mediaAdvice: 'テキストのみで十分' } },
+            { text: `最近の${theme}で感じたこと。\n\nみんな「正解」を探しすぎてる気がする。\n\n正解なんてない。あるのは「自分の選択」だけ。\n\n選んだ道を正解にする力の方が大事。`, reason: '問題提起 → 持論展開で議論を誘発', meta: { expectedER: '4.8%', bestTime: '12:00', mediaAdvice: 'テキストのみ推奨' } },
+            { text: `${theme}の本質って何だろう？\n\n色々調べて辿り着いた答えは意外とシンプルだった。\n\n「やるか、やらないか」\n\nそれだけ。`, reason: '短文インパクト型。スクロール停止率が高い', meta: { expectedER: '4.5%', bestTime: '21:00', mediaAdvice: 'テキストのみ' } }
+          ]
+        };
+      }
+
+      case 'generatePostWithAnalysis': {
+        return {
+          items: [
+            { text: 'データで見えてきた真実。\n\nフォロワーが最も反応するのは「失敗談」だった。\n\n成功より失敗。完璧より等身大。\n\nこの1ヶ月のER上位5投稿、全部「うまくいかなかった話」。\n\n弱さを見せる強さ、大事にしたい。', reason: '分析データに基づく洞察。自己開示×データで信頼性UP', meta: { expectedER: '6.1%', bestTime: '21:00' } },
+            { text: '1ヶ月のデータを振り返って気づいたこと。\n\n📊 一番読まれた投稿 → 朝7時の「今日の目標」\n📊 一番反応があった投稿 → 夜9時の「今日の学び」\n\n結論：朝はリーチ、夜はエンゲージメント。\n\n使い分けが大事。', reason: '具体的データ提示で説得力のある分析投稿', meta: { expectedER: '5.5%', bestTime: '21:00' } }
+          ],
+          analysisUsed: { totalPosts: 25, avgER: '4.2%', topTheme: 'AI・テクノロジー' }
+        };
+      }
+
+      case 'refinePostWithAI': return {
+        variants: [
+          { text: (params && params.text ? params.text.substring(0, 50) : '') + '...\n\n（リファイン版：より簡潔に、インパクトを強化）', style: params && params.style || 'improve' },
+          { text: (params && params.text ? params.text.substring(0, 50) : '') + '...\n\n✨ 新しい視点を加えてみました。', style: params && params.style || 'improve' }
+        ]
+      };
+
+      case 'getGrowthScore': return {
+        score: 72, breakdown: { consistency: 85, engagement: 68, growth: 75, content: 62 },
+        tips: ['投稿頻度が安定しています！', 'エンゲージメント率の向上余地があります', '動画コンテンツの追加を検討してみましょう']
+      };
+
+      case 'getDailyCheckIn': return {
+        todayPosted: false, streak: 5, weeklyCount: 4, weeklyGoal: 6,
+        message: '5日連続投稿中！今日も頑張りましょう 🔥'
+      };
+
+      case 'getGoals': return {
+        goals: [
+          { id: 'g1', title: 'フォロワー2,000人達成', target: 2000, current: 1823, unit: '人', deadline: '2026-04-30' },
+          { id: 'g2', title: '月間投稿30回', target: 30, current: 22, unit: '回', deadline: '2026-03-31' }
+        ]
+      };
+
+      case 'getUserInfo': return this.state.user;
+      case 'getSettings': return this.state.settings;
+
+      case 'searchKeyword': return {
+        posts: Array.from({length:8}, (_, i) => ({
+          id: 'kw_' + i,
+          text: `キーワード「${(params && params.keyword) || 'AI'}」に関連する投稿 #${i+1}\n\nこれはデモデータです。実際のThreads APIでは本物の検索結果が表示されます。`,
+          username: ['tech_lover', 'ai_researcher', 'daily_coder', 'startup_jp'][i % 4],
+          timestamp: new Date(now - i * 3600000 * 6).toISOString(),
+          views: Math.floor(Math.random() * 5000) + 200,
+          likes: Math.floor(Math.random() * 200) + 10,
+          replies: Math.floor(Math.random() * 30),
+          mediaType: ['TEXT', 'TEXT', 'IMAGE', 'TEXT'][i % 4]
+        })),
+        summary: { total: 8, avgViews: 2600, topAuthor: 'tech_lover' }
+      };
+
+      default: return { success: true, message: 'Demo action completed' };
+    }
+  },
+
+  samplePostTexts_() {
+    return [
+      'AIの進化が止まらない。毎日新しいモデルが出てくる時代、大事なのは「使いこなす力」だと思う。',
+      '朝活始めて1ヶ月。5時起きがデフォルトになった。早朝の静けさの中で考える時間が一番クリエイティブ。',
+      'プログラミングで一番大事なスキルは「検索力」だと本気で思ってる。',
+      '今日のランチは近所のカレー屋。やっぱりスパイスカレーは正義。',
+      'リモートワーク3年目。最大の敵は「冷蔵庫」です。',
+      '読書メモ：「思考の整理学」を再読。10年前と全く違う箇所が刺さる。成長なのか、変化なのか。',
+      'ChatGPTに「面白いジョーク言って」って聞いたら、真面目に分析し始めた。AIらしい。',
+      'スレッドで深い話をすると、フォロワーの質が変わる気がする。量より質。',
+      'コーヒーは豆から挽く派。この5分の儀式が1日のスイッチになってる。',
+      '「完璧を目指すな、完了を目指せ」という言葉に何度救われたか。',
+      'データ分析って面白い。数字の裏に人間の行動パターンが見える。',
+      '今年の目標：アウトプットを2倍にする。インプットだけじゃ成長しない。',
+      '週末のプログラミング、趣味なのか仕事なのかもう分からない。でも楽しい。',
+      'Threadsのアルゴリズム、最近変わった気がする。テキスト投稿のリーチが伸びてる。',
+      '英語学習のコツ：完璧な文法より「伝わる英語」を目指す。',
+      '夜散歩が最高のストレス解消法だと気づいた。',
+      'サイドプロジェクトが本業より楽しくなってきた問題。',
+      '「なぜ？」を5回繰り返すと、本質にたどり着ける。トヨタ式、侮れない。',
+      'フォロワー数より大事なのは、何人が自分の投稿を楽しみにしてくれてるか。',
+      ' 来年の自分が読み返して「あの時頑張ってたな」と思える投稿を残したい。',
+      'テクノロジーは手段。目的を見失わないようにしたい。',
+      'ミニマリズムを意識し始めてから、思考もクリアになった気がする。',
+      '今日のTIL：CSSのcontainer queryが想像以上に便利だった。',
+      '日曜の夜が憂鬱じゃなくなったら、いい仕事してる証拠だと思う。',
+      'アイデアはシャワー中に降ってくる説、体感的に正しい。'
+    ];
+  },
+
+  // ---------- Local Draft API ----------
+  localDraftApi_(action, params) {
+    return new Promise(resolve => {
+      const key = 'insight_master_demo_drafts';
+      let drafts = JSON.parse(localStorage.getItem(key) || '[]');
+
+      switch(action) {
+        case 'getDrafts': {
+          let result = drafts;
+          if (params && params.status === 'unused') result = drafts.filter(d => !d.used);
+          if (params && params.status === 'used') result = drafts.filter(d => d.used);
+          resolve({ drafts: result });
+          break;
+        }
+        case 'saveDraft': {
+          const draft = {
+            id: 'draft_' + Date.now(),
+            text: params.text || '',
+            isThread: params.isThread || false,
+            threadParts: params.threadParts || [],
+            source: params.source || 'manual',
+            used: false,
+            createdAt: new Date().toISOString()
+          };
+          drafts.unshift(draft);
+          localStorage.setItem(key, JSON.stringify(drafts));
+          resolve({ success: true, draft });
+          break;
+        }
+        case 'toggleDraftStatus': {
+          const idx = drafts.findIndex(d => d.id === params.draftId);
+          if (idx >= 0) { drafts[idx].used = !drafts[idx].used; localStorage.setItem(key, JSON.stringify(drafts)); }
+          resolve({ success: true });
+          break;
+        }
+        case 'deleteDraft': {
+          drafts = drafts.filter(d => d.id !== params.draftId);
+          localStorage.setItem(key, JSON.stringify(drafts));
+          resolve({ success: true });
+          break;
+        }
+        case 'updateDraft': {
+          const ui = drafts.findIndex(d => d.id === params.draftId);
+          if (ui >= 0) { drafts[ui].text = params.text; localStorage.setItem(key, JSON.stringify(drafts)); }
+          resolve({ success: true });
+          break;
+        }
+        default: resolve({ success: true });
+      }
+    });
+  },
+
+  // ---------- Gemini API ----------
+  async geminiApi_(action, params) {
+    try {
+      const prompt = this.buildGeminiPrompt_(action, params);
+      const res = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${this.state.geminiKey}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: prompt }] }],
+            generationConfig: { temperature: 0.8, maxOutputTokens: 4096 }
+          })
+        }
+      );
+      if (!res.ok) throw new Error(`Gemini API error: ${res.status}`);
+      const data = await res.json();
+      const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+      return this.parseGeminiResponse_(action, text);
+    } catch (e) {
+      console.warn('Gemini API failed, falling back to demo data:', e);
+      App.showToast('Gemini API エラー。サンプルデータにフォールバックします。', 'error');
+      return this.demoData_(action, params);
+    }
+  },
+
+  buildGeminiPrompt_(action, params) {
+    const demoStats = 'フォロワー1,823人、平均ER 4.2%、総ビュー12,450。AI・テクノロジー系が高ER。水曜21時台が最適。';
+    switch(action) {
+      case 'generateAnalysisReport':
+        return `あなたはSNS分析の専門家です。以下のアカウントデータに基づいて、Markdownで詳細な分析レポートを作成してください。\n\nデータ: ${demoStats}\n\n以下の構成で:\n## 📋 総合分析レポート\n### アカウント概要\n### 強み\n### 改善機会\n### 推奨戦略`;
+
+      case 'generateImprovementSuggestions':
+        return `SNS分析の専門家として、以下のアカウントデータに基づいて改善提案を5つJSON形式で返してください。\n\nデータ: ${demoStats}\n\n形式: {"suggestions":[{"title":"...","description":"...","impact":"high/medium/low","category":"..."}]}`;
+
+      case 'generatePostWithAI':
+        return `あなたはThreads投稿の専門ライターです。テーマ「${params?.theme || '日常'}」で魅力的な投稿案を3つJSON形式で返してください。\n\nアカウント情報: ${demoStats}\n\n形式: {"items":[{"text":"投稿本文","reason":"この投稿が効果的な理由","meta":{"expectedER":"X%","bestTime":"HH:MM","mediaAdvice":"..."}}]}`;
+
+      case 'generatePostWithAnalysis':
+        return `分析データに基づいた投稿を2つJSON形式で生成してください。\n\nデータ: ${demoStats}\n\n形式: {"items":[{"text":"投稿本文","reason":"理由","meta":{"expectedER":"X%","bestTime":"HH:MM"}}],"analysisUsed":{"totalPosts":25,"avgER":"4.2%","topTheme":"AI・テクノロジー"}}`;
+
+      case 'refinePostWithAI':
+        return `以下の投稿をスタイル「${params?.style || 'improve'}」でリファイン（改善）してください。2つのバリエーションをJSON形式で返してください。\n\n元投稿:\n${params?.text || ''}\n\n${params?.instruction ? '追加指示: ' + params.instruction : ''}\n\n形式: {"variants":[{"text":"改善版テキスト","style":"${params?.style || 'improve'}"}]}`;
+
+      case 'generateBuzzReport':
+        return `バズパターン分析の専門家として、以下のデータに基づいてMarkdownで詳細なバズ分析レポートを作成してください。\n\nデータ: ${demoStats}\n\n以下の構成で:\n## 📊 バズパターン分析レポート\n### 🔥 高エンゲージメント傾向\n### 📈 改善ポイント\n### 💡 推奨アクション`;
+
+      case 'searchKeywordWithAI':
+        return `キーワード「${params?.keyword || ''}」に関するThreadsのトレンド分析をMarkdownで作成してください。\n\n以下の構成で:\n## 🔍 キーワード分析\n### トレンド概要\n### 主な話題\n### 投稿のヒント`;
+
+      case 'analyzeCompetitor':
+        return `競合アカウント分析の専門家として、SNSアカウントの比較分析をMarkdownで作成してください。\n\n自分のデータ: ${demoStats}\n\n以下の構成で:\n## 🏆 競合分析\n### 差別化ポイント\n### 学べるポイント\n### アクションプラン`;
+
+      default:
+        return `SNS分析の専門家として、「${action}」に関するアドバイスをMarkdownで作成してください。データ: ${demoStats}`;
+    }
+  },
+
+  parseGeminiResponse_(action, text) {
+    const jsonActions = ['generateImprovementSuggestions', 'generatePostWithAI', 'generatePostWithAnalysis', 'refinePostWithAI'];
+    if (jsonActions.includes(action)) {
+      try {
+        const jsonMatch = text.match(/```(?:json)?\s*([\s\S]*?)```/);
+        const jsonStr = jsonMatch ? jsonMatch[1].trim() : text.trim();
+        return JSON.parse(jsonStr);
+      } catch(e) {
+        console.warn('JSON parse failed, using raw text');
+        if (action === 'generatePostWithAI' || action === 'generatePostWithAnalysis') {
+          return { items: [{ text: text, reason: 'AI生成', meta: {} }] };
+        }
+        if (action === 'refinePostWithAI') {
+          return { variants: [{ text: text, style: 'improve' }] };
+        }
+        if (action === 'generateImprovementSuggestions') {
+          return { suggestions: [{ title: 'AI提案', description: text, impact: 'high', category: 'general' }] };
+        }
+      }
+    }
+    if (action === 'generateBuzzReport') {
+      return { ...this.demoData_(action), report: text };
+    }
+    if (action === 'generateAnalysisReport') {
+      return { report: text, summary: text.substring(0, 100) + '...' };
+    }
+    return { report: text };
+  },
+
+  async validateGeminiKey(key) {
+    try {
+      const res = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${key}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ contents: [{ parts: [{ text: 'test' }] }], generationConfig: { maxOutputTokens: 10 } })
+        }
+      );
+      return res.ok;
+    } catch { return false; }
+  },
+
+  // ---------- UI Utilities ----------
+  escapeHtml(str) {
+    if (!str) return '';
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  },
+
+  escapeAttr(str) {
+    if (!str) return '';
+    return String(str).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#39;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  },
+
+  parseMd(text) {
+    if (!text) return '';
+    let html = this.escapeHtml(text);
+    html = html.replace(/^### (.+)$/gm, '<h3>$1</h3>');
+    html = html.replace(/^## (.+)$/gm, '<h2>$1</h2>');
+    html = html.replace(/^# (.+)$/gm, '<h1>$1</h1>');
+    html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+    html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
+    html = html.replace(/`(.+?)`/g, '<code>$1</code>');
+    html = html.replace(/^- (.+)$/gm, '<li>$1</li>');
+    html = html.replace(/^(\d+)\. (.+)$/gm, '<li>$1. $2</li>');
+    html = html.replace(/((?:<li>.*<\/li>\n?)+)/g, '<ul>$1</ul>');
+    html = html.replace(/^&gt; (.+)$/gm, '<blockquote>$1</blockquote>');
+    html = html.replace(/\n\n/g, '</p><p>');
+    html = '<p>' + html + '</p>';
+    html = html.replace(/<p><(h[123]|ul|blockquote)/g, '<$1');
+    html = html.replace(/<\/(h[123]|ul|blockquote)><\/p>/g, '</$1>');
+    html = html.replace(/<p><\/p>/g, '');
+    return html;
+  },
+
+  showToast(msg, type = 'info') {
+    const container = document.getElementById('toastContainer');
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+    toast.textContent = msg;
+    container.appendChild(toast);
+    setTimeout(() => { toast.style.opacity = '0'; toast.style.transition = 'opacity 0.3s'; setTimeout(() => toast.remove(), 300); }, 3000);
+  },
+
+  copyToClipboard(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(() => this.showToast('コピーしました', 'success')).catch(() => this.fallbackCopy_(text));
+    } else {
+      this.fallbackCopy_(text);
+    }
+  },
+
+  fallbackCopy_(text) {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.cssText = 'position:fixed;left:-9999px';
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); this.showToast('コピーしました', 'success'); }
+    catch { this.showToast('コピーに失敗しました', 'error'); }
+    document.body.removeChild(ta);
+  },
+
+  formatDate(dateStr) {
+    if (!dateStr) return '';
+    const d = new Date(dateStr);
+    return `${d.getMonth()+1}/${d.getDate()} ${d.getHours()}:${String(d.getMinutes()).padStart(2,'0')}`;
+  },
+
+  formatNumber(n) {
+    if (n >= 10000) return (n/10000).toFixed(1) + '万';
+    if (n >= 1000) return (n/1000).toFixed(1) + 'K';
+    return String(n);
+  },
+
+  timeAgo(dateStr) {
+    const diff = Date.now() - new Date(dateStr).getTime();
+    const mins = Math.floor(diff / 60000);
+    if (mins < 60) return `${mins}分前`;
+    const hours = Math.floor(mins / 60);
+    if (hours < 24) return `${hours}時間前`;
+    const days = Math.floor(hours / 24);
+    return `${days}日前`;
+  },
+
+  // ---------- App Shell ----------
+  renderShell() {
+    const app = document.getElementById('app');
+    app.innerHTML = `
+      <div class="app-header">
+        <div class="app-header-title">
+          <img src="https://files.catbox.moe/up3cd1.webp" alt="" style="width:28px;height:28px;border-radius:8px;">
+          Insight Master
+          <span class="badge badge-demo">Demo</span>
+        </div>
+        <div class="app-header-actions">
+          <button class="header-btn" id="refreshBtn" title="更新">🔄</button>
+        </div>
+      </div>
+      <div class="app-content" id="mainContent"></div>
+      <nav class="app-nav" id="mainNav">
+        <button class="nav-item active" data-screen="dashboard">
+          <span class="nav-item-icon">📊</span>
+          <span>ダッシュボード</span>
+        </button>
+        <button class="nav-item" data-screen="analytics">
+          <span class="nav-item-icon">📈</span>
+          <span>分析</span>
+        </button>
+        <button class="nav-item" data-screen="create">
+          <span class="nav-item-icon">✍️</span>
+          <span>作成</span>
+        </button>
+        <button class="nav-item" data-screen="keywords">
+          <span class="nav-item-icon">🔍</span>
+          <span>検索</span>
+        </button>
+        <button class="nav-item" data-screen="settings">
+          <span class="nav-item-icon">⚙️</span>
+          <span>設定</span>
+        </button>
+      </nav>
+    `;
+    this.bindNavEvents_();
+  },
+
+  bindNavEvents_() {
+    document.getElementById('mainNav').addEventListener('click', e => {
+      const btn = e.target.closest('.nav-item');
+      if (!btn || this.state.navLocked) return;
+      const screen = btn.dataset.screen;
+      if (screen) this.showScreen(screen);
+    });
+    document.getElementById('refreshBtn').addEventListener('click', () => {
+      this.showScreen(this.state.currentScreen);
+      this.showToast('更新しました', 'success');
+    });
+  },
+
+  showScreen(name) {
+    this.state.currentScreen = name;
+    document.querySelectorAll('.nav-item').forEach(n => {
+      n.classList.toggle('active', n.dataset.screen === name);
+    });
+    const content = document.getElementById('mainContent');
+    content.scrollTop = 0;
+
+    switch(name) {
+      case 'dashboard': this.renderDashboard(); break;
+      case 'analytics': this.renderAnalytics(); break;
+      case 'create': this.renderCreate(); break;
+      case 'keywords': this.renderKeywords(); break;
+      case 'settings': this.renderSettings(); break;
+      default: content.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🚧</div><div class="empty-state-text">準備中...</div></div>';
+    }
+  },
+
+  showModal(title, bodyHtml, onClose) {
+    const existing = document.querySelector('.modal-overlay');
+    if (existing) existing.remove();
+    const overlay = document.createElement('div');
+    overlay.className = 'modal-overlay';
+    overlay.innerHTML = `
+      <div class="modal">
+        <div class="modal-header">
+          <div class="modal-title">${title}</div>
+          <button class="modal-close" id="modalCloseBtn">&times;</button>
+        </div>
+        <div class="modal-body">${bodyHtml}</div>
+      </div>
+    `;
+    document.body.appendChild(overlay);
+    const close = () => { overlay.remove(); if (onClose) onClose(); };
+    overlay.querySelector('#modalCloseBtn').addEventListener('click', close);
+    overlay.addEventListener('click', e => { if (e.target === overlay) close(); });
+    return overlay;
+  },
+
+  showSkeleton() {
+    return `
+      <div class="skeleton skeleton-title"></div>
+      <div class="skeleton skeleton-box"></div>
+      <div class="skeleton skeleton-text"></div>
+      <div class="skeleton skeleton-text" style="width:60%"></div>
+    `;
+  },
+
+  geminiLabel() {
+    return this.state.geminiKey
+      ? '<span class="badge badge-ai">🤖 AI (リアルタイム)</span>'
+      : '<span class="badge badge-demo">📎 サンプル</span>';
+  },
+
+  geminiFooter() {
+    return this.state.geminiKey
+      ? ''
+      : '<div class="tip-card" style="margin-top:12px">💡 これはサンプルデータです。設定画面でGemini APIキーを入力すると、リアルタイムAI分析が利用できます。</div>';
+  },
+
+  // ============================================================
+  // Dashboard Screen
+  // ============================================================
+  renderDashboard() {
+    const content = document.getElementById('mainContent');
+    content.innerHTML = this.showSkeleton();
+    this.loadDashboardData_();
+  },
+
+  async loadDashboardData_() {
+    const [insights, growth, checkIn, goals, follower] = await Promise.all([
+      this.api('fetchUserInsights'),
+      this.api('getGrowthScore'),
+      this.api('getDailyCheckIn'),
+      this.api('getGoals'),
+      this.api('getFollowerHistory', { days: 30 })
+    ]);
+    this.state.insightsData = insights;
+    this.state.followerHistory = follower.history;
+    this.renderDashboardContent_(insights, growth, checkIn, goals, follower);
+  },
+
+  renderDashboardContent_(insights, growth, checkIn, goals, follower) {
+    const content = document.getElementById('mainContent');
+    const user = this.state.user;
+    const hasGemini = !!this.state.geminiKey;
+
+    content.innerHTML = `
+      <div class="demo-banner">
+        🎮 デモモードで動作中 — 表示データはすべてサンプルです
+      </div>
+
+      ${!hasGemini ? `
+      <div class="gemini-banner">
+        🤖 <strong>Gemini APIで本格AI分析</strong><br>
+        <span style="color:var(--text-secondary)">設定画面でAPIキーを入力すると、リアルタイムAI分析・投稿生成が利用できます</span>
+        <br><button class="btn btn-sm btn-secondary" style="margin-top:8px" onclick="App.showScreen('settings')">⚙️ 設定を開く</button>
+      </div>` : `
+      <div class="gemini-banner">
+        ✅ <strong>Gemini API 接続中</strong> — リアルタイムAI分析が有効です
+      </div>`}
+
+      <!-- User Info -->
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:12px">
+          <img src="${user.profilePicUrl}" alt="" style="width:48px;height:48px;border-radius:50%;border:2px solid var(--accent-primary)">
+          <div>
+            <div style="font-weight:700;font-size:15px">${this.escapeHtml(user.name)}</div>
+            <div style="font-size:12px;color:var(--text-secondary)">@${this.escapeHtml(user.username)}</div>
+          </div>
+          <div style="margin-left:auto;text-align:right">
+            <div style="font-size:20px;font-weight:700;background:var(--accent-gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent">${this.formatNumber(insights.followers_count)}</div>
+            <div style="font-size:11px;color:var(--text-secondary)">フォロワー</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Growth Score -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">📈 成長スコア</div>
+          <div class="badge badge-${growth.score >= 70 ? 'success' : growth.score >= 40 ? 'warning' : 'danger'}">${growth.score}/100</div>
+        </div>
+        <div class="progress-bar" style="margin-bottom:12px">
+          <div class="progress-fill" style="width:${growth.score}%"></div>
+        </div>
+        <div class="stats-grid">
+          <div class="stat-item"><div class="stat-value">${growth.breakdown.consistency}</div><div class="stat-label">継続性</div></div>
+          <div class="stat-item"><div class="stat-value">${growth.breakdown.engagement}</div><div class="stat-label">エンゲージメント</div></div>
+          <div class="stat-item"><div class="stat-value">${growth.breakdown.growth}</div><div class="stat-label">成長率</div></div>
+          <div class="stat-item"><div class="stat-value">${growth.breakdown.content}</div><div class="stat-label">コンテンツ質</div></div>
+        </div>
+        <div style="margin-top:10px">
+          ${growth.tips.map(t => `<div style="font-size:12px;color:var(--text-secondary);padding:4px 0">💡 ${this.escapeHtml(t)}</div>`).join('')}
+        </div>
+      </div>
+
+      <!-- Daily Check-in -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">🔥 デイリーチェックイン</div>
+          <div class="badge badge-warning">${checkIn.streak}日連続</div>
+        </div>
+        <div style="font-size:13px;margin-bottom:10px">${this.escapeHtml(checkIn.message)}</div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+          <div style="font-size:12px;color:var(--text-secondary)">今週の投稿</div>
+          <div style="flex:1">
+            <div class="progress-bar"><div class="progress-fill" style="width:${(checkIn.weeklyCount/checkIn.weeklyGoal*100)}%"></div></div>
+          </div>
+          <div style="font-size:12px;font-weight:600">${checkIn.weeklyCount}/${checkIn.weeklyGoal}</div>
+        </div>
+      </div>
+
+      <!-- Goals -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">🎯 目標</div>
+        </div>
+        ${goals.goals.map(g => {
+          const pct = Math.min(100, (g.current / g.target * 100)).toFixed(0);
+          return `
+            <div style="margin-bottom:12px">
+              <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px">
+                <span>${this.escapeHtml(g.title)}</span>
+                <span style="color:var(--text-secondary)">${g.current}/${g.target}${g.unit}</span>
+              </div>
+              <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+              <div style="font-size:11px;color:var(--text-muted);margin-top:2px">期限: ${g.deadline}</div>
+            </div>`;
+        }).join('')}
+      </div>
+
+      <!-- Insights -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">📊 インサイト概要</div>
+          ${this.geminiLabel()}
+        </div>
+        <div class="stats-grid">
+          <div class="stat-item"><div class="stat-value">${this.formatNumber(insights.views)}</div><div class="stat-label">ビュー</div></div>
+          <div class="stat-item"><div class="stat-value">${this.formatNumber(insights.likes)}</div><div class="stat-label">いいね</div></div>
+          <div class="stat-item"><div class="stat-value">${this.formatNumber(insights.replies)}</div><div class="stat-label">返信</div></div>
+          <div class="stat-item"><div class="stat-value">${this.formatNumber(insights.reposts)}</div><div class="stat-label">リポスト</div></div>
+        </div>
+      </div>
+
+      <!-- Follower Chart -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">📈 フォロワー推移</div>
+          <div class="card-subtitle">過去30日間</div>
+        </div>
+        <div class="chart-container">
+          <canvas id="followerChart" class="chart-canvas"></canvas>
+        </div>
+        <div id="followerSummary" style="font-size:12px;color:var(--text-secondary);margin-top:8px"></div>
+      </div>
+
+      <!-- Demographics -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">👥 デモグラフィック</div>
+        </div>
+        <div id="demographicsArea"></div>
+      </div>
+
+      <!-- AI Analysis -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">🤖 AI分析</div>
+          ${this.geminiLabel()}
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <button class="btn btn-primary btn-block" id="runAnalysisBtn">📋 総合分析レポートを生成</button>
+          <button class="btn btn-secondary btn-block" id="runSuggestionsBtn">💡 改善提案を取得</button>
+        </div>
+        <div id="aiResultArea" style="margin-top:12px"></div>
+      </div>
+
+      ${this.geminiFooter()}
+    `;
+
+    this.drawFollowerChart_(follower.history);
+    this.renderFollowerSummary_(follower.history);
+    this.renderDemographics_(insights.demographics);
+    this.bindDashboardEvents_();
+  },
+
+  drawFollowerChart_(history) {
+    const canvas = document.getElementById('followerChart');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const rect = canvas.parentElement.getBoundingClientRect();
+    canvas.width = rect.width * 2;
+    canvas.height = rect.height * 2;
+    ctx.scale(2, 2);
+    const w = rect.width, h = rect.height;
+    const padding = { top: 20, right: 15, bottom: 30, left: 45 };
+    const chartW = w - padding.left - padding.right;
+    const chartH = h - padding.top - padding.bottom;
+
+    const counts = history.map(d => d.count);
+    const min = Math.min(...counts) - 10;
+    const max = Math.max(...counts) + 10;
+    const range = max - min || 1;
+
+    // Grid
+    ctx.strokeStyle = '#222';
+    ctx.lineWidth = 0.5;
+    for (let i = 0; i <= 4; i++) {
+      const y = padding.top + (chartH / 4) * i;
+      ctx.beginPath(); ctx.moveTo(padding.left, y); ctx.lineTo(w - padding.right, y); ctx.stroke();
+      ctx.fillStyle = '#666';
+      ctx.font = '10px sans-serif';
+      ctx.textAlign = 'right';
+      ctx.fillText(Math.round(max - (range / 4) * i), padding.left - 5, y + 3);
+    }
+
+    // Line
+    const gradient = ctx.createLinearGradient(0, padding.top, 0, padding.top + chartH);
+    gradient.addColorStop(0, 'rgba(200,162,255,0.3)');
+    gradient.addColorStop(1, 'rgba(200,162,255,0)');
+
+    ctx.beginPath();
+    history.forEach((d, i) => {
+      const x = padding.left + (i / (history.length - 1)) * chartW;
+      const y = padding.top + (1 - (d.count - min) / range) * chartH;
+      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    });
+    ctx.strokeStyle = '#c8a2ff';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Fill
+    const lastX = padding.left + chartW;
+    const baseY = padding.top + chartH;
+    ctx.lineTo(lastX, baseY);
+    ctx.lineTo(padding.left, baseY);
+    ctx.closePath();
+    ctx.fillStyle = gradient;
+    ctx.fill();
+
+    // Dots
+    history.forEach((d, i) => {
+      if (i % 5 !== 0 && i !== history.length - 1) return;
+      const x = padding.left + (i / (history.length - 1)) * chartW;
+      const y = padding.top + (1 - (d.count - min) / range) * chartH;
+      ctx.beginPath();
+      ctx.arc(x, y, 3, 0, Math.PI * 2);
+      ctx.fillStyle = '#c8a2ff';
+      ctx.fill();
+    });
+
+    // X labels
+    ctx.fillStyle = '#666';
+    ctx.font = '9px sans-serif';
+    ctx.textAlign = 'center';
+    [0, Math.floor(history.length / 2), history.length - 1].forEach(i => {
+      const x = padding.left + (i / (history.length - 1)) * chartW;
+      const label = history[i].date.substring(5);
+      ctx.fillText(label, x, h - 5);
+    });
+  },
+
+  renderFollowerSummary_(history) {
+    const el = document.getElementById('followerSummary');
+    if (!el || !history.length) return;
+    const first = history[0].count;
+    const last = history[history.length - 1].count;
+    const diff = last - first;
+    const pct = ((diff / first) * 100).toFixed(1);
+    const sign = diff >= 0 ? '+' : '';
+    el.innerHTML = `30日間: <strong style="color:${diff >= 0 ? 'var(--success)' : 'var(--danger)'}">${sign}${diff}人 (${sign}${pct}%)</strong> | 現在: <strong>${this.formatNumber(last)}人</strong>`;
+  },
+
+  renderDemographics_(demo) {
+    const el = document.getElementById('demographicsArea');
+    if (!el || !demo) return;
+
+    let html = '<div style="font-size:12px">';
+
+    // Gender
+    html += '<div style="margin-bottom:12px"><div style="font-weight:600;margin-bottom:6px">👤 性別</div>';
+    if (demo.gender) {
+      demo.gender.forEach(g => {
+        const [key, val] = Object.entries(g)[0];
+        const label = key === 'male' ? '男性' : key === 'female' ? '女性' : 'その他';
+        const color = key === 'male' ? 'var(--info)' : key === 'female' ? 'var(--danger)' : 'var(--warning)';
+        html += `<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+          <span style="width:40px">${label}</span>
+          <div style="flex:1;height:8px;background:var(--bg-card-hover);border-radius:4px;overflow:hidden">
+            <div style="height:100%;width:${val}%;background:${color};border-radius:4px"></div>
+          </div>
+          <span style="width:30px;text-align:right;color:var(--text-secondary)">${val}%</span>
+        </div>`;
+      });
+    }
+    html += '</div>';
+
+    // Age
+    html += '<div style="margin-bottom:12px"><div style="font-weight:600;margin-bottom:6px">📅 年齢</div>';
+    if (demo.age) {
+      demo.age.forEach(a => {
+        const [key, val] = Object.entries(a)[0];
+        html += `<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+          <span style="width:45px;color:var(--text-secondary)">${key}</span>
+          <div style="flex:1;height:8px;background:var(--bg-card-hover);border-radius:4px;overflow:hidden">
+            <div style="height:100%;width:${val}%;background:var(--accent-primary);border-radius:4px"></div>
+          </div>
+          <span style="width:30px;text-align:right;color:var(--text-secondary)">${val}%</span>
+        </div>`;
+      });
+    }
+    html += '</div>';
+
+    // Countries
+    html += '<div><div style="font-weight:600;margin-bottom:6px">🌍 国</div>';
+    if (demo.countries) {
+      demo.countries.forEach(c => {
+        html += `<div style="display:flex;justify-content:space-between;padding:3px 0;color:var(--text-secondary)">
+          <span>${this.escapeHtml(c.name)}</span><span>${c.value}%</span>
+        </div>`;
+      });
+    }
+    html += '</div></div>';
+
+    el.innerHTML = html;
+  },
+
+  bindDashboardEvents_() {
+    const analysisBtn = document.getElementById('runAnalysisBtn');
+    const suggestionsBtn = document.getElementById('runSuggestionsBtn');
+    const resultArea = document.getElementById('aiResultArea');
+
+    if (analysisBtn) {
+      analysisBtn.addEventListener('click', async () => {
+        analysisBtn.disabled = true;
+        analysisBtn.textContent = '⏳ 分析中...';
+        resultArea.innerHTML = this.showSkeleton();
+        try {
+          const data = await this.api('generateAnalysisReport');
+          resultArea.innerHTML = `
+            <div class="card" style="background:var(--bg-secondary)">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+                <div style="font-weight:600;font-size:13px">📋 総合分析レポート</div>
+                ${this.geminiLabel()}
+              </div>
+              <div class="md-content">${this.parseMd(data.report)}</div>
+              <button class="btn btn-sm btn-secondary" style="margin-top:12px" onclick="App.copyToClipboard(${this.escapeAttr(JSON.stringify(data.report))})">📋 コピー</button>
+            </div>
+          `;
+        } catch(e) {
+          resultArea.innerHTML = `<div class="tip-card" style="color:var(--danger)">エラーが発生しました: ${this.escapeHtml(e.message)}</div>`;
+        }
+        analysisBtn.disabled = false;
+        analysisBtn.textContent = '📋 総合分析レポートを生成';
+      });
+    }
+
+    if (suggestionsBtn) {
+      suggestionsBtn.addEventListener('click', async () => {
+        suggestionsBtn.disabled = true;
+        suggestionsBtn.textContent = '⏳ 取得中...';
+        resultArea.innerHTML = this.showSkeleton();
+        try {
+          const data = await this.api('generateImprovementSuggestions');
+          let html = '<div style="margin-top:8px">';
+          html += `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+            <div style="font-weight:600;font-size:13px">💡 改善提案</div>
+            ${this.geminiLabel()}
+          </div>`;
+          (data.suggestions || []).forEach((s, i) => {
+            const impactColor = s.impact === 'high' ? 'var(--success)' : s.impact === 'medium' ? 'var(--warning)' : 'var(--text-muted)';
+            html += `
+              <div class="card" style="background:var(--bg-secondary)">
+                <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:6px">
+                  <div style="font-weight:600;font-size:13px">${i+1}. ${this.escapeHtml(s.title)}</div>
+                  <span class="badge" style="background:${impactColor}22;color:${impactColor}">${s.impact}</span>
+                </div>
+                <div style="font-size:12px;color:var(--text-secondary);line-height:1.6">${this.escapeHtml(s.description)}</div>
+              </div>`;
+          });
+          html += '</div>';
+          resultArea.innerHTML = html;
+        } catch(e) {
+          resultArea.innerHTML = `<div class="tip-card" style="color:var(--danger)">エラーが発生しました: ${this.escapeHtml(e.message)}</div>`;
+        }
+        suggestionsBtn.disabled = false;
+        suggestionsBtn.textContent = '💡 改善提案を取得';
+      });
+    }
+  },
+
+  // ============================================================
+  // Analytics Screen
+  // ============================================================
+  renderAnalytics() {
+    const content = document.getElementById('mainContent');
+    content.innerHTML = `
+      <div class="demo-banner">🎮 デモモードで動作中</div>
+      <div class="tabs" id="analyticsTabs">
+        <button class="tab-btn active" data-tab="posts">📝 投稿分析</button>
+        <button class="tab-btn" data-tab="heatmap">🕐 時間帯</button>
+        <button class="tab-btn" data-tab="buzz">🔥 バズ分析</button>
+      </div>
+      <div id="analyticsContent"></div>
+    `;
+    this.bindAnalyticsTabEvents_();
+    this.loadAnalyticsTab_('posts');
+  },
+
+  bindAnalyticsTabEvents_() {
+    document.getElementById('analyticsTabs').addEventListener('click', e => {
+      const btn = e.target.closest('.tab-btn');
+      if (!btn) return;
+      document.querySelectorAll('#analyticsTabs .tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      this.loadAnalyticsTab_(btn.dataset.tab);
+    });
+  },
+
+  async loadAnalyticsTab_(tab) {
+    const area = document.getElementById('analyticsContent');
+    area.innerHTML = this.showSkeleton();
+
+    switch(tab) {
+      case 'posts': await this.renderPostAnalytics_(area); break;
+      case 'heatmap': await this.renderHeatmap_(area); break;
+      case 'buzz': await this.renderBuzzAnalysis_(area); break;
+    }
+  },
+
+  async renderPostAnalytics_(area) {
+    const data = await this.api('getAnalyticsData');
+    this.state.analyticsData = data;
+    const s = data.summary;
+
+    let html = `
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">📊 サマリー</div>
+          <div class="card-subtitle">${this.escapeHtml(s.period)}</div>
+        </div>
+        <div class="stats-grid">
+          <div class="stat-item"><div class="stat-value">${s.totalPosts}</div><div class="stat-label">投稿数</div></div>
+          <div class="stat-item"><div class="stat-value">${this.formatNumber(s.totalViews)}</div><div class="stat-label">総ビュー</div></div>
+          <div class="stat-item"><div class="stat-value">${this.formatNumber(s.totalLikes)}</div><div class="stat-label">総いいね</div></div>
+          <div class="stat-item"><div class="stat-value">${s.averageER}%</div><div class="stat-label">平均ER</div></div>
+        </div>
+      </div>
+      <div class="card-header" style="margin-top:8px">
+        <div class="card-title">📝 投稿一覧</div>
+        <button class="btn btn-sm btn-secondary" id="exportCsvBtn">📥 CSV</button>
+      </div>
+    `;
+
+    data.posts.forEach(p => {
+      html += `
+        <div class="post-card">
+          <div class="post-card-text">${this.escapeHtml(p.text.substring(0, 120))}${p.text.length > 120 ? '...' : ''}</div>
+          <div class="post-card-meta">
+            <span>👁️ ${this.formatNumber(p.views)}</span>
+            <span>❤️ ${p.likes}</span>
+            <span>💬 ${p.replies}</span>
+            <span>🔁 ${p.reposts}</span>
+            <span>📊 ER ${p.engagement_rate}%</span>
+            <span>📅 ${this.formatDate(p.timestamp)}</span>
+          </div>
+        </div>`;
+    });
+
+    area.innerHTML = html;
+
+    document.getElementById('exportCsvBtn')?.addEventListener('click', () => {
+      this.exportAnalyticsCsv_(data.posts);
+    });
+  },
+
+  exportAnalyticsCsv_(posts) {
+    const header = 'ID,テキスト,ビュー,いいね,返信,リポスト,ER%,日時\n';
+    const rows = posts.map(p =>
+      `"${p.id}","${p.text.replace(/"/g, '""').substring(0, 100)}",${p.views},${p.likes},${p.replies},${p.reposts},${p.engagement_rate},"${p.timestamp}"`
+    ).join('\n');
+    const csv = '\uFEFF' + header + rows;
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = `insight_master_analytics_${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    this.showToast('CSVをエクスポートしました', 'success');
+  },
+
+  async renderHeatmap_(area) {
+    const data = await this.api('getTimeAnalysisData');
+    const days = ['月', '火', '水', '木', '金', '土', '日'];
+    const hours = Array.from({length:24}, (_, i) => i);
+
+    let html = `
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">🕐 投稿時間帯分析</div>
+          ${this.geminiLabel()}
+        </div>
+        <div style="font-size:12px;color:var(--text-secondary);margin-bottom:12px">
+          色が濃いほどエンゲージメント率が高い時間帯です
+        </div>
+        <div style="overflow-x:auto">
+          <table style="width:100%;border-collapse:collapse;font-size:10px">
+            <tr>
+              <th style="padding:4px;color:var(--text-muted)"></th>
+              ${days.map(d => `<th style="padding:4px;color:var(--text-secondary)">${d}</th>`).join('')}
+            </tr>
+    `;
+
+    hours.forEach(h => {
+      html += `<tr><td style="padding:3px;color:var(--text-muted);text-align:right">${h}時</td>`;
+      days.forEach((_, d) => {
+        const cell = data.heatmap.find(c => c.hour === h && c.day === d);
+        const val = cell ? cell.value : 0;
+        const alpha = (val * 0.8 + 0.05).toFixed(2);
+        const er = cell ? cell.avgER : '0';
+        html += `<td style="padding:3px;text-align:center">
+          <div style="width:100%;aspect-ratio:1;background:rgba(200,162,255,${alpha});border-radius:3px;display:flex;align-items:center;justify-content:center;cursor:pointer" title="${h}時 ${days[d]}曜 ER:${er}%">
+            ${val > 0.6 ? '<span style="font-size:8px;color:white">' + er + '</span>' : ''}
+          </div>
+        </td>`;
+      });
+      html += '</tr>';
+    });
+
+    html += `</table></div></div>`;
+
+    // Best times
+    html += `<div class="card">
+      <div class="card-title" style="margin-bottom:8px">⭐ ベストタイム</div>
+      ${data.bestTimes.map(t => `
+        <div style="display:flex;justify-content:space-between;padding:8px;background:var(--bg-secondary);border-radius:var(--radius-sm);margin-bottom:6px">
+          <span style="font-size:13px">${days[t.day]}曜 ${t.hour}:00</span>
+          <span class="badge badge-success">ER ${t.avgER}%</span>
+        </div>`).join('')}
+    </div>`;
+
+    html += this.geminiFooter();
+    area.innerHTML = html;
+  },
+
+  async renderBuzzAnalysis_(area) {
+    area.innerHTML = `
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">🔥 バズパターン分析</div>
+          ${this.geminiLabel()}
+        </div>
+        <div style="font-size:12px;color:var(--text-secondary);margin-bottom:12px">
+          投稿データからバズのパターンをAIが分析します
+        </div>
+        <button class="btn btn-primary btn-block" id="buzzAnalysisBtn">🔥 バズ分析を実行</button>
+        <div id="buzzResultArea" style="margin-top:12px"></div>
+      </div>
+      ${this.geminiFooter()}
+    `;
+
+    document.getElementById('buzzAnalysisBtn').addEventListener('click', async () => {
+      const btn = document.getElementById('buzzAnalysisBtn');
+      const resultArea = document.getElementById('buzzResultArea');
+      btn.disabled = true;
+      btn.textContent = '⏳ 分析中...';
+      resultArea.innerHTML = this.showSkeleton();
+
+      try {
+        const data = await this.api('generateBuzzReport');
+
+        let html = '';
+
+        // Stats
+        if (data.stats) {
+          html += `<div class="stats-grid" style="margin-bottom:12px">
+            <div class="stat-item"><div class="stat-value">${data.stats.avgER_top}</div><div class="stat-label">トップ平均ER</div></div>
+            <div class="stat-item"><div class="stat-value">${data.stats.bestHour}時</div><div class="stat-label">ベスト時間</div></div>
+            <div class="stat-item"><div class="stat-value">${this.escapeHtml(data.stats.bestDay)}</div><div class="stat-label">ベスト曜日</div></div>
+            <div class="stat-item"><div class="stat-value">${this.escapeHtml(data.stats.topMediaType)}</div><div class="stat-label">メディア</div></div>
+          </div>`;
+        }
+
+        // Top posts
+        if (data.topPosts && data.topPosts.length) {
+          html += '<div style="font-weight:600;font-size:13px;margin-bottom:6px">🏆 トップ投稿</div>';
+          data.topPosts.forEach(p => {
+            html += `<div class="post-card">
+              <div class="post-card-text">${this.escapeHtml(p.text)}</div>
+              <div class="post-card-meta"><span>👁️ ${this.formatNumber(p.views)}</span><span>📊 ER ${p.er}</span></div>
+            </div>`;
+          });
+        }
+
+        // Bottom posts
+        if (data.bottomPosts && data.bottomPosts.length) {
+          html += '<div style="font-weight:600;font-size:13px;margin:12px 0 6px">📉 低パフォーマンス投稿</div>';
+          data.bottomPosts.forEach(p => {
+            html += `<div class="post-card">
+              <div class="post-card-text">${this.escapeHtml(p.text)}</div>
+              <div class="post-card-meta"><span>👁️ ${this.formatNumber(p.views)}</span><span>📊 ER ${p.er}</span></div>
+            </div>`;
+          });
+        }
+
+        // AI Report
+        if (data.report) {
+          html += `<div style="margin-top:12px;font-weight:600;font-size:13px;margin-bottom:6px">📊 AIレポート</div>
+            <div class="card" style="background:var(--bg-secondary)">
+              <div class="md-content">${this.parseMd(data.report)}</div>
+            </div>
+            <button class="btn btn-sm btn-secondary" style="margin-top:8px" onclick="App.copyToClipboard(\`${data.report.replace(/`/g, '\\`').replace(/\\/g, '\\\\')}\`)">📋 レポートをコピー</button>`;
+        }
+
+        resultArea.innerHTML = html;
+      } catch(e) {
+        resultArea.innerHTML = `<div class="tip-card" style="color:var(--danger)">エラー: ${this.escapeHtml(e.message)}</div>`;
+      }
+
+      btn.disabled = false;
+      btn.textContent = '🔥 バズ分析を実行';
+    });
+  },
+
+  // ============================================================
+  // Create Screen
+  // ============================================================
+  renderCreate() {
+    const content = document.getElementById('mainContent');
+    const lastTab = localStorage.getItem('im_create_tab') || 'generate';
+    content.innerHTML = `
+      <div class="demo-banner">🎮 デモモードで動作中</div>
+      <div class="tabs" id="createTabs">
+        <button class="tab-btn ${lastTab==='generate'?'active':''}" data-tab="generate">🤖 AI生成</button>
+        <button class="tab-btn ${lastTab==='drafts'?'active':''}" data-tab="drafts">📝 下書き</button>
+      </div>
+      <div id="createContent"></div>
+    `;
+    document.getElementById('createTabs').addEventListener('click', e => {
+      const btn = e.target.closest('.tab-btn');
+      if (!btn) return;
+      document.querySelectorAll('#createTabs .tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      localStorage.setItem('im_create_tab', btn.dataset.tab);
+      this.loadCreateTab_(btn.dataset.tab);
+    });
+    this.loadCreateTab_(lastTab);
+  },
+
+  loadCreateTab_(tab) {
+    if (tab === 'generate') this.renderGenerateContent_();
+    else if (tab === 'drafts') this.renderDraftsContent_();
+  },
+
+  renderGenerateContent_() {
+    const area = document.getElementById('createContent');
+    const hasKey = !!this.state.geminiKey;
+    area.innerHTML = `
+      ${!hasKey ? '<div class="tip-card">💡 Gemini APIキーを設定すると、AIがリアルタイムで投稿を生成します。現在はサンプルデータで動作します。</div>' : ''}
+      <div class="card">
+        <div class="card-title" style="margin-bottom:12px">✍️ AI投稿生成 ${this.geminiLabel()}</div>
+        <div style="margin-bottom:12px">
+          <label style="font-size:12px;color:var(--text-secondary);display:block;margin-bottom:6px">テーマ・キーワード</label>
+          <input type="text" class="input" id="genThemeInput" placeholder="例: AI, 朝活, プログラミング..." value="${this.escapeAttr(localStorage.getItem('im_gen_theme') || '')}">
+        </div>
+        <div style="margin-bottom:12px">
+          <label style="font-size:12px;color:var(--text-secondary);display:block;margin-bottom:6px">モード</label>
+          <div style="display:flex;gap:6px" id="genModeButtons">
+            <button class="btn btn-sm btn-primary gen-mode-btn" data-mode="normal">通常</button>
+            <button class="btn btn-sm btn-secondary gen-mode-btn" data-mode="thread">スレッド</button>
+            <button class="btn btn-sm btn-secondary gen-mode-btn" data-mode="analysis">分析ベース</button>
+          </div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:6px" id="genModeDesc">テーマに沿った投稿を生成します</div>
+        </div>
+        <button class="btn btn-primary btn-block" id="generateBtn">🤖 投稿を生成</button>
+      </div>
+      <div id="generateResultArea"></div>
+    `;
+    this.bindGenerateEvents_();
+  },
+
+  bindGenerateEvents_() {
+    let currentMode = 'normal';
+    const modeDescs = {
+      normal: 'テーマに沿った投稿を生成します',
+      thread: 'スレッド形式（親+返信）で生成します',
+      analysis: '分析データに基づいた投稿を生成します'
+    };
+
+    document.getElementById('genModeButtons').addEventListener('click', e => {
+      const btn = e.target.closest('.gen-mode-btn');
+      if (!btn) return;
+      currentMode = btn.dataset.mode;
+      document.querySelectorAll('.gen-mode-btn').forEach(b => {
+        b.className = `btn btn-sm ${b.dataset.mode === currentMode ? 'btn-primary' : 'btn-secondary'} gen-mode-btn`;
+      });
+      document.getElementById('genModeDesc').textContent = modeDescs[currentMode];
+    });
+
+    document.getElementById('generateBtn').addEventListener('click', async () => {
+      const theme = document.getElementById('genThemeInput').value.trim() || 'AI';
+      localStorage.setItem('im_gen_theme', theme);
+      const btn = document.getElementById('generateBtn');
+      const resultArea = document.getElementById('generateResultArea');
+      btn.disabled = true;
+      btn.textContent = '⏳ 生成中...';
+      resultArea.innerHTML = this.showSkeleton();
+
+      try {
+        const action = currentMode === 'analysis' ? 'generatePostWithAnalysis' : 'generatePostWithAI';
+        const data = await this.api(action, { theme, mode: currentMode });
+        this.renderGenerateResults_(resultArea, data, currentMode);
+      } catch(e) {
+        resultArea.innerHTML = `<div class="tip-card" style="color:var(--danger)">エラー: ${this.escapeHtml(e.message)}</div>`;
+      }
+      btn.disabled = false;
+      btn.textContent = '🤖 投稿を生成';
+    });
+  },
+
+  renderGenerateResults_(area, data, mode) {
+    let html = `<div style="display:flex;justify-content:space-between;align-items:center;margin:12px 0 8px">
+      <div style="font-weight:600;font-size:13px">✨ 生成結果</div>
+      ${this.geminiLabel()}
+    </div>`;
+
+    if (data.analysisUsed) {
+      html += `<div class="tip-card">📊 分析データ使用: ${data.analysisUsed.totalPosts}投稿, 平均ER ${data.analysisUsed.avgER}, トップテーマ「${this.escapeHtml(data.analysisUsed.topTheme)}」</div>`;
+    }
+
+    (data.items || []).forEach((item, i) => {
+      html += `
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+            <span class="badge badge-demo">案${i+1}</span>
+            ${item.meta?.expectedER ? `<span style="font-size:11px;color:var(--text-secondary)">予想ER: ${item.meta.expectedER}</span>` : ''}
+          </div>
+          <div class="post-card-text" style="font-size:14px;line-height:1.7;margin-bottom:10px">${this.escapeHtml(item.text)}</div>
+          ${item.reason ? `<div style="font-size:11px;color:var(--text-secondary);margin-bottom:8px">💡 ${this.escapeHtml(item.reason)}</div>` : ''}
+          ${item.meta ? `<div class="post-card-meta">
+            ${item.meta.bestTime ? `<span>🕐 ${item.meta.bestTime}</span>` : ''}
+            ${item.meta.mediaAdvice ? `<span>📷 ${this.escapeHtml(item.meta.mediaAdvice)}</span>` : ''}
+          </div>` : ''}
+          <div style="display:flex;gap:6px;margin-top:10px">
+            <button class="btn btn-sm btn-secondary copy-gen-btn" data-text="${this.escapeAttr(item.text)}">📋 コピー</button>
+            <button class="btn btn-sm btn-primary save-draft-btn" data-text="${this.escapeAttr(item.text)}">💾 下書き保存</button>
+          </div>
+        </div>`;
+    });
+
+    html += this.geminiFooter();
+    area.innerHTML = html;
+
+    area.querySelectorAll('.copy-gen-btn').forEach(btn => {
+      btn.addEventListener('click', () => this.copyToClipboard(btn.dataset.text));
+    });
+    area.querySelectorAll('.save-draft-btn').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        await this.api('saveDraft', { text: btn.dataset.text, source: 'ai' });
+        btn.textContent = '✅ 保存済';
+        btn.disabled = true;
+        this.showToast('下書きに保存しました', 'success');
+      });
+    });
+  },
+
+  // ============================================================
+  // Drafts (inside Create tab)
+  // ============================================================
+  renderDraftsContent_() {
+    const area = document.getElementById('createContent');
+    area.innerHTML = `
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <div class="tabs" style="flex:1;margin-bottom:0;margin-right:8px" id="draftFilterTabs">
+          <button class="tab-btn active" data-filter="all">すべて</button>
+          <button class="tab-btn" data-filter="unused">未使用</button>
+          <button class="tab-btn" data-filter="used">使用済</button>
+        </div>
+        <button class="btn btn-sm btn-primary" id="addDraftBtn">＋ 追加</button>
+      </div>
+      <div id="draftsListArea"></div>
+    `;
+    this.bindDraftFilterEvents_();
+    this.fetchDraftsList_('all');
+
+    document.getElementById('addDraftBtn').addEventListener('click', () => this.showAddDraftModal_());
+  },
+
+  bindDraftFilterEvents_() {
+    document.getElementById('draftFilterTabs').addEventListener('click', e => {
+      const btn = e.target.closest('.tab-btn');
+      if (!btn) return;
+      document.querySelectorAll('#draftFilterTabs .tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      this.fetchDraftsList_(btn.dataset.filter);
+    });
+  },
+
+  async fetchDraftsList_(filter) {
+    const area = document.getElementById('draftsListArea');
+    area.innerHTML = this.showSkeleton();
+    const status = filter === 'all' ? undefined : filter;
+    const data = await this.api('getDrafts', { status });
+    const drafts = data.drafts || [];
+
+    if (!drafts.length) {
+      area.innerHTML = `<div class="empty-state"><div class="empty-state-icon">📝</div><div class="empty-state-text">下書きがありません</div></div>`;
+      return;
+    }
+
+    let html = '';
+    drafts.forEach(d => {
+      html += `
+        <div class="card" id="draft-${d.id}">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+            <div style="display:flex;gap:6px;align-items:center">
+              <span class="badge ${d.used ? 'badge-success' : 'badge-warning'}">${d.used ? '使用済' : '未使用'}</span>
+              <span class="badge badge-demo">${d.source === 'ai' ? '🤖 AI' : '✏️ 手動'}</span>
+            </div>
+            <span style="font-size:11px;color:var(--text-muted)">${this.formatDate(d.createdAt)}</span>
+          </div>
+          <div class="post-card-text">${this.escapeHtml(d.isThread ? (d.threadParts || []).map((p,i) => `[${i===0?'親':'返信'+(i)}] ${p}`).join('\n\n') : d.text)}</div>
+          <div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap">
+            <button class="btn btn-sm btn-secondary draft-copy-btn" data-text="${this.escapeAttr(d.text || (d.threadParts || []).join('\n\n'))}">📋 コピー</button>
+            <button class="btn btn-sm btn-secondary draft-toggle-btn" data-id="${d.id}">${d.used ? '📌 未使用に戻す' : '✅ 使用済にする'}</button>
+            <button class="btn btn-sm btn-secondary draft-refine-btn" data-id="${d.id}" data-text="${this.escapeAttr(d.text || '')}">🤖 AI編集</button>
+            <button class="btn btn-sm btn-danger draft-delete-btn" data-id="${d.id}">🗑️</button>
+          </div>
+        </div>`;
+    });
+    area.innerHTML = html;
+    this.bindDraftItemEvents_();
+  },
+
+  bindDraftItemEvents_() {
+    document.querySelectorAll('.draft-copy-btn').forEach(btn => {
+      btn.addEventListener('click', () => this.copyToClipboard(btn.dataset.text));
+    });
+    document.querySelectorAll('.draft-toggle-btn').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        await this.api('toggleDraftStatus', { draftId: btn.dataset.id });
+        const activeFilter = document.querySelector('#draftFilterTabs .tab-btn.active')?.dataset.filter || 'all';
+        this.fetchDraftsList_(activeFilter);
+        this.showToast('ステータスを変更しました', 'success');
+      });
+    });
+    document.querySelectorAll('.draft-delete-btn').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        if (!confirm('この下書きを削除しますか？')) return;
+        await this.api('deleteDraft', { draftId: btn.dataset.id });
+        document.getElementById(`draft-${btn.dataset.id}`)?.remove();
+        this.showToast('削除しました', 'success');
+      });
+    });
+    document.querySelectorAll('.draft-refine-btn').forEach(btn => {
+      btn.addEventListener('click', () => this.showRefineModal_(btn.dataset.id, btn.dataset.text));
+    });
+  },
+
+  showRefineModal_(draftId, text) {
+    const styles = [
+      { id: 'improve', label: '✨ 改善', desc: '全体的にブラッシュアップ' },
+      { id: 'shorter', label: '📏 短く', desc: 'より簡潔に' },
+      { id: 'longer', label: '📝 長く', desc: 'より詳細に' },
+      { id: 'casual', label: '😊 カジュアル', desc: 'くだけた口調に' },
+      { id: 'professional', label: '💼 プロフェッショナル', desc: 'フォーマルに' },
+      { id: 'engaging', label: '🔥 エンゲージング', desc: '反応が得られるように' },
+      { id: 'hook', label: '🎣 フック', desc: '冒頭で惹きつける' }
+    ];
+
+    const body = `
+      <div style="margin-bottom:12px">
+        <div style="font-size:12px;color:var(--text-secondary);margin-bottom:8px">元の投稿:</div>
+        <div style="background:var(--bg-secondary);padding:10px;border-radius:var(--radius-sm);font-size:13px;line-height:1.6;max-height:100px;overflow-y:auto">${this.escapeHtml(text)}</div>
+      </div>
+      <div style="margin-bottom:12px">
+        <div style="font-size:12px;color:var(--text-secondary);margin-bottom:6px">スタイルを選択:</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px" id="refineStyleBtns">
+          ${styles.map(s => `<button class="btn btn-sm btn-secondary refine-style-btn" data-style="${s.id}" title="${s.desc}">${s.label}</button>`).join('')}
+        </div>
+      </div>
+      <div style="margin-bottom:12px">
+        <label style="font-size:12px;color:var(--text-secondary);display:block;margin-bottom:6px">追加指示（任意）</label>
+        <textarea class="input" id="refineInstruction" rows="2" placeholder="例: もっと数字を入れて..."></textarea>
+      </div>
+      <button class="btn btn-primary btn-block" id="executeRefineBtn">🤖 リファイン実行</button>
+      <div id="refineResultArea" style="margin-top:12px"></div>
+    `;
+
+    const modal = this.showModal('🤖 AI編集', body);
+    let selectedStyle = 'improve';
+
+    modal.querySelector('#refineStyleBtns').addEventListener('click', e => {
+      const btn = e.target.closest('.refine-style-btn');
+      if (!btn) return;
+      selectedStyle = btn.dataset.style;
+      modal.querySelectorAll('.refine-style-btn').forEach(b => {
+        b.className = `btn btn-sm ${b.dataset.style === selectedStyle ? 'btn-primary' : 'btn-secondary'} refine-style-btn`;
+      });
+    });
+    // Set first as active
+    modal.querySelector('.refine-style-btn').classList.replace('btn-secondary', 'btn-primary');
+
+    modal.querySelector('#executeRefineBtn').addEventListener('click', async () => {
+      const btn = modal.querySelector('#executeRefineBtn');
+      const resultArea = modal.querySelector('#refineResultArea');
+      const instruction = modal.querySelector('#refineInstruction').value.trim();
+      btn.disabled = true;
+      btn.textContent = '⏳ 生成中...';
+      resultArea.innerHTML = this.showSkeleton();
+
+      try {
+        const data = await this.api('refinePostWithAI', { text, style: selectedStyle, instruction });
+        let html = '';
+        (data.variants || []).forEach((v, i) => {
+          html += `
+            <div class="card" style="background:var(--bg-secondary)">
+              <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+                <span class="badge badge-demo">バリエーション ${i+1}</span>
+                ${this.geminiLabel()}
+              </div>
+              <div class="post-card-text">${this.escapeHtml(v.text)}</div>
+              <div style="display:flex;gap:6px;margin-top:8px">
+                <button class="btn btn-sm btn-secondary" onclick="App.copyToClipboard(\`${v.text.replace(/`/g, '\\`').replace(/\\/g, '\\\\')}\`)">📋 コピー</button>
+                <button class="btn btn-sm btn-primary refine-save-btn" data-text="${this.escapeAttr(v.text)}">💾 新規下書き保存</button>
+                <button class="btn btn-sm btn-secondary refine-replace-btn" data-id="${draftId}" data-text="${this.escapeAttr(v.text)}">🔄 上書き</button>
+              </div>
+            </div>`;
+        });
+        resultArea.innerHTML = html;
+
+        resultArea.querySelectorAll('.refine-save-btn').forEach(b => {
+          b.addEventListener('click', async () => {
+            await this.api('saveDraft', { text: b.dataset.text, source: 'ai' });
+            b.textContent = '✅ 保存済';
+            b.disabled = true;
+            this.showToast('新規下書きとして保存しました', 'success');
+          });
+        });
+        resultArea.querySelectorAll('.refine-replace-btn').forEach(b => {
+          b.addEventListener('click', async () => {
+            await this.api('updateDraft', { draftId: b.dataset.id, text: b.dataset.text });
+            b.textContent = '✅ 上書き済';
+            b.disabled = true;
+            this.showToast('下書きを上書きしました', 'success');
+          });
+        });
+      } catch(e) {
+        resultArea.innerHTML = `<div class="tip-card" style="color:var(--danger)">エラー: ${this.escapeHtml(e.message)}</div>`;
+      }
+      btn.disabled = false;
+      btn.textContent = '🤖 リファイン実行';
+    });
+  },
+
+  showAddDraftModal_() {
+    const body = `
+      <div style="margin-bottom:12px">
+        <label style="font-size:12px;color:var(--text-secondary);display:block;margin-bottom:6px">投稿テキスト</label>
+        <textarea class="input" id="newDraftText" rows="5" placeholder="投稿内容を入力..."></textarea>
+      </div>
+      <button class="btn btn-primary btn-block" id="saveNewDraftBtn">💾 保存</button>
+    `;
+    const modal = this.showModal('📝 新規下書き', body);
+    modal.querySelector('#saveNewDraftBtn').addEventListener('click', async () => {
+      const text = modal.querySelector('#newDraftText').value.trim();
+      if (!text) { this.showToast('テキストを入力してください', 'error'); return; }
+      await this.api('saveDraft', { text, source: 'manual' });
+      modal.querySelector('.modal-overlay')?.remove() || modal.remove();
+      this.fetchDraftsList_('all');
+      this.showToast('下書きを保存しました', 'success');
+    });
+  },
+
+  // ============================================================
+  // Keywords Screen
+  // ============================================================
+  renderKeywords() {
+    const content = document.getElementById('mainContent');
+    const history = JSON.parse(localStorage.getItem('im_search_history') || '[]');
+
+    content.innerHTML = `
+      <div class="demo-banner">🎮 デモモードで動作中 — キーワード検索はサンプルデータを返します</div>
+      <div class="card">
+        <div class="card-title" style="margin-bottom:12px">🔍 キーワード検索</div>
+        <div style="margin-bottom:12px">
+          <input type="text" class="input" id="kwInput" placeholder="キーワードを入力..." value="">
+        </div>
+        <button class="btn btn-primary btn-block" id="kwSearchBtn">🔍 検索</button>
+      </div>
+      ${history.length ? `
+        <div class="card">
+          <div class="card-title" style="margin-bottom:8px">🕐 検索履歴</div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px">
+            ${history.map(h => `<button class="btn btn-sm btn-secondary kw-history-btn" data-kw="${this.escapeAttr(h)}">${this.escapeHtml(h)}</button>`).join('')}
+          </div>
+          <button class="btn btn-sm btn-secondary" style="margin-top:8px" id="clearKwHistory">🗑️ 履歴クリア</button>
+        </div>` : ''}
+      <div id="kwResultArea"></div>
+    `;
+
+    document.getElementById('kwSearchBtn').addEventListener('click', () => this.executeKeywordSearch_());
+    document.getElementById('kwInput').addEventListener('keydown', e => { if (e.key === 'Enter') this.executeKeywordSearch_(); });
+
+    document.querySelectorAll('.kw-history-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.getElementById('kwInput').value = btn.dataset.kw;
+        this.executeKeywordSearch_();
+      });
+    });
+
+    document.getElementById('clearKwHistory')?.addEventListener('click', () => {
+      localStorage.removeItem('im_search_history');
+      this.renderKeywords();
+      this.showToast('検索履歴をクリアしました', 'success');
+    });
+  },
+
+  async executeKeywordSearch_() {
+    const keyword = document.getElementById('kwInput').value.trim();
+    if (!keyword) { this.showToast('キーワードを入力してください', 'error'); return; }
+
+    // Save history
+    let history = JSON.parse(localStorage.getItem('im_search_history') || '[]');
+    history = [keyword, ...history.filter(h => h !== keyword)].slice(0, 10);
+    localStorage.setItem('im_search_history', JSON.stringify(history));
+
+    const resultArea = document.getElementById('kwResultArea');
+    resultArea.innerHTML = this.showSkeleton();
+
+    try {
+      const data = await this.api('searchKeyword', { keyword });
+
+      let html = `
+        <div class="card" style="margin-top:12px">
+          <div class="card-header">
+            <div class="card-title">📊 検索結果: 「${this.escapeHtml(keyword)}」</div>
+            <span class="badge badge-demo">${data.posts.length}件</span>
+          </div>
+          ${data.summary ? `
+            <div class="stats-grid" style="margin-bottom:12px">
+              <div class="stat-item"><div class="stat-value">${data.summary.total}</div><div class="stat-label">総数</div></div>
+              <div class="stat-item"><div class="stat-value">${this.formatNumber(data.summary.avgViews)}</div><div class="stat-label">平均ビュー</div></div>
+            </div>` : ''}
+        </div>
+      `;
+
+      data.posts.forEach(p => {
+        html += `
+          <div class="post-card">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+              <span style="font-size:12px;font-weight:600;color:var(--accent-primary)">@${this.escapeHtml(p.username)}</span>
+              <span style="font-size:11px;color:var(--text-muted)">${this.timeAgo(p.timestamp)}</span>
+            </div>
+            <div class="post-card-text">${this.escapeHtml(p.text)}</div>
+            <div class="post-card-meta">
+              <span>👁️ ${this.formatNumber(p.views)}</span>
+              <span>❤️ ${p.likes}</span>
+              <span>💬 ${p.replies}</span>
+              <span>📷 ${p.mediaType}</span>
+            </div>
+          </div>`;
+      });
+
+      // AI Analysis button
+      html += `
+        <div class="card">
+          <button class="btn btn-primary btn-block" id="kwAiAnalysisBtn">🤖 AIでトレンド分析</button>
+          <div id="kwAiResultArea" style="margin-top:12px"></div>
+        </div>
+        ${this.geminiFooter()}
+      `;
+
+      resultArea.innerHTML = html;
+
+      document.getElementById('kwAiAnalysisBtn')?.addEventListener('click', async () => {
+        const btn = document.getElementById('kwAiAnalysisBtn');
+        const aiArea = document.getElementById('kwAiResultArea');
+        btn.disabled = true;
+        btn.textContent = '⏳ 分析中...';
+        aiArea.innerHTML = this.showSkeleton();
+
+        try {
+          const aiData = await this.api('searchKeywordWithAI', { keyword });
+          aiArea.innerHTML = `
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+              <span style="font-weight:600;font-size:13px">📊 トレンド分析</span>
+              ${this.geminiLabel()}
+            </div>
+            <div class="md-content">${this.parseMd(aiData.report || aiData.text || 'レポートを生成できませんでした')}</div>
+          `;
+        } catch(e) {
+          aiArea.innerHTML = `<div class="tip-card" style="color:var(--danger)">エラー: ${this.escapeHtml(e.message)}</div>`;
+        }
+        btn.disabled = false;
+        btn.textContent = '🤖 AIでトレンド分析';
+      });
+    } catch(e) {
+
+  // ============================================================
+  // Settings Screen (Enhanced)
+  // ============================================================
+  renderSettings() {
+    const content = document.getElementById('mainContent');
+    const hasKey = !!this.state.geminiKey;
+    const user = this.state.user;
+
+    content.innerHTML = `
+      <style>
+        .tooltip-wrap { position:relative; display:inline-flex; align-items:center; }
+        .tooltip-icon { display:inline-flex; align-items:center; justify-content:center; width:18px; height:18px; border-radius:50%; background:var(--border-light); color:var(--text-secondary); font-size:11px; cursor:pointer; margin-left:6px; flex-shrink:0; }
+        .tooltip-bubble { display:none; position:absolute; bottom:calc(100% + 8px); left:50%; transform:translateX(-50%); background:var(--bg-card-hover); border:1px solid var(--border-light); border-radius:var(--radius-sm); padding:10px 12px; font-size:11px; color:var(--text-secondary); line-height:1.6; width:260px; z-index:200; box-shadow:var(--shadow-lg); }
+        .tooltip-bubble::after { content:''; position:absolute; top:100%; left:50%; transform:translateX(-50%); border:6px solid transparent; border-top-color:var(--border-light); }
+        .tooltip-wrap.active .tooltip-bubble { display:block; }
+        .preview-field { background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:var(--radius-md); padding:10px 14px; font-size:13px; color:var(--text-muted); position:relative; }
+        .preview-field .lock-badge { position:absolute; top:8px; right:8px; }
+        .settings-section-title { font-size:13px; font-weight:600; color:var(--text-secondary); margin-bottom:8px; display:flex; align-items:center; gap:4px; }
+      </style>
+
+      <div class="demo-banner">🎮 デモモードで動作中</div>
+
+      <!-- Account Info -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">👤 アカウント</div>
+          <span class="badge badge-demo">デモ</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px">
+          <img src="${user.profilePicUrl}" alt="" style="width:44px;height:44px;border-radius:50%;border:2px solid var(--border-light)">
+          <div>
+            <div style="font-weight:600">${this.escapeHtml(user.name)}</div>
+            <div style="font-size:12px;color:var(--text-secondary)">@${this.escapeHtml(user.username)}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Meta Developer Settings (Preview) -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            📱 Meta Developer設定
+            <span class="tooltip-wrap" data-tooltip>
+              <span class="tooltip-icon">?</span>
+              <span class="tooltip-bubble">Threads APIに接続するためのMeta App設定です。本体版ではここにApp IDとApp Secretを入力し、Threadsアカウントと連携します。<br><br>👉 <a href="https://developers.facebook.com/" target="_blank" style="color:var(--accent-primary)">Meta Developer Console</a></span>
+            </span>
+          </div>
+          <span class="badge badge-warning">🔒 本体版で設定</span>
+        </div>
+        <div style="margin-bottom:10px">
+          <div class="settings-section-title">App ID</div>
+          <div class="preview-field">
+            <span style="opacity:0.5">例: 123456789012345</span>
+            <span class="badge badge-warning lock-badge" style="font-size:10px">本体版</span>
+          </div>
+        </div>
+        <div style="margin-bottom:10px">
+          <div class="settings-section-title">App Secret</div>
+          <div class="preview-field">
+            <span style="opacity:0.5">例: ●●●●●●●●●●●●●●●●</span>
+            <span class="badge badge-warning lock-badge" style="font-size:10px">本体版</span>
+          </div>
+        </div>
+        <div style="font-size:11px;color:var(--text-muted);line-height:1.5;margin-top:4px">
+          本体版では Meta Developer Console で取得したApp IDとApp Secretを入力して、Threads APIと連携します。
+        </div>
+      </div>
+
+      <!-- Threads Auth (Preview) -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            🔗 Threads認証
+            <span class="tooltip-wrap" data-tooltip>
+              <span class="tooltip-icon">?</span>
+              <span class="tooltip-bubble">本体版ではOAuth認証でThreadsアカウントと接続し、実際のフォロワー数・投稿データ・インサイトをリアルタイムで取得できます。デモ版ではサンプルデータを表示しています。</span>
+            </span>
+          </div>
+          <span class="badge badge-warning">🔒 本体版で設定</span>
+        </div>
+        <button class="btn btn-secondary btn-block" disabled style="opacity:0.5">
+          🔗 Threadsアカウントと接続（本体版で利用可能）
+        </button>
+        <div style="font-size:11px;color:var(--text-muted);margin-top:8px;line-height:1.5">
+          本体版では実際のThreadsアカウントを接続して、リアルデータでの分析が可能になります。
+        </div>
+      </div>
+
+      <!-- Spreadsheet (Preview) -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            📊 Google スプレッドシート
+            <span class="tooltip-wrap" data-tooltip>
+              <span class="tooltip-icon">?</span>
+              <span class="tooltip-bubble">本体版はGoogle Apps Script上で動作し、スプレッドシートにデータを保存します。フォロワー履歴、投稿分析結果、下書きなどが自動的にシートに記録されます。</span>
+            </span>
+          </div>
+          <span class="badge badge-warning">🔒 本体版で設定</span>
+        </div>
+        <div class="preview-field">
+          <span style="opacity:0.5">例: https://docs.google.com/spreadsheets/d/xxxxx</span>
+          <span class="badge badge-warning lock-badge" style="font-size:10px">本体版</span>
+        </div>
+        <div style="font-size:11px;color:var(--text-muted);margin-top:8px;line-height:1.5">
+          本体版ではGoogleスプレッドシートがデータベースとして機能し、分析履歴やフォロワー推移が永続的に記録されます。
+        </div>
+      </div>
+
+      <!-- Gemini API Key (Active!) -->
+      <div class="card" style="border-color:${hasKey ? 'rgba(74,222,128,0.3)' : 'rgba(200,162,255,0.3)'}">
+        <div class="card-header">
+          <div class="card-title">
+            🤖 Gemini AI設定
+            <span class="tooltip-wrap" data-tooltip>
+              <span class="tooltip-icon">?</span>
+              <span class="tooltip-bubble">Google AI Studio で無料のAPIキーを取得できます。キーを入力するとデモ内でもリアルタイムAI分析・投稿生成が体験できます。キーはブラウザのlocalStorageにのみ保存され、Googleのサーバーに直接送信されます（第三者には送信されません）。<br><br>👉 <a href="https://aistudio.google.com/apikey" target="_blank" style="color:var(--accent-primary)">APIキーを取得</a></span>
+            </span>
+          </div>
+          <span class="badge ${hasKey ? 'badge-success' : 'badge-warning'}">${hasKey ? '✅ 接続中' : '⚠️ 未設定'}</span>
+        </div>
+        ${!hasKey ? `
+        <div style="background:rgba(200,162,255,0.08);border:1px solid rgba(200,162,255,0.2);border-radius:var(--radius-sm);padding:10px;margin-bottom:12px;font-size:12px;color:var(--text-secondary);line-height:1.6">
+          ✨ <strong style="color:var(--accent-primary)">このデモでも利用可能！</strong><br>
+          APIキーを入力すると、サンプルデータの代わりにリアルタイムAI分析・投稿生成を体験できます。
+        </div>` : `
+        <div style="background:rgba(74,222,128,0.08);border:1px solid rgba(74,222,128,0.2);border-radius:var(--radius-sm);padding:10px;margin-bottom:12px;font-size:12px;color:var(--text-secondary);line-height:1.6">
+          ✅ <strong style="color:var(--success)">Gemini AI 接続中</strong><br>
+          AI分析・投稿生成がリアルタイムモードで動作しています。
+        </div>`}
+        <div style="margin-bottom:10px">
+          <label style="font-size:12px;color:var(--text-secondary);display:block;margin-bottom:6px">APIキー</label>
+          <div style="display:flex;gap:8px">
+            <input type="password" class="input" id="geminiKeyInput" placeholder="AIza..." value="${this.escapeAttr(this.state.geminiKey || '')}" style="flex:1">
+            <button class="btn btn-sm btn-secondary" id="toggleKeyVisibility" style="white-space:nowrap">👁️</button>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;margin-bottom:12px">
+          <button class="btn btn-primary" id="saveGeminiKeyBtn" style="flex:1">💾 保存 & テスト</button>
+          ${hasKey ? '<button class="btn btn-danger btn-sm" id="deleteGeminiKeyBtn">🗑️ 削除</button>' : ''}
+        </div>
+        <div id="geminiTestResult"></div>
+        <div style="margin-top:8px">
+          <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener" style="font-size:12px;color:var(--accent-primary);text-decoration:none">
+            🔗 Google AI Studio でAPIキーを取得 →
+          </a>
+        </div>
+      </div>
+
+      <!-- Data Management -->
+      <div class="card">
+        <div class="card-title" style="margin-bottom:12px">🗄️ データ管理</div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <button class="btn btn-secondary btn-block" id="exportDataBtn">📥 データエクスポート (JSON)</button>
+          <button class="btn btn-danger btn-block" id="clearAllDataBtn">🗑️ 全データ削除</button>
+        </div>
+      </div>
+
+      <!-- Links -->
+      <div class="card">
+        <div class="card-title" style="margin-bottom:12px">🔗 リンク</div>
+        <div style="display:flex;flex-direction:column;gap:8px;font-size:13px">
+          <a href="https://github.com/goroyattemiyo/insight-master" target="_blank" rel="noopener" style="color:var(--accent-primary);text-decoration:none;padding:8px;background:var(--bg-secondary);border-radius:var(--radius-sm)">
+            📦 Insight Master（本体プロジェクト）
+          </a>
+          <a href="https://github.com/goroyattemiyo/Synapse" target="_blank" rel="noopener" style="color:var(--accent-primary);text-decoration:none;padding:8px;background:var(--bg-secondary);border-radius:var(--radius-sm)">
+            🧠 Synapse（設計フレームワーク）
+          </a>
+          <a href="https://sordid-echinacea-374.notion.site/Threads-InsightMaster-AI-1-313b3545dbc6809aa5d6fcf0f710091f" target="_blank" rel="noopener" style="color:var(--accent-primary);text-decoration:none;padding:8px;background:var(--bg-secondary);border-radius:var(--radius-sm)">
+            📖 セットアップガイド（Notion）
+          </a>
+        </div>
+      </div>
+
+      <!-- App Info -->
+      <div class="card" style="text-align:center">
+        <img src="https://files.catbox.moe/up3cd1.webp" alt="" style="width:48px;height:48px;border-radius:12px;margin-bottom:8px">
+        <div style="font-weight:700;font-size:15px">Insight Master</div>
+        <div style="font-size:12px;color:var(--text-secondary)">Demo Version 1.0.0</div>
+        <div style="font-size:11px;color:var(--text-muted);margin-top:4px">Based on v2.1.0 (2026-02-28)</div>
+        <div style="font-size:11px;color:var(--text-muted);margin-top:2px">Designed with Synapse Architecture</div>
+      </div>
+
+      <div style="height:20px"></div>
+    `;
+
+    this.bindSettingsEvents_();
+    this.bindTooltips_();
+  },
+
+  bindTooltips_() {
+    document.querySelectorAll('[data-tooltip]').forEach(wrap => {
+      wrap.addEventListener('click', e => {
+        e.stopPropagation();
+        const wasActive = wrap.classList.contains('active');
+        // Close all tooltips
+        document.querySelectorAll('.tooltip-wrap.active').forEach(w => w.classList.remove('active'));
+        if (!wasActive) wrap.classList.add('active');
+      });
+    });
+    // Close tooltips when clicking outside
+    document.addEventListener('click', () => {
+      document.querySelectorAll('.tooltip-wrap.active').forEach(w => w.classList.remove('active'));
+    }, { once: false });
+  },
+
+  bindSettingsEvents_() {
+    // Toggle key visibility
+    const keyInput = document.getElementById('geminiKeyInput');
+    document.getElementById('toggleKeyVisibility')?.addEventListener('click', () => {
+      keyInput.type = keyInput.type === 'password' ? 'text' : 'password';
+    });
+
+    // Save & test
+    document.getElementById('saveGeminiKeyBtn')?.addEventListener('click', async () => {
+      const btn = document.getElementById('saveGeminiKeyBtn');
+      const resultEl = document.getElementById('geminiTestResult');
+      const key = keyInput.value.trim();
+
+      if (!key) {
+        this.showToast('APIキーを入力してください', 'error');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = '⏳ テスト中...';
+      resultEl.innerHTML = '<div style="font-size:12px;color:var(--text-secondary)">接続テスト中...</div>';
+
+      const valid = await this.validateGeminiKey(key);
+      if (valid) {
+        localStorage.setItem('insight_master_gemini_key', key);
+        this.state.geminiKey = key;
+        resultEl.innerHTML = '<div style="font-size:12px;color:var(--success)">✅ 接続成功！APIキーを保存しました。</div>';
+        this.showToast('Gemini APIキーを保存しました', 'success');
+        setTimeout(() => this.renderSettings(), 1000);
+      } else {
+        resultEl.innerHTML = '<div style="font-size:12px;color:var(--danger)">❌ 接続失敗。APIキーを確認してください。</div>';
+        this.showToast('APIキーが無効です', 'error');
+      }
+      btn.disabled = false;
+      btn.textContent = '💾 保存 & テスト';
+    });
+
+    // Delete key
+    document.getElementById('deleteGeminiKeyBtn')?.addEventListener('click', () => {
+      if (!confirm('Gemini APIキーを削除しますか？')) return;
+      localStorage.removeItem('insight_master_gemini_key');
+      this.state.geminiKey = null;
+      this.showToast('APIキーを削除しました', 'success');
+      this.renderSettings();
+    });
+
+    // Export data
+    document.getElementById('exportDataBtn')?.addEventListener('click', () => {
+      const data = {
+        drafts: JSON.parse(localStorage.getItem('insight_master_demo_drafts') || '[]'),
+        searchHistory: JSON.parse(localStorage.getItem('im_search_history') || '[]'),
+        settings: { theme: localStorage.getItem('im_gen_theme') || '' },
+        exportedAt: new Date().toISOString()
+      };
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `insight_master_demo_export_${new Date().toISOString().split('T')[0]}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+      this.showToast('データをエクスポートしました', 'success');
+    });
+
+    // Clear all data
+    document.getElementById('clearAllDataBtn')?.addEventListener('click', () => {
+      if (!confirm('すべてのデモデータを削除しますか？\n（下書き、検索履歴、設定が消去されます）')) return;
+      localStorage.removeItem('insight_master_demo_drafts');
+      localStorage.removeItem('insight_master_gemini_key');
+      localStorage.removeItem('im_search_history');
+      localStorage.removeItem('im_gen_theme');
+      localStorage.removeItem('im_create_tab');
+      this.state.geminiKey = null;
+      this.showToast('全データを削除しました', 'success');
+      this.renderSettings();
+    });
+  }
+
+}; // End of App object
+
+// ============================================================
+// Initialize
+// ============================================================
+document.addEventListener('DOMContentLoaded', () => {
+  App.init();
+});
+</script>
+</body>
+</html>
