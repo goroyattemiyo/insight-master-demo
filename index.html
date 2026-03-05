@@ -1041,23 +1041,33 @@ const App = {
       '<div class="card"><div class="card-title">✍️ AI投稿生成 '+this.geminiLabel_()+'</div>' +
         '<div class="mb-12"><label class="form-label">テーマ・キーワード</label><input type="text" class="input" id="genTheme" placeholder="例: AI, 朝活, プログラミング..." value="'+this.escapeAttr(localStorage.getItem('im_gen_theme')||'')+'"></div>' +
         '<div class="mb-12"><label class="form-label">モード</label><div class="segment" id="genModeSeg"><button class="segment-btn active" data-mode="normal">通常</button><button class="segment-btn" data-mode="thread">スレッド</button><button class="segment-btn" data-mode="analysis-based">分析ベース</button></div></div>' +
+        '<div class="mb-12" id="angleSelectorWrap" style="display:none;"><label class="form-label">切り口（オプション）</label><div style="display:flex;flex-wrap:wrap;gap:6px;" id="angleSel"><button class="btn btn-secondary btn-small angle-btn" data-angle="">🎯 自動</button><button class="btn btn-secondary btn-small angle-btn" data-angle="tools">🔧 ツール紹介</button><button class="btn btn-secondary btn-small angle-btn" data-angle="howto">📝 やり方・手順</button><button class="btn btn-secondary btn-small angle-btn" data-angle="mistakes">💥 失敗談</button><button class="btn btn-secondary btn-small angle-btn" data-angle="comparison">⚖️ 比較</button><button class="btn btn-secondary btn-small angle-btn" data-angle="case">📊 事例</button><button class="btn btn-secondary btn-small angle-btn" data-angle="beginner">🔰 初心者向け</button></div></div>' +
         '<button class="btn btn-full" id="generateBtn">✨ 生成</button>' +
       '</div><div id="genResults"></div>';
     var modeSeg = document.getElementById('genModeSeg');
-    modeSeg.addEventListener('click', function(e){var btn=e.target.closest('.segment-btn');if(!btn)return;modeSeg.querySelectorAll('.segment-btn').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');});
+    var angleWrap = document.getElementById('angleSelectorWrap');
+    var angleSel = document.getElementById('angleSel');
+    modeSeg.addEventListener('click', function(e){var btn=e.target.closest('.segment-btn');if(!btn)return;modeSeg.querySelectorAll('.segment-btn').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');var m=btn.getAttribute('data-mode');angleWrap.style.display=(m==='thread'||m==='analysis-based')?'block':'none';});
+    angleSel.addEventListener('click', function(e){var btn=e.target.closest('.angle-btn');if(!btn)return;angleSel.querySelectorAll('.angle-btn').forEach(function(b){b.classList.remove('active');b.style.background='';b.style.color='';b.style.borderColor='';});btn.classList.add('active');btn.style.background='var(--primary)';btn.style.color='#fff';btn.style.borderColor='var(--primary)';});
     document.getElementById('generateBtn').addEventListener('click', async function() {
       var theme = document.getElementById('genTheme').value.trim()||'AI'; localStorage.setItem('im_gen_theme',theme);
       var modeBtn = modeSeg.querySelector('.segment-btn.active'); var mode = modeBtn?modeBtn.getAttribute('data-mode'):'normal';
+      var angleBtn = angleSel.querySelector('.angle-btn.active'); var angle = angleBtn?angleBtn.getAttribute('data-angle'):'';
       var btn = this, results = document.getElementById('genResults');
       btn.disabled=true;btn.textContent='⏳ 生成中...';results.innerHTML=self.renderSkeleton_();
       try {
         var action = mode==='analysis-based'?'generatePostWithAnalysis':'generatePostWithAI';
-        var data = await self.api(action,{theme:theme,mode:mode,count:3});
+        var data = await self.api(action,{theme:theme,mode:mode,angle:angle,count:3});
         var items = data.results||[];
         var html='<div class="flex-between mb-8 mt-12"><span class="text-subheading">✨ 生成結果</span>'+self.geminiLabel_()+'</div>';
         items.forEach(function(item,i){
           var text=item.text||item;
-          html+='<div class="card card-relative"><div class="flex-between mb-8"><span class="status-badge info">案'+(i+1)+'</span></div><div class="post-text" style="white-space:pre-wrap;">'+self.escapeText(text)+'</div>'+(item.reason?'<div class="text-caption mb-8">💡 '+self.escapeText(item.reason)+'</div>':'')+'<div class="btn-group"><button class="btn btn-secondary btn-small gen-copy" data-text="'+self.escapeAttr(text)+'">📋 コピー</button><button class="btn btn-small gen-save" data-text="'+self.escapeAttr(text)+'">💾 下書き保存</button></div></div>';
+          var replies=item.replies||[];
+          var fullText=text+(replies.length?'\n\n---\n\n'+replies.join('\n\n---\n\n'):'');
+          html+='<div class="card card-relative"><div class="flex-between mb-8"><span class="status-badge info">案'+(i+1)+'</span>'+(replies.length?'<span class="status-badge success">🧵 スレッド</span>':'')+'</div>';
+          html+='<div class="post-text" style="white-space:pre-wrap;border-left:3px solid var(--primary);padding-left:12px;margin-bottom:8px;">'+self.escapeText(text)+'</div>';
+          if(replies.length){replies.forEach(function(r,ri){html+='<div class="post-text" style="white-space:pre-wrap;margin-left:16px;padding:10px;background:var(--bg-secondary);border-radius:8px;margin-bottom:6px;font-size:13px;"><span style="color:var(--primary);font-weight:600;">↳ 返信'+(ri+1)+'</span><br>'+self.escapeText(r)+'</div>';});}
+          html+=(item.reason?'<div class="text-caption mb-8">💡 '+self.escapeText(item.reason)+'</div>':'')+'<div class="btn-group"><button class="btn btn-secondary btn-small gen-copy" data-text="'+self.escapeAttr(fullText)+'">📋 コピー</button><button class="btn btn-small gen-save" data-text="'+self.escapeAttr(fullText)+'">💾 下書き保存</button></div></div>';
         });
         results.innerHTML=html;
         results.querySelectorAll('.gen-copy').forEach(function(b){b.addEventListener('click',function(){self.copyToClipboard(b.getAttribute('data-text'));});});
